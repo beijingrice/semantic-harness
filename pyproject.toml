@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bilingual-keyword-checker"
-version = "0.2.16"
+version = "0.3.0"
 description = "Bilingual academic-requirement alignment with paragraph grounding and recovery telemetry"
 readme = "README.md"
 requires-python = ">=3.10"

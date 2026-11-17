@@ -12,7 +12,7 @@ from app.models import CheckRequest, CheckResult
 from app.pipeline import Checker
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
-app = FastAPI(title="Bilingual Keyword Checker", version="0.2.16")
+app = FastAPI(title="Bilingual Keyword Checker", version="0.3.0")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 

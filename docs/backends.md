@@ -1,17 +1,19 @@
-# v0.2.16 — Backend Compatibility（面向未知生产 API）
+# 后端接入：OpenAI-compatible 与自定义 Adapter
+
+> 本文最初随 v0.2.16 发布，介绍如何接入未知的生产 API。
 
 ## 定位与边界
 
-本次是**传输/协议适配版本，不是模型选型或判决算法更新**。在 v0.2.15 基础上：
+后端层只负责传输和协议适配，不涉及模型选型或判决算法：
 
 - 引入 `app/backends.py`：`LLMBackend` Protocol、统一 `BackendResponse`、默认 `OpenAIChatBackend`、可插拔非 OpenAI Adapter。
 - 主模型与复核模型可用不同 Base URL、密钥和 Adapter。
 - JSON 输出分为 `legacy`、`on`、`off`、`auto`：不管哪一种，**结果都必须通过原有 Pydantic 校验和原文引用核验**。
 - 对没有 `GET /models` 的 API 可选择 `LM_MODEL_DISCOVERY=optional` 或 `off`。`off` 跳过预检，**绝不代表已经连接成功**。
-- 保留**全部历史 Pipeline**：`extraction`（仍为默认）、`direct`、`direct_grounded`、`direct_verified`、`direct_questions`、`direct_relations`、`direct_hardened`。保留原来的 Prompt、模型结构、判决规则和失败重试逻辑。
+- 支持的 Pipeline：`extraction`（默认）和 `direct_hardened`（实验）。其余历史 direct 模式已在 v0.3.0 移除。
 - 本地 Demo 推荐 **Qwen `qwen/qwen3.5-9b` + Gemma `google/gemma-4-12b-qat`**。这个模型组合仅用于开发；未知的生产模型需另行兼容性测试。
 
-**不保证**任何未知云端模型都能产生质量合格的答案，也不保证非 OpenAI HTTP API 无需开发适配器即可接入；本版没有执行真实 LM Studio、云 API 的端到端回归，不能报告新的真实准确率。
+**不保证**任何未知云端模型都能产生质量合格的答案，也不保证非 OpenAI HTTP API 无需开发适配器即可接入；离线测试不调用真实 LM Studio 或云 API，不能据此报告真实准确率。
 
 ## 最简单：保持原 LM Studio 配置
 
@@ -48,10 +50,10 @@ python -m examples.evaluate \
   --pipeline direct_hardened \
   --mode dual \
   --stop-after-errors 1 \
-  --out eval_v0216_direct_hardened_11.json
+  --out eval_direct_hardened_11.json
 ```
 
-这是**调用真实本地模型的命令**；仓库附带的离线 `pytest` 不会替代它。由于模型换成了 Gemma，结果不一定重复 v0.2.15 既有 11/11。`--pipeline` 的显式选择不改变 `.env` 中默认的 `extraction`。
+这是**调用真实本地模型的命令**；仓库附带的离线 `pytest` 不会替代它。v0.2.16 用 Qwen + Gemma 跑出的结果见 `examples/reference_v0216_direct_hardened_11.json`（11 条中 9 条正确、2 条 REVIEW_REQUIRED、0 误判）。`--pipeline` 的显式选择不改变 `.env` 中默认的 `extraction`。
 
 ## 部署场景 A：OpenAI-compatible、支持 JSON Schema
 
@@ -104,9 +106,9 @@ LM_SCHEMA_MODE=auto
 LM_MODEL_DISCOVERY=off
 ```
 
-`LM_VERIFIER_*` 连接配置留空时复用主服务。两个角色的模型 ID 必须不同（历史双模型 Pipeline 的既有要求）。不同服务的模型发现按各自适配器执行；`off` 时都不调用 `/models`。
+`LM_VERIFIER_*` 连接配置留空时复用主服务。两个角色的模型 ID 必须不同（双模型 Pipeline 的要求）。不同服务的模型发现按各自适配器执行；`off` 时都不调用 `/models`。
 
-**当前限制：** 本版本的 Schema 模式策略由一个 `LM_SCHEMA_MODE` 控制，但 `auto` 的能力缓存按具体模型隔离；两个后端需要完全不同请求字段时为对应角色配置不同 Adapter。
+**当前限制：** Schema 模式策略由一个 `LM_SCHEMA_MODE` 控制，但 `auto` 的能力缓存按具体模型隔离；两个后端需要完全不同请求字段时为对应角色配置不同 Adapter。
 
 ## 场景 D：非 OpenAI-compatible API
 
@@ -146,10 +148,4 @@ class MyBackend:
 
 ## 测试说明
 
-```bash
-python -m pytest -q
-```
-
-- 离线测试：363 tests，包括原有 345 tests 和新增 18 个受测场景；仅验证模拟的 HTTP 与业务逻辑，不代表真实模型判决准确率。
-- 真实结果请用上方唯一的 11 条端到端命令进行 LM Studio 回归，再查看 `false_pass`、`false_fail`、`review_required`、`errors_by_stage`、`schema_or_grounding_invalid` 与耗时。
-- Pilot Dev 48 是受控开发语料，Ground Truth 尚有争议；Holdout 27 应继续封存。
+离线测试只验证模拟的 HTTP 与业务逻辑，不代表真实模型的判决准确率。真实结果请用上方的 11 条端到端命令跑 LM Studio 回归，再查看 `false_pass`、`false_fail`、`review_required`、`errors_by_stage`、`schema_or_grounding_invalid` 与耗时。

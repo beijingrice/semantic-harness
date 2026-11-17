@@ -7,3 +7,8 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+
+# Evaluation outputs written to the project root by examples.evaluate
+/eval_*.json
+/eval_*.csv
+/evaluation_results*.json
