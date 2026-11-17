@@ -1,0 +1,29 @@
+[
+  {
+    "id": "V2-NUM-03",
+    "category": "numeric_ranges_units",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "问卷调查持续了42天，既未延长也未缩短。",
+    "why": "精确六周等于42天。"
+  },
+  {
+    "id": "C27-01",
+    "category": "unit_conversion",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "调查持续了42天，既未延长也未缩短。",
+    "why": "六周与42天等价"
+  },
+  {
+    "id": "C27-02",
+    "category": "unit_conversion",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "调查持续了43天。",
+    "why": "期限由42变43天"
+  }
+]

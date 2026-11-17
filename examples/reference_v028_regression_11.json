@@ -1,0 +1,164 @@
+{
+  "description": "Historical live v0.2.8 extraction baseline; NOT contemporaneous A/B",
+  "cases": [
+    {
+      "id": "V2-NUM-12",
+      "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+      "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例超过10%，该答卷无效。缺失率分母只统计必填字段，不得把可选的人口统计项目计入。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 16.12,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-NUM-15",
+      "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
+      "zh": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 15.55,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-NUM-13",
+      "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+      "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例达到10%或以上，该答卷无效。计算缺失率时只考虑必填字段。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 15.15,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-EXC-03",
+      "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+      "zh": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 13.46,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-NUM-03",
+      "en": "The survey ran for exactly six weeks.",
+      "zh": "问卷调查持续了42天，既未延长也未缩短。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 24.46,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-ENU-12",
+      "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+      "zh": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 13.6,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-ENU-13",
+      "en": "The review addresses data quality, annotation consistency, and evaluation reproducibility. These topics may be discussed in any order.",
+      "zh": "综述需要涉及数据质量、标注一致性以及评测可复现性，三者的叙述顺序不作限制。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 11.76,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-MIX-09",
+      "en": "For multicentre work, the methods must identify the recruitment site for each participant group without publishing direct personal identifiers. The analysis must report site-specific sample sizes, but pooled estimates may be presented if the pooling procedure is explained. If one site contributes fewer than five participants, its count should be masked in the public table and made available only in the restricted audit file. All numerical totals must remain internally consistent.",
+      "zh": "多中心研究的方法部分须交代各组参与者来自哪个招募地点，但不能公布直接身份标识。分析应列出各中心样本量；若说明合并方法，也可报告汇总估计。某中心少于5名参与者时，公开表格须遮蔽其人数，只在受限审计文件中提供；所有合计数须保持内部一致。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 33.94,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-MIX-04",
+      "en": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+      "zh": "论文须提交可搜索的PDF。插图可嵌入文档，表格的可编辑源文件也只需嵌在PDF中，无须单独上传；文件名使用学号。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 16.39,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-ROL-07",
+      "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+      "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 13.85,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "V2-MIX-03",
+      "en": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+      "zh": "论文须提交可搜索的PDF。插图可嵌入文档，但表格的可编辑源文件需另行上传；文件名应使用学号而非学生姓名全称。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 14.06,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "id": "C27-01",
+    "category": "unit_conversion",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "调查持续了42天，既未延长也未缩短。",
+    "why": "六周与42天等价"
+  },
+  {
+    "id": "C27-02",
+    "category": "unit_conversion",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "调查持续了43天。",
+    "why": "期限由42变43天"
+  },
+  {
+    "id": "C27-03",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "If more than 10% of mandatory fields are blank, the response is invalid.",
+    "zh": "若必填字段缺失比例超过10%，该答卷无效。",
+    "why": "严格大于一致"
+  },
+  {
+    "id": "C27-04",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "If more than 10% of mandatory fields are blank, the response is invalid.",
+    "zh": "若必填字段缺失比例达到10%或以上，该答卷无效。",
+    "why": "大于与大于等于不同"
+  },
+  {
+    "id": "C27-05",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The main report must not exceed 30 pages.",
+    "zh": "正文报告最多30页。",
+    "why": "上界闭区间一致"
+  },
+  {
+    "id": "C27-06",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The main report must not exceed 30 pages.",
+    "zh": "正文报告不得少于30页。",
+    "why": "上下界方向相反"
+  },
+  {
+    "id": "C27-07",
+    "category": "inclusion_polarity",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The cover page counts toward the main-report limit, but references do not.",
+    "zh": "封面计入正文报告页数，参考文献不计入。",
+    "why": "计入与不计入分别对应"
+  },
+  {
+    "id": "C27-08",
+    "category": "inclusion_polarity",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The cover page counts toward the main-report limit, but references do not.",
+    "zh": "封面和参考文献都不计入正文报告页数。",
+    "why": "封面计入规则反转"
+  },
+  {
+    "id": "C27-09",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Samples must be retained for at least five days.",
+    "zh": "样本须至少保留五天。",
+    "why": "中文比较词与数量不相邻"
+  },
+  {
+    "id": "C27-10",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Samples must be retained for at least five days.",
+    "zh": "样本须少于五天内销毁。",
+    "why": "保存期的界限相反"
+  },
+  {
+    "id": "C27-11",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The appendix may contain up to six pages. It is excluded from the main report’s 30-page limit.",
+    "zh": "附录最多六页，不计入正文报告30页的限制。",
+    "why": "多数字同段，不应乱配数字"
+  },
+  {
+    "id": "C27-12",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The appendix may contain up to six pages. It is excluded from the main report’s 30-page limit.",
+    "zh": "附录最多六页，但须计入正文报告30页的限制。",
+    "why": "附录页数范围反转"
+  }
+]

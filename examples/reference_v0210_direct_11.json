@@ -1,0 +1,1749 @@
+{
+  "configuration": {
+    "extraction_prompt": "coarse",
+    "coverage_audit": false,
+    "json_schema": true,
+    "mode": "dual",
+    "pipeline": "direct"
+  },
+  "summary": {
+    "total": 11,
+    "evaluated": 8,
+    "errors": 0,
+    "review_required": 3,
+    "correct": 6,
+    "accuracy": 0.75,
+    "false_pass": 1,
+    "false_pass_rate": 0.3333,
+    "false_fail": 1,
+    "false_fail_rate": 0.2,
+    "by_category": {
+      "enumeration_completeness": {
+        "total": 2,
+        "evaluated": 2,
+        "errors": 0,
+        "review_required": 0,
+        "accuracy": 1.0,
+        "false_pass": 0,
+        "false_pass_rate": 0.0
+      },
+      "exceptions_scope": {
+        "total": 1,
+        "evaluated": 0,
+        "errors": 0,
+        "review_required": 1,
+        "accuracy": null,
+        "false_pass": 0,
+        "false_pass_rate": null
+      },
+      "long_mixed_constraints": {
+        "total": 3,
+        "evaluated": 3,
+        "errors": 0,
+        "review_required": 0,
+        "accuracy": 1.0,
+        "false_pass": 0,
+        "false_pass_rate": 0.0
+      },
+      "numeric_ranges_units": {
+        "total": 4,
+        "evaluated": 3,
+        "errors": 0,
+        "review_required": 1,
+        "accuracy": 0.3333,
+        "false_pass": 1,
+        "false_pass_rate": 1.0
+      },
+      "roles_directions": {
+        "total": 1,
+        "evaluated": 0,
+        "errors": 0,
+        "review_required": 1,
+        "accuracy": null,
+        "false_pass": 0,
+        "false_pass_rate": null
+      }
+    },
+    "errors_by_kind": {},
+    "mismatched_ids": [
+      "V2-NUM-15",
+      "V2-NUM-03"
+    ],
+    "error_ids": [],
+    "review_required_ids": [
+      "V2-NUM-13",
+      "V2-EXC-03",
+      "V2-ROL-07"
+    ],
+    "errors_by_stage": {},
+    "reliability": {
+      "auto_decision_coverage": 0.7273,
+      "end_to_end_correct_rate": 0.5455,
+      "execution_error_rate": 0.0,
+      "review_required_rate": 0.2727,
+      "latency_seconds": {
+        "p50": 7.62,
+        "p95": 9.59,
+        "max": 9.59
+      },
+      "requests": 22,
+      "request_outcomes": {
+        "validated": 22
+      },
+      "response_sources": {
+        "content": 11,
+        "reasoning_json": 11
+      },
+      "recoveries_attempted": 0,
+      "recoveries_validated": 0,
+      "token_usage_reported": {
+        "prompt_tokens": 11973,
+        "completion_tokens": 2904,
+        "reasoning_tokens": 1431
+      },
+      "stage_duration_ms": {
+        "direct_independent_review": {
+          "requests": 11,
+          "p50": 3770.4,
+          "p95": 4983.7
+        },
+        "direct_primary": {
+          "requests": 11,
+          "p50": 3656.3,
+          "p95": 5194.6
+        }
+      },
+      "source_integrity": {
+        "checked_cases": 11,
+        "structurally_valid_cases": 11,
+        "violations": [],
+        "semantic_reason_quality": "NOT AUTOMATICALLY VERIFIED; see optional audit CSV"
+      }
+    },
+    "paired_reference": {
+      "kind": "historical_matched_case_comparison_not_contemporaneous_ab",
+      "baseline_file": "examples/reference_v028_regression_11.json",
+      "cases": 11,
+      "baseline_correct": 11,
+      "direct_correct": 6,
+      "baseline_auto_decisions": 11,
+      "direct_auto_decisions": 8,
+      "baseline_requests": 49,
+      "direct_requests": 22,
+      "baseline_total_seconds": 188.34,
+      "direct_total_seconds": 80.7,
+      "changed": [
+        {
+          "id": "V2-NUM-15",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "PASS",
+          "baseline_seconds": 15.55,
+          "direct_seconds": 5.84,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-NUM-13",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "REVIEW_REQUIRED",
+          "baseline_seconds": 15.15,
+          "direct_seconds": 7.74,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-EXC-03",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "REVIEW_REQUIRED",
+          "baseline_seconds": 13.46,
+          "direct_seconds": 8.56,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-NUM-03",
+          "expected": "PASS",
+          "baseline": "PASS",
+          "direct": "FAIL",
+          "baseline_seconds": 24.46,
+          "direct_seconds": 9.59,
+          "baseline_requests": 6,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-ROL-07",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "REVIEW_REQUIRED",
+          "baseline_seconds": 13.85,
+          "direct_seconds": 7.11,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        }
+      ],
+      "per_case": [
+        {
+          "id": "V2-NUM-12",
+          "expected": "PASS",
+          "baseline": "PASS",
+          "direct": "PASS",
+          "baseline_seconds": 16.12,
+          "direct_seconds": 6.47,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-NUM-15",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "PASS",
+          "baseline_seconds": 15.55,
+          "direct_seconds": 5.84,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-NUM-13",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "REVIEW_REQUIRED",
+          "baseline_seconds": 15.15,
+          "direct_seconds": 7.74,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-EXC-03",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "REVIEW_REQUIRED",
+          "baseline_seconds": 13.46,
+          "direct_seconds": 8.56,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-NUM-03",
+          "expected": "PASS",
+          "baseline": "PASS",
+          "direct": "FAIL",
+          "baseline_seconds": 24.46,
+          "direct_seconds": 9.59,
+          "baseline_requests": 6,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-ENU-12",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "FAIL",
+          "baseline_seconds": 13.6,
+          "direct_seconds": 7.62,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-ENU-13",
+          "expected": "PASS",
+          "baseline": "PASS",
+          "direct": "PASS",
+          "baseline_seconds": 11.76,
+          "direct_seconds": 5.09,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-MIX-09",
+          "expected": "PASS",
+          "baseline": "PASS",
+          "direct": "PASS",
+          "baseline_seconds": 33.94,
+          "direct_seconds": 8.18,
+          "baseline_requests": 7,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-MIX-04",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "FAIL",
+          "baseline_seconds": 16.39,
+          "direct_seconds": 8.48,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-ROL-07",
+          "expected": "FAIL",
+          "baseline": "FAIL",
+          "direct": "REVIEW_REQUIRED",
+          "baseline_seconds": 13.85,
+          "direct_seconds": 7.11,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        },
+        {
+          "id": "V2-MIX-03",
+          "expected": "PASS",
+          "baseline": "PASS",
+          "direct": "PASS",
+          "baseline_seconds": 14.06,
+          "direct_seconds": 6.02,
+          "baseline_requests": 4,
+          "direct_requests": 2
+        }
+      ]
+    },
+    "configured_total": 11,
+    "stopped_early": false,
+    "initial_on_same_cases": {
+      "total": 11,
+      "evaluated": 11,
+      "errors": 0,
+      "review_required": 0,
+      "correct": 7,
+      "accuracy": 0.6364,
+      "false_pass": 3,
+      "false_pass_rate": 0.5,
+      "false_fail": 1,
+      "false_fail_rate": 0.2,
+      "errors_by_kind": {},
+      "errors_by_stage": {}
+    },
+    "arbitration_count": 0,
+    "flip_to_pass": 0,
+    "flip_to_fail": 0,
+    "coverage_audit_count": 0,
+    "coverage_audit_added_units": 0
+  },
+  "cases": [
+    {
+      "id": "V2-NUM-12",
+      "category": "numeric_ranges_units",
+      "difficulty": "hard",
+      "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+      "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例超过10%，该答卷无效。缺失率分母只统计必填字段，不得把可选的人口统计项目计入。",
+      "expected": "PASS",
+      "why": "最少120、超过10%才无效、仅必填字段为分母均一致。",
+      "predicted": "PASS",
+      "correct": true,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 274,
+            "text": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 70,
+            "text": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例超过10%，该答卷无效。缺失率分母只统计必填字段，不得把可选的人口统计项目计入。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "PASS",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "PASS",
+          "reason": "Both texts fully align in all critical factual aspects: (1) minimum valid responses (≥120), (2) invalidity threshold (>10% missing mandatory fields), (3) denominator restriction to mandatory fields only, and (4) explicit exclusion of optional demographic items. No conflicts or omissions detected.",
+          "issues": []
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "PASS：Paragraph-Direct；主模型 PASS；独立复核 PASS；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: agreement is an LLM judgment, NOT formal proof of exhaustive alignment"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The Chinese text accurately reflects all factual constraints of the English text: the minimum valid response count (120), the invalidation threshold (>10% missing mandatory fields), the calculation scope (mandatory fields only), and the exclusion of optional demographic items from the denominator. No missing requirements or conflicts detected.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 6.47,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 588,
+          "completion_tokens": 78,
+          "reasoning_tokens": 77,
+          "content_chars": 0,
+          "reasoning_chars": 392,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3656.3
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 617,
+          "completion_tokens": 89,
+          "reasoning_tokens": 0,
+          "content_chars": 352,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 2801.8
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-NUM-15",
+      "category": "numeric_ranges_units",
+      "difficulty": "hard",
+      "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
+      "zh": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。",
+      "expected": "FAIL",
+      "why": "与上一条构成最小差异对：封面由计入30页改为不计入。",
+      "predicted": "PASS",
+      "correct": false,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 271,
+            "text": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 54,
+            "text": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "PASS",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "PASS",
+          "reason": "All factual requirements are consistent between the English and Chinese texts. The appendix length (up to 6 pages), its exclusion from the main report's page limit, mandatory referencing of figures in the appendix within the main report, inclusion of the cover page within the main-report limit, and exclusion of the reference list from the page count are all accurately mirrored.",
+          "issues": []
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "PASS：Paragraph-Direct；主模型 PASS；独立复核 PASS；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: agreement is an LLM judgment, NOT formal proof of exhaustive alignment"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The Chinese translation accurately reflects all factual constraints of the English text. The 6-page limit for the appendix and its exclusion from the 30-page main report limit are preserved. The requirement for figures moved to the appendix to be referenced in the main report is maintained. The cover page inclusion within the 30-page limit and the reference list exclusion are correctly translated. No missing or conflicting requirements are present.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 5.84,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 578,
+          "completion_tokens": 99,
+          "reasoning_tokens": 98,
+          "content_chars": 0,
+          "reasoning_chars": 499,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3478.1
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 599,
+          "completion_tokens": 96,
+          "reasoning_tokens": 0,
+          "content_chars": 435,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 2362.2
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-NUM-13",
+      "category": "numeric_ranges_units",
+      "difficulty": "hard",
+      "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+      "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例达到10%或以上，该答卷无效。计算缺失率时只考虑必填字段。",
+      "expected": "FAIL",
+      "why": "与上一条构成最小差异对：大于10%与大于等于10%边界相异。",
+      "predicted": "REVIEW_REQUIRED",
+      "correct": false,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 274,
+            "text": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 59,
+            "text": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例达到10%或以上，该答卷无效。计算缺失率时只考虑必填字段。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "REVIEW_REQUIRED",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "PASS",
+          "reason": "Both texts fully align in all critical factual aspects. The English and Chinese versions match on the minimum valid response requirement (120), the threshold for invalidity (>10% missing mandatory fields), the calculation scope (mandatory fields only), and exclusion of optional demographic items from the denominator.",
+          "issues": []
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "FAIL",
+        "summary": "REVIEW_REQUIRED：Paragraph-Direct；主模型 FAIL；独立复核 PASS；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: two independent assessments disagree; no correlated third vote"
+        ],
+        "direct_primary": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text omits the critical constraint that optional demographic items must not be included in the denominator for calculating the missingness percentage. The English text explicitly states 'optional demographic items must not appear in the denominator', while the Chinese text only says 'calculate missing rate considering only mandatory fields', which is ambiguous and does not explicitly exclude optional items from the calculation scope.",
+          "issues": [
+            {
+              "kind": "missing_in_chinese",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ],
+              "reason": "The English text explicitly requires that 'optional demographic items must not appear in the denominator' when calculating the missingness percentage. The Chinese text states 'calculate missing rate considering only mandatory fields', which is ambiguous and does not explicitly exclude optional items from the denominator, potentially leading to incorrect implementation where optional items might be included in the calculation."
+            }
+          ]
+        }
+      },
+      "elapsed_seconds": 7.74,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 576,
+          "completion_tokens": 188,
+          "reasoning_tokens": 187,
+          "content_chars": 0,
+          "reasoning_chars": 1031,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 5194.6
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 599,
+          "completion_tokens": 85,
+          "reasoning_tokens": 0,
+          "content_chars": 373,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 2545.2
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-EXC-03",
+      "category": "exceptions_scope",
+      "difficulty": "medium",
+      "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+      "zh": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
+      "expected": "FAIL",
+      "why": "与上一条构成最小差异对：学位项目可强制中文摘要的例外被移除。",
+      "predicted": "REVIEW_REQUIRED",
+      "correct": false,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 146,
+            "text": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 40,
+            "text": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "REVIEW_REQUIRED",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text incorrectly states that a Chinese abstract is 'only allowed as optional material' (仅能作为可选材料) when the English requirement explicitly allows it only if the degree program *requires* it. This implies a broader permission in Chinese than the conditional obligation in English, creating a conflict in scope.",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_evidence": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+              "zh_evidence": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
+              "reason": "The English text restricts Chinese abstracts to cases where the degree program explicitly requires them (conditional obligation), while the Chinese text suggests they are optional *unless otherwise specified* (broader permission). The latter implies permissibility even when not required, which is inconsistent with the English's stricter condition.",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ]
+            }
+          ]
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [
+          {
+            "kind": "conflict",
+            "en_evidence": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+            "zh_evidence": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
+            "reason": "The English text restricts Chinese abstracts to cases where the degree program explicitly requires them (conditional obligation), while the Chinese text suggests they are optional *unless otherwise specified* (broader permission). The latter implies permissibility even when not required, which is inconsistent with the English's stricter condition.",
+            "en_paragraph_ids": [
+              "en_p1"
+            ],
+            "zh_paragraph_ids": [
+              "zh_p1"
+            ]
+          }
+        ],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "REVIEW_REQUIRED：Paragraph-Direct；主模型 PASS；独立复核 FAIL；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: two independent assessments disagree; no correlated third vote"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The Chinese translation accurately reflects the English source text. The first sentence 'For papers written in English, an English abstract is mandatory' is correctly translated as '英文撰写的论文必须附英文摘要'. The second sentence 'An additional Chinese abstract is optional unless the degree program requires it' is correctly translated as '无论项目是否另有规定，中文摘要都只能作为可选材料'. All factual constraints including the mandatory nature of the English abstract, the optional nature of the Chinese abstract, and the exception for degree program requirements are preserved without conflict or omission.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 8.56,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 484,
+          "completion_tokens": 127,
+          "reasoning_tokens": 126,
+          "content_chars": 0,
+          "reasoning_chars": 622,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3925.0
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 489,
+          "completion_tokens": 192,
+          "reasoning_tokens": 0,
+          "content_chars": 858,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 4628.2
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-NUM-03",
+      "category": "numeric_ranges_units",
+      "difficulty": "easy",
+      "en": "The survey ran for exactly six weeks.",
+      "zh": "问卷调查持续了42天，既未延长也未缩短。",
+      "expected": "PASS",
+      "why": "精确六周等于42天。",
+      "predicted": "FAIL",
+      "correct": false,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 37,
+            "text": "The survey ran for exactly six weeks."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 20,
+            "text": "问卷调查持续了42天，既未延长也未缩短。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "FAIL",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "FAIL",
+          "reason": "The English text specifies a duration of exactly six weeks (which is 42 days), but the Chinese text states the survey lasted for 42 days without explicitly confirming that this was intended to be exactly six weeks. While the numerical equivalence holds, the explicit phrasing in English ('exactly six weeks') implies precision and intentionality that the Chinese version does not fully replicate (e.g., it could imply an approximate or coincidental alignment of 42 days).",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_evidence": "The survey ran for exactly six weeks.",
+              "zh_evidence": "问卷调查持续了42天，既未延长也未缩短。",
+              "reason": "The English text emphasizes 'exactly' (precision), while the Chinese text lacks this explicit qualifier despite matching the numerical duration. This may mislead readers about whether the duration was strictly controlled or merely coincidentally aligned.",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ]
+            }
+          ]
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [
+          {
+            "kind": "conflict",
+            "en_evidence": "The survey ran for exactly six weeks.",
+            "zh_evidence": "问卷调查持续了42天，既未延长也未缩短。",
+            "reason": "The English text emphasizes 'exactly' (precision), while the Chinese text lacks this explicit qualifier despite matching the numerical duration. This may mislead readers about whether the duration was strictly controlled or merely coincidentally aligned.",
+            "en_paragraph_ids": [
+              "en_p1"
+            ],
+            "zh_paragraph_ids": [
+              "zh_p1"
+            ]
+          }
+        ],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "FAIL",
+        "summary": "FAIL：Paragraph-Direct；主模型 FAIL；独立复核 FAIL；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)"
+        ],
+        "direct_primary": {
+          "verdict": "FAIL",
+          "reason": "The English text states the survey ran for exactly six weeks, while the Chinese text states it lasted 42 days. Six weeks equals 42 days (6 * 7 = 42), so the duration is mathematically equivalent. However, the Chinese text adds an additional constraint '既未延长也未缩短' (neither extended nor shortened) which is not present in the English text. This is a substantive addition of a condition that changes the meaning.",
+          "issues": [
+            {
+              "kind": "missing_in_english",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ],
+              "reason": "The Chinese text includes the condition '既未延长也未缩短' (neither extended nor shortened) which is not present in the English text. The English text only states the duration was exactly six weeks without any condition about extension or shortening."
+            }
+          ]
+        }
+      },
+      "elapsed_seconds": 9.59,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 430,
+          "completion_tokens": 194,
+          "reasoning_tokens": 193,
+          "content_chars": 0,
+          "reasoning_chars": 804,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 4604.9
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 431,
+          "completion_tokens": 207,
+          "reasoning_tokens": 0,
+          "content_chars": 915,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 4983.7
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-ENU-12",
+      "category": "enumeration_completeness",
+      "difficulty": "medium",
+      "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+      "zh": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
+      "expected": "FAIL",
+      "why": "与上一条构成最小差异对：关键词位置要求反转。",
+      "predicted": "FAIL",
+      "correct": true,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 135,
+            "text": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 37,
+            "text": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "FAIL",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text incorrectly states that keywords should be included *within* the abstract body, while the English text explicitly prohibits this and requires them to appear *below* the abstract. This is a direct conflict in placement rules.",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_evidence": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+              "zh_evidence": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
+              "reason": "Keyword placement: English forbids keywords inside the abstract (must be below), but Chinese mandates inclusion within the abstract body.",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ]
+            }
+          ]
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [
+          {
+            "kind": "conflict",
+            "en_evidence": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+            "zh_evidence": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
+            "reason": "Keyword placement: English forbids keywords inside the abstract (must be below), but Chinese mandates inclusion within the abstract body.",
+            "en_paragraph_ids": [
+              "en_p1"
+            ],
+            "zh_paragraph_ids": [
+              "zh_p1"
+            ]
+          }
+        ],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "FAIL",
+        "summary": "FAIL：Paragraph-Direct；主模型 FAIL；独立复核 FAIL；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)"
+        ],
+        "direct_primary": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text contradicts the English text regarding keyword placement. The English text states 'Keywords appear immediately below it, not inside the abstract' (keywords outside abstract), while the Chinese text states '关键词写入摘要正文而非放在其下方' (keywords inside abstract, not below). This is a direct conflict on the location requirement.",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ],
+              "reason": "English specifies keywords must be below the abstract, not inside it. Chinese specifies keywords must be inside the abstract, not below it. These are contradictory location requirements."
+            }
+          ]
+        }
+      },
+      "elapsed_seconds": 7.62,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 480,
+          "completion_tokens": 146,
+          "reasoning_tokens": 145,
+          "content_chars": 0,
+          "reasoning_chars": 663,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3764.5
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 505,
+          "completion_tokens": 139,
+          "reasoning_tokens": 0,
+          "content_chars": 567,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 3856.5
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-ENU-13",
+      "category": "enumeration_completeness",
+      "difficulty": "medium",
+      "en": "The review addresses data quality, annotation consistency, and evaluation reproducibility. These topics may be discussed in any order.",
+      "zh": "综述需要涉及数据质量、标注一致性以及评测可复现性，三者的叙述顺序不作限制。",
+      "expected": "PASS",
+      "why": "三个主题完整，顺序自由要求对应。",
+      "predicted": "PASS",
+      "correct": true,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 134,
+            "text": "The review addresses data quality, annotation consistency, and evaluation reproducibility. These topics may be discussed in any order."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 37,
+            "text": "综述需要涉及数据质量、标注一致性以及评测可复现性，三者的叙述顺序不作限制。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "PASS",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "PASS",
+          "reason": "Both texts explicitly list the same three core topics (data quality, annotation consistency, evaluation reproducibility) without requiring a specific order. The English version uses 'may be discussed' (permissive), while the Chinese version uses '需要涉及...不作限制' (normative but permissive in scope). There is no conflict or missing requirement as both convey that all three topics must be included, with no prescribed sequence.",
+          "issues": []
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "PASS：Paragraph-Direct；主模型 PASS；独立复核 PASS；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: agreement is an LLM judgment, NOT formal proof of exhaustive alignment"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The Chinese text accurately reflects the English text's requirements. Both specify the three required topics (data quality, annotation consistency, evaluation reproducibility) and the flexibility of discussion order. No factual constraints are missing or conflicting.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 5.09,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 478,
+          "completion_tokens": 60,
+          "reasoning_tokens": 59,
+          "content_chars": 0,
+          "reasoning_chars": 314,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 1883.9
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 493,
+          "completion_tokens": 113,
+          "reasoning_tokens": 0,
+          "content_chars": 479,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 3198.9
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-MIX-09",
+      "category": "long_mixed_constraints",
+      "difficulty": "hard",
+      "en": "For multicentre work, the methods must identify the recruitment site for each participant group without publishing direct personal identifiers. The analysis must report site-specific sample sizes, but pooled estimates may be presented if the pooling procedure is explained. If one site contributes fewer than five participants, its count should be masked in the public table and made available only in the restricted audit file. All numerical totals must remain internally consistent.",
+      "zh": "多中心研究的方法部分须交代各组参与者来自哪个招募地点，但不能公布直接身份标识。分析应列出各中心样本量；若说明合并方法，也可报告汇总估计。某中心少于5名参与者时，公开表格须遮蔽其人数，只在受限审计文件中提供；所有合计数须保持内部一致。",
+      "expected": "PASS",
+      "why": "地点标识与隐私、各中心样本量、合并条件、少于5人遮蔽及总数一致均对应。",
+      "predicted": "PASS",
+      "correct": true,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 484,
+            "text": "For multicentre work, the methods must identify the recruitment site for each participant group without publishing direct personal identifiers. The analysis must report site-specific sample sizes, but pooled estimates may be presented if the pooling procedure is explained. If one site contributes fewer than five participants, its count should be masked in the public table and made available only in the restricted audit file. All numerical totals must remain internally consistent."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 116,
+            "text": "多中心研究的方法部分须交代各组参与者来自哪个招募地点，但不能公布直接身份标识。分析应列出各中心样本量；若说明合并方法，也可报告汇总估计。某中心少于5名参与者时，公开表格须遮蔽其人数，只在受限审计文件中提供；所有合计数须保持内部一致。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "PASS",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "PASS",
+          "reason": "The Chinese text fully aligns with the English requirements in terms of factual consistency, actor roles (e.g., 'methods'/'分析'), numerical bounds ('fewer than five participants'/‘少于5名参与者’), permissions ('may be presented'/‘也可报告’), duties ('must report'/‘应列出’), exclusions ('without publishing direct personal identifiers'/‘不能公布直接身份标识’), and temporal/conditional logic (e.g., masking only applies when <5 participants). No critical mismatches or omissions were found.",
+          "issues": []
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "PASS：Paragraph-Direct；主模型 PASS；独立复核 PASS；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: agreement is an LLM judgment, NOT formal proof of exhaustive alignment"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The Chinese translation accurately reflects all factual constraints of the English text. Key requirements are preserved: (1) methods must identify recruitment site without direct identifiers, (2) analysis must report site-specific sample sizes, (3) pooled estimates may be presented if pooling is explained, (4) if one site has fewer than 5 participants, its count must be masked in public table and available only in restricted audit file, (5) all numerical totals must remain internally consistent. No missing or conflicting requirements detected.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 8.18,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 682,
+          "completion_tokens": 118,
+          "reasoning_tokens": 117,
+          "content_chars": 0,
+          "reasoning_chars": 596,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3562.4
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 755,
+          "completion_tokens": 147,
+          "reasoning_tokens": 0,
+          "content_chars": 521,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 4611.6
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-MIX-04",
+      "category": "long_mixed_constraints",
+      "difficulty": "medium",
+      "en": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+      "zh": "论文须提交可搜索的PDF。插图可嵌入文档，表格的可编辑源文件也只需嵌在PDF中，无须单独上传；文件名使用学号。",
+      "expected": "FAIL",
+      "why": "表格可编辑源文件需单独上传被取消。",
+      "predicted": "FAIL",
+      "correct": true,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 218,
+            "text": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 55,
+            "text": "论文须提交可搜索的PDF。插图可嵌入文档，表格的可编辑源文件也只需嵌在PDF中，无须单独上传；文件名使用学号。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "FAIL",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text contains a critical conflict regarding the handling of editable source files for tables. The English requirement explicitly states that these must be uploaded separately, while the Chinese version incorrectly states they only need to be embedded in the PDF without separate upload.",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_evidence": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+              "zh_evidence": "论文须提交可搜索的PDF。插图可嵌入文档，表格的可编辑源文件也只需嵌在PDF中，无须单独上传；文件名使用学号。",
+              "reason": "Editable source files for tables are required to be uploaded separately (English) but are described as not requiring separate uploads (Chinese). This is a direct contradiction in handling instructions.",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ]
+            }
+          ]
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [
+          {
+            "kind": "conflict",
+            "en_evidence": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+            "zh_evidence": "论文须提交可搜索的PDF。插图可嵌入文档，表格的可编辑源文件也只需嵌在PDF中，无须单独上传；文件名使用学号。",
+            "reason": "Editable source files for tables are required to be uploaded separately (English) but are described as not requiring separate uploads (Chinese). This is a direct contradiction in handling instructions.",
+            "en_paragraph_ids": [
+              "en_p1"
+            ],
+            "zh_paragraph_ids": [
+              "zh_p1"
+            ]
+          }
+        ],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "FAIL",
+        "summary": "FAIL：Paragraph-Direct；主模型 FAIL；独立复核 FAIL；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)"
+        ],
+        "direct_primary": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text contradicts the English text regarding the handling of table source files. The English text states 'editable source files for tables must be uploaded separately', while the Chinese text states '表格的可编辑源文件也只需嵌在PDF中，无须单独上传' (table editable source files only need to be embedded in the PDF, no separate upload required). This is a direct conflict on the requirement for separate upload of table source files.",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ],
+              "reason": "English requires table source files to be uploaded separately ('must be uploaded separately'), while Chinese states they should be embedded in the PDF and not uploaded separately ('只需嵌在PDF中，无须单独上传')."
+            }
+          ]
+        }
+      },
+      "elapsed_seconds": 8.48,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 536,
+          "completion_tokens": 176,
+          "reasoning_tokens": 175,
+          "content_chars": 0,
+          "reasoning_chars": 763,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 4350.2
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 567,
+          "completion_tokens": 152,
+          "reasoning_tokens": 0,
+          "content_chars": 688,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 4122.2
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-ROL-07",
+      "category": "roles_directions",
+      "difficulty": "medium",
+      "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+      "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
+      "expected": "FAIL",
+      "why": "与上一条构成最小差异对：第二组数据胜负反转。",
+      "predicted": "REVIEW_REQUIRED",
+      "correct": false,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 138,
+            "text": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 41,
+            "text": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "REVIEW_REQUIRED",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "FAIL",
+          "reason": "The Chinese text contradicts the English text regarding the performance on the second dataset. The English states that the proposed system achieved the higher score, while the Chinese claims the baseline method scored higher.",
+          "issues": [
+            {
+              "kind": "conflict",
+              "en_evidence": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+              "zh_evidence": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
+              "reason": "The second dataset result is inconsistent: English says 'proposed system achieved the higher score' (en_p1), but Chinese says '基线方法得分更高' ('baseline method scored higher') (zh_p1).",
+              "en_paragraph_ids": [
+                "en_p1"
+              ],
+              "zh_paragraph_ids": [
+                "zh_p1"
+              ]
+            }
+          ]
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [
+          {
+            "kind": "conflict",
+            "en_evidence": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+            "zh_evidence": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
+            "reason": "The second dataset result is inconsistent: English says 'proposed system achieved the higher score' (en_p1), but Chinese says '基线方法得分更高' ('baseline method scored higher') (zh_p1).",
+            "en_paragraph_ids": [
+              "en_p1"
+            ],
+            "zh_paragraph_ids": [
+              "zh_p1"
+            ]
+          }
+        ],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "REVIEW_REQUIRED：Paragraph-Direct；主模型 PASS；独立复核 FAIL；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: two independent assessments disagree; no correlated third vote"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The English and Chinese texts convey identical factual information. The first sentence in English ('On the first dataset, the baseline outperformed the proposed system') corresponds exactly to the first clause in Chinese ('在第一组数据上，基线方法比新系统表现更好'). The second sentence in English ('On the second dataset, the proposed system achieved the higher score') corresponds exactly to the second clause in Chinese ('在第二组数据上，仍然是基线方法得分更高'). All numerical limits, actors, and comparative relationships are preserved without conflict or omission.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 7.11,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 496,
+          "completion_tokens": 127,
+          "reasoning_tokens": 126,
+          "content_chars": 0,
+          "reasoning_chars": 578,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3337.7
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 493,
+          "completion_tokens": 154,
+          "reasoning_tokens": 0,
+          "content_chars": 593,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 3770.4
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    },
+    {
+      "id": "V2-MIX-03",
+      "category": "long_mixed_constraints",
+      "difficulty": "medium",
+      "en": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+      "zh": "论文须提交可搜索的PDF。插图可嵌入文档，但表格的可编辑源文件需另行上传；文件名应使用学号而非学生姓名全称。",
+      "expected": "PASS",
+      "why": "格式、插图、表格源文件与命名要求一致。",
+      "predicted": "PASS",
+      "correct": true,
+      "detail": {
+        "english_paragraphs": [
+          {
+            "id": "en_p1",
+            "start": 0,
+            "end": 218,
+            "text": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name."
+          }
+        ],
+        "chinese_paragraphs": [
+          {
+            "id": "zh_p1",
+            "start": 0,
+            "end": 54,
+            "text": "论文须提交可搜索的PDF。插图可嵌入文档，但表格的可编辑源文件需另行上传；文件名应使用学号而非学生姓名全称。"
+          }
+        ],
+        "evidence_mode": "paragraph",
+        "verdict": "PASS",
+        "model": "qwen/qwen3.5-9b",
+        "verifier_model": "ministral-3-8b-instruct-2512",
+        "english_keywords": [],
+        "chinese_keywords": [],
+        "links": [],
+        "missing_in_chinese": [],
+        "missing_in_english": [],
+        "conflicts": [],
+        "preliminary_missing_in_chinese": [],
+        "preliminary_missing_in_english": [],
+        "preliminary_conflicts": [],
+        "review": {
+          "verdict": "PASS",
+          "reason": "Both texts fully align in all factual requirements: (1) submission format is a searchable PDF, (2) figures can be embedded but editable source files for tables must be uploaded separately, and (3) the filename must include the student ID instead of the full name. No conflicts or omissions detected.",
+          "issues": []
+        },
+        "arbitration": null,
+        "arbitrated": false,
+        "dispute_recheck": null,
+        "review_issues": [],
+        "mode": "dual",
+        "review_warnings": [],
+        "deterministic_issues": [],
+        "initial_verdict": "PASS",
+        "summary": "PASS：Paragraph-Direct；主模型 PASS；独立复核 PASS；原文数值冲突 0 项。",
+        "diagnostics": [
+          "pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)",
+          "direct_primary: OK (qwen/qwen3.5-9b)",
+          "direct_independent_review: OK (ministral-3-8b-instruct-2512)",
+          "direct_fusion: agreement is an LLM judgment, NOT formal proof of exhaustive alignment"
+        ],
+        "direct_primary": {
+          "verdict": "PASS",
+          "reason": "The Chinese translation accurately reflects all factual constraints of the English text. The requirement for a searchable PDF is preserved ('可搜索的PDF'). The conditional permission for figures ('may be embedded') is correctly translated ('可嵌入'). The mandatory requirement for table source files ('must be uploaded separately') is preserved ('需另行上传'). The naming convention requirement ('should contain the student number rather than the student's full name') is accurately translated ('应使用学号而非学生姓名全称'). No factual constraints, numerical limits, units, or actor roles are missing or conflicting.",
+          "issues": []
+        }
+      },
+      "elapsed_seconds": 6.02,
+      "requests": [
+        {
+          "stage": "direct_primary",
+          "schema": "direct_primary_review",
+          "model": "qwen/qwen3.5-9b",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 534,
+          "completion_tokens": 129,
+          "reasoning_tokens": 128,
+          "content_chars": 0,
+          "reasoning_chars": 639,
+          "response_source": "reasoning_json",
+          "outcome": "validated",
+          "duration_ms": 3394.2
+        },
+        {
+          "stage": "direct_independent_review",
+          "schema": "paragraph_review",
+          "model": "ministral-3-8b-instruct-2512",
+          "attempt": 1,
+          "recovery": false,
+          "schema_mode": "json_schema",
+          "max_tokens": 3072,
+          "http_status": 200,
+          "finish_reason": "stop",
+          "prompt_tokens": 563,
+          "completion_tokens": 88,
+          "reasoning_tokens": 0,
+          "content_chars": 354,
+          "reasoning_chars": 0,
+          "response_source": "content",
+          "outcome": "validated",
+          "duration_ms": 2620.9
+        }
+      ],
+      "evidence_audit": {
+        "checked": true,
+        "structural_ok": true,
+        "violations": [],
+        "semantic_correctness_verified": false
+      }
+    }
+  ]
+}

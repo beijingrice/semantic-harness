@@ -1,0 +1,38 @@
+[
+  {
+    "id": "V2-NUM-15",
+    "category": "numeric_ranges_units",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
+    "zh": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。",
+    "why": "与上一条构成最小差异对：封面由计入30页改为不计入。"
+  },
+  {
+    "id": "V2-EXC-03",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+    "zh": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
+    "why": "与上一条构成最小差异对：学位项目可强制中文摘要的例外被移除。"
+  },
+  {
+    "id": "V2-ENU-12",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+    "zh": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
+    "why": "与上一条构成最小差异对：关键词位置要求反转。"
+  },
+  {
+    "id": "V2-ROL-07",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+    "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
+    "why": "与上一条构成最小差异对：第二组数据胜负反转。"
+  }
+]

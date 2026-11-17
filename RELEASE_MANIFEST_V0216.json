@@ -1,0 +1,17 @@
+{
+  "release": "0.2.16",
+  "baseline": "0.2.15",
+  "default_pipeline": "extraction",
+  "development_primary": "qwen/qwen3.5-9b",
+  "development_verifier": "google/gemma-4-12b-qat",
+  "changes": [
+    "OpenAI-compatible backend isolation and custom adapter contract",
+    "separate primary and reviewer API connections",
+    "configurable native JSON schema negotiation and strict host validation",
+    "optional or disabled model discovery"
+  ],
+  "validation": {
+    "offline_pytest": "363 passed",
+    "real_model_regression": "not run here; requires user LM Studio"
+  }
+}

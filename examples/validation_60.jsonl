@@ -1,0 +1,60 @@
+{"id": "BAS-01", "category": "basic_semantics", "difficulty": "easy", "expected": "PASS", "en": "The abstract describes the research objective and methodology.", "zh": "摘要介绍了研究目标与研究方法。", "why": "目标、方法完整对应。"}
+{"id": "ENU-05", "category": "enumeration_completeness", "difficulty": "easy", "expected": "FAIL", "en": "The abstract must include purpose, methods, and results.", "zh": "摘要须介绍研究目的与研究方法。", "why": "中文缺 results。"}
+{"id": "TEC-01", "category": "technical_terms", "difficulty": "easy", "expected": "PASS", "en": "The search algorithm uses breadth-first search (BFS) and depth-first search (DFS).", "zh": "搜索算法使用广度优先搜索和深度优先搜索。", "why": "英文缩写和中文全称对应。"}
+{"id": "NUM-05", "category": "numbers_and_bounds", "difficulty": "easy", "expected": "FAIL", "en": "The report must not exceed 20 pages.", "zh": "报告必须不少于30页。", "why": "20 页上界与 30 页下界不可兼容。"}
+{"id": "MOD-01", "category": "modality_negation", "difficulty": "easy", "expected": "PASS", "en": "Plagiarism is prohibited in the final report.", "zh": "最终报告不得抄袭。", "why": "禁止义务一致。"}
+{"id": "AMB-07", "category": "ambiguity_paraphrases", "difficulty": "medium", "expected": "FAIL", "en": "The study reports model sensitivity.", "zh": "研究报告模型特异度。", "why": "sensitivity 与 specificity 是不同指标，不能借模糊宽容放行。"}
+{"id": "DIR-01", "category": "direction_and_roles", "difficulty": "hard", "expected": "PASS", "en": "Model A has higher accuracy than Model B.", "zh": "模型B的准确率低于模型A。", "why": "比较方向在换位后保持一致。"}
+{"id": "BAS-07", "category": "basic_semantics", "difficulty": "medium", "expected": "FAIL", "en": "The study adopts qualitative interviews.", "zh": "研究采用定量问卷调查。", "why": "定性访谈与定量问卷是不同方法。"}
+{"id": "ENU-01", "category": "enumeration_completeness", "difficulty": "easy", "expected": "PASS", "en": "The abstract must report the purpose, methods, and results.", "zh": "摘要须说明研究目的、采用的方法和研究结果。", "why": "三个独立概念均存在。"}
+{"id": "TEC-05", "category": "technical_terms", "difficulty": "easy", "expected": "FAIL", "en": "The algorithm uses depth-first search.", "zh": "算法采用广度优先搜索。", "why": "DFS 与 BFS 属于不同算法。"}
+{"id": "NUM-01", "category": "numbers_and_bounds", "difficulty": "easy", "expected": "PASS", "en": "The report must not exceed 20 pages.", "zh": "报告不得多于二十页。", "why": "相同最大页数限制。"}
+{"id": "MOD-05", "category": "modality_negation", "difficulty": "easy", "expected": "FAIL", "en": "Attendance is mandatory for all students.", "zh": "所有学生均可选择不出席。", "why": "必须参加与允许缺席明显冲突。"}
+{"id": "AMB-01", "category": "ambiguity_paraphrases", "difficulty": "hard", "expected": "PASS", "en": "The study outlines its research methodology.", "zh": "文章概述了研究采取的技术路线。", "why": "方法与技术路线在本场景可合理对应，宽松通过。"}
+{"id": "DIR-03", "category": "direction_and_roles", "difficulty": "hard", "expected": "FAIL", "en": "Model A has higher accuracy than Model B.", "zh": "模型B的准确率高于模型A。", "why": "比较关系反转。"}
+{"id": "BAS-02", "category": "basic_semantics", "difficulty": "easy", "expected": "PASS", "en": "The paper presents the main findings.", "zh": "论文给出了主要研究结果。", "why": "findings 与研究结果等价。"}
+{"id": "ENU-06", "category": "enumeration_completeness", "difficulty": "easy", "expected": "FAIL", "en": "The abstract must include purpose and methods.", "zh": "摘要须介绍研究目的、研究方法及研究结论。", "why": "中文多出结论，双向完整性不一致。"}
+{"id": "TEC-02", "category": "technical_terms", "difficulty": "medium", "expected": "PASS", "en": "A convolutional neural network (CNN) is trained for classification.", "zh": "训练卷积神经网络用于分类。", "why": "CNN 全称/缩写对应，任务一致。"}
+{"id": "NUM-06", "category": "numbers_and_bounds", "difficulty": "easy", "expected": "FAIL", "en": "Each group contains exactly three participants.", "zh": "每组恰好有4名参与者。", "why": "精确数量不同。"}
+{"id": "MOD-02", "category": "modality_negation", "difficulty": "medium", "expected": "PASS", "en": "No additional references are required.", "zh": "无需额外补充参考文献。", "why": "否定必要性一致。"}
+{"id": "AMB-08", "category": "ambiguity_paraphrases", "difficulty": "medium", "expected": "FAIL", "en": "The analysis examines security risks.", "zh": "分析研究用户界面的易用性。", "why": "security 和 usability 主题不同，缺乏合理关键词对应。"}
+{"id": "DIR-02", "category": "direction_and_roles", "difficulty": "medium", "expected": "PASS", "en": "The model was trained on Dataset A and tested on Dataset B.", "zh": "模型使用数据集A训练，并在数据集B上测试。", "why": "训练和测试角色一致。"}
+{"id": "BAS-08", "category": "basic_semantics", "difficulty": "easy", "expected": "FAIL", "en": "The experiments were performed on human participants.", "zh": "实验以小鼠为对象开展。", "why": "人类受试者与小鼠是不同研究对象。"}
+{"id": "ENU-02", "category": "enumeration_completeness", "difficulty": "medium", "expected": "PASS", "en": "The workflow covers data cleaning, feature selection, and model training.", "zh": "工作流程包括数据清洗、特征筛选与模型训练。", "why": "三个步骤齐全。"}
+{"id": "TEC-06", "category": "technical_terms", "difficulty": "easy", "expected": "FAIL", "en": "Model training uses PyTorch.", "zh": "模型训练使用 TensorFlow。", "why": "框架名称不同。"}
+{"id": "NUM-02", "category": "numbers_and_bounds", "difficulty": "medium", "expected": "PASS", "en": "At least three independent reviewers are required.", "zh": "需要不少于3名独立评审人员。", "why": "最小数量和独立要求一致。"}
+{"id": "MOD-06", "category": "modality_negation", "difficulty": "easy", "expected": "FAIL", "en": "The abstract must not include citations.", "zh": "摘要必须包含引文。", "why": "禁止与强制存在直接冲突。"}
+{"id": "AMB-02", "category": "ambiguity_paraphrases", "difficulty": "medium", "expected": "PASS", "en": "The article summarizes experimental findings.", "zh": "论文概述了实验获得的研究发现。", "why": "findings 与研究发现语义一致。"}
+{"id": "DIR-04", "category": "direction_and_roles", "difficulty": "hard", "expected": "FAIL", "en": "The model was trained on Dataset A and tested on Dataset B.", "zh": "模型使用数据集B训练，并在数据集A上测试。", "why": "训练集与测试集角色对调。"}
+{"id": "BAS-03", "category": "basic_semantics", "difficulty": "easy", "expected": "PASS", "en": "The experiment was conducted using survey data.", "zh": "研究使用问卷数据开展实验。", "why": "语态和句式变化不影响关键概念。"}
+{"id": "ENU-07", "category": "enumeration_completeness", "difficulty": "easy", "expected": "FAIL", "en": "The dataset includes image, audio, and text samples.", "zh": "数据集由图像与音频样本构成。", "why": "中文缺 text。"}
+{"id": "TEC-03", "category": "technical_terms", "difficulty": "medium", "expected": "PASS", "en": "The prototype runs on PyTorch 2.0 with CUDA 12.1.", "zh": "原型使用 CUDA 12.1 与 PyTorch 2.0 运行。", "why": "框架及版本一致，顺序无关。"}
+{"id": "NUM-07", "category": "numbers_and_bounds", "difficulty": "easy", "expected": "FAIL", "en": "Use a 12-point font for the main text.", "zh": "正文采用10磅字号。", "why": "字号不同。"}
+{"id": "MOD-03", "category": "modality_negation", "difficulty": "medium", "expected": "PASS", "en": "Students must submit the report by Friday.", "zh": "学生须最迟于周五提交报告。", "why": "义务和截止时间一致。"}
+{"id": "AMB-03", "category": "ambiguity_paraphrases", "difficulty": "hard", "expected": "PASS", "en": "A data processing stage is included.", "zh": "流程设有数据预处理环节。", "why": "processing 与 preprocessing 并非完全同义，但存在合理包含解释。"}
+{"id": "DIR-05", "category": "direction_and_roles", "difficulty": "hard", "expected": "FAIL", "en": "Students submit proposals, and teachers review them.", "zh": "教师提交研究计划书，由学生负责评审。", "why": "提交人与评审人的角色反转。"}
+{"id": "BAS-04", "category": "basic_semantics", "difficulty": "easy", "expected": "PASS", "en": "Two models were compared for accuracy.", "zh": "研究比较了两个模型的准确率。", "why": "比较对象、数量与指标一致。"}
+{"id": "ENU-03", "category": "enumeration_completeness", "difficulty": "easy", "expected": "PASS", "en": "The submission contains text, figures, and tables.", "zh": "提交材料应包含正文文字、插图和表格。", "why": "三种材料均覆盖。"}
+{"id": "TEC-07", "category": "technical_terms", "difficulty": "medium", "expected": "FAIL", "en": "The encoder is based on BERT.", "zh": "编码器基于 GPT。", "why": "BERT 和 GPT 不是同一模型架构。"}
+{"id": "NUM-03", "category": "numbers_and_bounds", "difficulty": "medium", "expected": "PASS", "en": "The acceptable error rate is between 10% and 15%.", "zh": "允许的误差率范围为百分之十至百分之十五。", "why": "区间端点一致。"}
+{"id": "MOD-07", "category": "modality_negation", "difficulty": "medium", "expected": "FAIL", "en": "Consent is not required for this analysis.", "zh": "本次分析必须取得知情同意。", "why": "是否需要同意的要求相反。"}
+{"id": "AMB-04", "category": "ambiguity_paraphrases", "difficulty": "medium", "expected": "PASS", "en": "The authors evaluate model performance.", "zh": "作者分析模型的实际效果。", "why": "性能评估与效果分析是合理的宽松对应。"}
+{"id": "DIR-06", "category": "direction_and_roles", "difficulty": "hard", "expected": "FAIL", "en": "The model was evaluated on MNIST and CIFAR-10.", "zh": "模型仅在MNIST上评估，并使用CIFAR-10训练。", "why": "评估对象缺失且 CIFAR-10 的作用改变。"}
+{"id": "BAS-05", "category": "basic_semantics", "difficulty": "medium", "expected": "PASS", "en": "The study investigates the impact of noise on speech recognition.", "zh": "研究分析噪声对语音识别的影响。", "why": "investigates 和分析为合理同义表达。"}
+{"id": "ENU-08", "category": "enumeration_completeness", "difficulty": "medium", "expected": "FAIL", "en": "The dataset is split into training, validation, and test sets.", "zh": "数据集划分为训练集和测试集。", "why": "中文缺 validation set。"}
+{"id": "TEC-04", "category": "technical_terms", "difficulty": "medium", "expected": "PASS", "en": "The system integrates a large language model with retrieval-augmented generation (RAG).", "zh": "系统集成大语言模型与检索增强生成技术。", "why": "LLM 和 RAG 的全称翻译对应。"}
+{"id": "NUM-08", "category": "numbers_and_bounds", "difficulty": "medium", "expected": "FAIL", "en": "Applications must arrive before June 30.", "zh": "申请材料必须在7月1日之后送达。", "why": "截止日期及方向不一致。"}
+{"id": "MOD-04", "category": "modality_negation", "difficulty": "medium", "expected": "PASS", "en": "Including an appendix is optional.", "zh": "附录并非必交，是否添加可自行决定。", "why": "可选性相同。"}
+{"id": "AMB-05", "category": "ambiguity_paraphrases", "difficulty": "hard", "expected": "PASS", "en": "The introduction states the research objectives.", "zh": "引言明确研究要完成的主要任务。", "why": "研究任务与研究目标可在此上下文合理对应。"}
+{"id": "BAS-06", "category": "basic_semantics", "difficulty": "easy", "expected": "PASS", "en": "The dataset was collected in Beijing and Shanghai.", "zh": "数据采集地点为上海和北京。", "why": "地点完全相同，顺序变化无关。"}
+{"id": "ENU-04", "category": "enumeration_completeness", "difficulty": "medium", "expected": "PASS", "en": "Report precision and recall.", "zh": "请报告查准率及查全率。", "why": "查准率对应 precision，查全率对应 recall。"}
+{"id": "TEC-08", "category": "technical_terms", "difficulty": "medium", "expected": "FAIL", "en": "The evaluation reports precision.", "zh": "评估指标为召回率。", "why": "precision 不是 recall。"}
+{"id": "NUM-04", "category": "numbers_and_bounds", "difficulty": "medium", "expected": "PASS", "en": "Keep the samples for no fewer than five days.", "zh": "样本须至少保留五天。", "why": "下界与时间单位相同。"}
+{"id": "MOD-08", "category": "modality_negation", "difficulty": "easy", "expected": "FAIL", "en": "The results must remain confidential.", "zh": "研究结果必须公开发布。", "why": "保密与公开直接冲突。"}
+{"id": "AMB-06", "category": "ambiguity_paraphrases", "difficulty": "hard", "expected": "PASS", "en": "The update improves system robustness.", "zh": "更新增强了系统在干扰下的稳定性。", "why": "抗干扰稳定性是鲁棒性的合理表述。"}
+{"id": "ENU-09", "category": "enumeration_completeness", "difficulty": "easy", "expected": "FAIL", "en": "The system supports CPU, GPU, and TPU execution.", "zh": "系统可在 CPU 与 GPU 上运行。", "why": "中文缺 TPU。"}
+{"id": "NUM-09", "category": "numbers_and_bounds", "difficulty": "easy", "expected": "FAIL", "en": "Training accuracy reached 80%.", "zh": "训练准确率达到60%。", "why": "核心指标数值不同。"}
+{"id": "ENU-10", "category": "enumeration_completeness", "difficulty": "medium", "expected": "FAIL", "en": "The checker validates syntax, semantics, and formatting.", "zh": "检查器验证语义和排版格式。", "why": "中文缺 syntax。"}
+{"id": "NUM-10", "category": "numbers_and_bounds", "difficulty": "hard", "expected": "FAIL", "en": "The page limit is 20 pages, including references.", "zh": "页数上限20页，不计参考文献。", "why": "关键限制的适用范围相反。"}
+{"id": "ENU-11", "category": "enumeration_completeness", "difficulty": "easy", "expected": "FAIL", "en": "The analysis uses Python, NumPy, and pandas.", "zh": "分析使用 Python 与 NumPy。", "why": "中文缺 pandas。"}
+{"id": "ENU-12", "category": "enumeration_completeness", "difficulty": "medium", "expected": "FAIL", "en": "Submit both DOCX and PDF versions.", "zh": "请提交 DOCX、PDF 和 Markdown 三种版本。", "why": "中文多出 Markdown，额外关键要求也应 FAIL。"}

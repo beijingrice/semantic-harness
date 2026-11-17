@@ -1,0 +1,188 @@
+{
+  "V2-NUM-03": {
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "问卷调查持续了42天，既未延长也未缩短。",
+    "expected": "PASS",
+    "english_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "The survey ran for exactly six weeks.",
+        "evidence": "The survey ran for exactly six weeks.",
+        "id": "en_1",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      }
+    ],
+    "chinese_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "问卷调查持续了42天，既未延长也未缩短。",
+        "evidence": "问卷调查持续了42天，既未延长也未缩短。",
+        "id": "zh_1",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "问卷调查的持续时间固定为42天，不允许延长或缩短。",
+        "evidence": "问卷调查持续了42天，既未延长也未缩短。",
+        "id": "zh_2",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_1",
+          "zh_2"
+        ],
+        "relation": "equivalent",
+        "reason": "英语陈述“持续6周”与中文陈述“持续42天”在时间长度上等价（6周=42天），且两者均强调持续时间固定/不可调整，核心事实与约束条件一致。"
+      }
+    ],
+    "review": {
+      "verdict": "FAIL",
+      "reason": "The English text specifies a duration of exactly six weeks (which is 42 days), but the Chinese text states the survey lasted for 42 days without explicitly confirming that this was intended to be exactly six weeks. While the numerical equivalence holds, the explicit phrasing in English ('exactly six weeks') implies precision and intentionality that the Chinese version does not fully replicate (e.g., it could imply an approximate or coincidental alignment of 42 days).",
+      "issues": [
+        {
+          "kind": "conflict",
+          "en_paragraph_ids": [
+            "en_p1"
+          ],
+          "zh_paragraph_ids": [
+            "zh_p1"
+          ],
+          "reason": "The English text emphasizes 'exactly' (precision), while the Chinese text lacks this explicit qualifier despite matching the numerical duration. This may mislead readers about whether the duration was strictly controlled or merely coincidentally aligned."
+        }
+      ]
+    },
+    "arbitration": {
+      "verdict": "PASS",
+      "issue_kind": "none",
+      "en_paragraph_ids": [
+        "en_p1"
+      ],
+      "zh_paragraph_ids": [
+        "zh_p1"
+      ],
+      "reason": "The English text states 'exactly six weeks' which is mathematically equivalent to 42 days (6 * 7 = 42). The Chinese text states '42 days' with the qualifier '既未延长也未缩短' (neither extended nor shortened), which semantically confirms the exact duration without deviation. While the phrasing differs ('exactly six weeks' vs '42 days'), the core meaning of a fixed, precise 42-day duration is preserved in both versions. The Chinese addition of 'neither extended nor shortened' actually reinforces the 'exactly' qualifier by explicitly ruling out any variation, making the Chinese version potentially more,"
+    },
+    "dispute_recheck": {
+      "issues": [
+        {
+          "issue_index": 0,
+          "status": "refuted",
+          "basis": "other",
+          "en_paragraph_ids": [
+            "en_p1"
+          ],
+          "zh_paragraph_ids": [
+            "zh_p1"
+          ],
+          "reason": "The Chinese text ('既未延长也未缩短') explicitly negates any deviation from the stated duration (42 days), reinforcing the 'exactness' implied by 'exactly six weeks' in English. While phrasing differs, both versions convey a fixed, precise timeframe without ambiguity. The Chinese qualifier does not merely match the numeric value but actively *strengthens* the precision intent by excluding variation—an improvement over the English's implicit assumption of exactitude."
+        }
+      ],
+      "reason": "The reviewer’s concern about missing explicitness in Chinese is invalidated by the presence of a stronger negation ('既未延长也未缩短'), which not only matches the numeric equivalence but *explicitly* rules out any deviation—thereby fulfilling and even exceeding the 'exactly' qualifier's intent."
+    }
+  },
+  "C27-01": {
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "调查持续了42天，既未延长也未缩短。",
+    "expected": "PASS",
+    "english_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "The survey ran for exactly six weeks.",
+        "evidence": "The survey ran for exactly six weeks.",
+        "id": "en_1",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      }
+    ],
+    "chinese_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "调查持续了42天，既未延长也未缩短。",
+        "evidence": "调查持续了42天，既未延长也未缩短。",
+        "id": "zh_1",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "调查持续时间固定为42天，无延长或缩短。",
+        "evidence": "调查持续了42天，既未延长也未缩短。",
+        "id": "zh_2",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_1",
+          "zh_2"
+        ],
+        "relation": "equivalent",
+        "reason": "英文陈述调查持续6周，中文陈述调查持续42天且未延长或缩短，两者在事实约束上等价（6周=42天），且均强调时间固定性。"
+      }
+    ],
+    "review": {
+      "verdict": "FAIL",
+      "reason": "The English text specifies the survey duration as exactly six weeks (which is 42 days), but the Chinese text states the duration as 42 days without explicitly confirming that this corresponds to exactly six weeks. While 6 weeks ≈ 42 days, the Chinese text does not guarantee equivalence in terms of 'exactly' or precision, which could imply rounding or ambiguity.",
+      "issues": [
+        {
+          "kind": "conflict",
+          "en_paragraph_ids": [
+            "en_p1"
+          ],
+          "zh_paragraph_ids": [
+            "zh_p1"
+          ],
+          "reason": "The English text uses 'exactly,' implying strict precision (42 days without approximation), while the Chinese text lacks this explicit qualifier despite numerically matching. The absence of 'exactly' in Chinese could imply potential flexibility or ambiguity."
+        }
+      ]
+    },
+    "arbitration": {
+      "verdict": "PASS",
+      "issue_kind": "none",
+      "en_paragraph_ids": [
+        "en_p1"
+      ],
+      "zh_paragraph_ids": [
+        "zh_p1"
+      ],
+      "reason": "The English text states 'exactly six weeks' which is mathematically equivalent to 42 days (6 * 7 = 42). The Chinese text states '42 days' with the qualifier '既未延长也未缩短' (neither extended nor shortened), which semantically confirms the exact duration without deviation. The numerical equivalence is unambiguous (6 weeks = 42 days), and the Chinese qualifier '既未延长也未缩短' reinforces the exactness by negating any extension or shortening, thus preserving the 'exactly' meaning. The initial FAIL verdict incorrectly flagged a conflict based on the absence of the word 'exactly' in Chinese, ignoring that the"
+    },
+    "dispute_recheck": {
+      "issues": [
+        {
+          "issue_index": 0,
+          "status": "refuted",
+          "basis": "other",
+          "en_paragraph_ids": [
+            "en_p1"
+          ],
+          "zh_paragraph_ids": [
+            "zh_p1"
+          ],
+          "reason": "The Chinese text ('既未延长也未缩短') explicitly negates any deviation from the exact duration, reinforcing the precise equivalence of 'exactly six weeks' (42 days) in English. The absence of the word 'exactly' in Chinese is compensated by the explicit negation of extension or shortening, which mirrors the strict precision implied by 'exactly'. Both texts confirm an unambiguous 42-day duration without approximation."
+        }
+      ],
+      "reason": "The reviewer's objection conflated literal word-for-word equivalence with semantic precision. The Chinese text’s structural negation ('既未延长也未缩短') functionally replaces the English 'exactly,' ensuring no ambiguity in strict duration."
+    }
+  }
+}

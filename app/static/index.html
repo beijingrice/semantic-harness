@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>双语关键词一致性检查器</title>
+  <style>
+    :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif; color: #1f2937; background: #f4f6fa; font-synthesis: none; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { background: #111827; color: white; padding: 26px max(24px, calc((100vw - 1150px) / 2)); }
+    header h1 { font-size: 24px; letter-spacing: -.4px; margin: 0 0 9px; }
+    header p { color: #bac4d2; line-height: 1.6; margin: 0; font-size: 14px; }
+    main { max-width: 1190px; margin: 28px auto; padding: 0 20px 36px; }
+    .panel { background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px #0000000b; border-radius: 14px; padding: 23px; margin-bottom: 18px; }
+    .toolbar, .grid { display: grid; gap: 18px; grid-template-columns: 1fr 1fr; }
+    .toolbar { grid-template-columns: 1fr auto; align-items: center; }
+    .grid { margin-top: 18px; }
+    label { font-weight: 650; font-size: 14px; display: block; margin-bottom: 9px; }
+    textarea, select { width: 100%; border: 1px solid #cdd5df; border-radius: 9px; padding: 12px; color: #111827; background: #fff; font: inherit; }
+    textarea { height: 245px; resize: vertical; line-height: 1.7; font-size: 14px; }
+    textarea:focus, select:focus { outline: 2px solid #b1c7ff; border-color: #6688df; }
+    select { max-width: 480px; font-size: 13px; }
+    button { border: 0; border-radius: 9px; background: #2155d4; color: white; padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    button:hover { background: #1845b3; }
+    button:disabled { opacity: .6; cursor: progress; }
+    .soft { background: #eaf0ff; color: #2852aa; padding: 8px 12px; font-size: 12px; }
+    .soft:hover { background: #d9e5ff; }
+    .status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #667085; margin-top: 10px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #999; }
+    .dot.up { background: #22a06b; } .dot.down { background: #d34242; }
+    .muted { color: #667085; font-size: 13px; line-height: 1.7; }
+    .kicker { margin-top: 0; font-size: 16px; }
+    .verdict { font-weight: 800; font-size: 20px; margin-bottom: 10px; }
+    .pass { color: #08713f; } .fail { color: #ba2c2c; } .manual { color: #946200; }
+    .error { border: 1px solid #f3bbbb; background: #fff1f1; color: #982323; padding: 13px; border-radius: 8px; white-space: pre-wrap; }
+    .stack { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { background: #eef2f7; border: 1px solid #e2e6ec; border-radius: 9px; padding: 8px 10px; font-size: 13px; line-height: 1.55; }
+    .chip small { display: block; color: #667085; font-size: 11px; margin-top: 2px; }
+    .chip.missing { border-color: #f5bdbd; background: #fff1f1; }
+    .relation { border-top: 1px solid #eceff3; padding: 13px 0; font-size: 13px; }
+    .relation:first-child { border: 0; }
+    .tag { font-weight: 600; font-size: 11px; border-radius: 5px; padding: 3px 6px; margin-left: 6px; background: #e8edf5; }
+    .tag.plausible { color: #805800; background: #fff3d1; }
+    .tag.related_only { color: #754f13; background: #ffe7a7; }
+    .tag.conflict { color: #a02222; background: #ffe3e3; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    [hidden] { display: none !important; }
+    @media(max-width: 760px) { .grid, .toolbar, .result-grid { grid-template-columns: 1fr; } textarea { height: 190px; } header { padding: 22px; } main { padding: 0 12px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>双语关键词一致性检查器</h1>
+    <p>只验证中英文关键内容是否双向覆盖。近义、合理模糊对应视为通过；明确缺失或冲突视为不通过。</p>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="toolbar">
+        <div class="grid" style="margin-top:0;gap:14px">
+          <div><label for="model">主模型（提取 + 匹配）</label>
+            <select id="model"><option value="">正在检查本地服务…</option></select></div>
+          <div><label for="mode">检测模式</label>
+            <select id="mode"><option value="dual">双模型 + 争议仲裁</option><option value="primary">仅主模型初判（基线）</option></select></div>
+          <div><label for="verifier-model">独立复核模型</label>
+            <select id="verifier-model"><option value="">正在检查本地服务…</option></select></div>
+          <div class="status"><span id="dot" class="dot"></span><span id="status">检查连接中</span></div>
+        </div>
+        <button id="refresh" type="button" class="soft">刷新模型列表</button>
+      </div>
+      <div class="grid">
+        <div><label for="en">英文文本 English</label><textarea id="en" placeholder="Paste the English text here…">The abstract must include the research purpose, methodology, and findings.</textarea></div>
+        <div><label for="zh">中文文本 Chinese</label><textarea id="zh" placeholder="在这里粘贴中文文本…">摘要须包含研究目的、研究方法和研究结果。</textarea></div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px">
+        <span class="muted">仅初判通常 3 次调用；双模型通常 4 次。争议仲裁及证据/空提取恢复可能增加请求。</span>
+        <button id="run">开始检测</button>
+      </div>
+    </section>
+    <section id="error" class="panel" hidden><div id="error-text" class="error"></div></section>
+    <section id="result" class="panel" hidden>
+      <div id="verdict" class="verdict"></div>
+      <p id="summary" class="muted"></p>
+      <div class="result-grid">
+        <div><h3 class="kicker">英文关键内容</h3><div id="en-keys" class="stack"></div></div>
+        <div><h3 class="kicker">中文关键内容</h3><div id="zh-keys" class="stack"></div></div>
+      </div>
+      <h3 class="kicker" style="margin-top:24px">初步对应关系与依据（如有仲裁，以最终结论为准）</h3>
+      <div id="links"></div>
+      <h3 class="kicker" style="margin-top:24px">独立复核 / 争议仲裁（候选证据不等于已证实冲突）</h3>
+      <div id="review-items" class="muted"></div>
+      <p id="model-used" class="muted"></p>
+      <details style="margin:14px 0"><summary class="muted" style="cursor:pointer">执行诊断（调用阶段 / 备用提取 / 证据复核）</summary>
+        <pre id="diagnostics" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.7;color:#475467"></pre>
+      </details>
+      <button id="export" class="soft" type="button">导出 JSON 检测结果</button>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

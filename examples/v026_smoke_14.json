@@ -1,0 +1,128 @@
+[
+  {
+    "id": "NEW-01",
+    "category": "paraphrase_boundary",
+    "difficulty": "medium",
+    "en": "The study evaluates the effectiveness of the proposed system.",
+    "zh": "研究分析所提出系统的实际效果。",
+    "expected": "PASS",
+    "why": "动作措辞不同，但研究对象和效果评估内容一致"
+  },
+  {
+    "id": "NEW-02",
+    "category": "paraphrase_boundary",
+    "difficulty": "medium",
+    "en": "The report describes the major experimental findings.",
+    "zh": "报告介绍了主要实验结果。",
+    "expected": "PASS",
+    "why": "陈述性核心结果一致"
+  },
+  {
+    "id": "NEW-03",
+    "category": "normative_style_boundary",
+    "difficulty": "medium",
+    "en": "The final submission contains a cover page, an abstract and a bibliography.",
+    "zh": "最终提交材料应包含封面、摘要和参考文献目录。",
+    "expected": "PASS",
+    "why": "三项内容一致；描述性 vs 规范性文风不构成业务冲突"
+  },
+  {
+    "id": "NEW-04",
+    "category": "normative_style_boundary",
+    "difficulty": "medium",
+    "en": "The report may contain supplementary tables.",
+    "zh": "报告必须包含补充表格。",
+    "expected": "FAIL",
+    "why": "可选升级成必须是实质义务差异"
+  },
+  {
+    "id": "NEW-05",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "en": "The abstract must summarize objectives, methodology, and conclusions.",
+    "zh": "摘要应概述研究目标与研究方法。",
+    "expected": "FAIL",
+    "why": "中文遗漏 conclusions"
+  },
+  {
+    "id": "NEW-06",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "en": "The manuscript includes an introduction, methods, results, and a discussion.",
+    "zh": "论文应包含引言、方法、结果和讨论。",
+    "expected": "PASS",
+    "why": "四项完整；描述与要求文风允许不同"
+  },
+  {
+    "id": "NEW-07",
+    "category": "direction_and_roles",
+    "difficulty": "medium",
+    "en": "Dataset Alpha was used for training, whereas Dataset Beta was reserved for evaluation.",
+    "zh": "数据集Alpha用于训练，数据集Beta用于评估。",
+    "expected": "PASS",
+    "why": "两个数据集角色对应"
+  },
+  {
+    "id": "NEW-08",
+    "category": "direction_and_roles",
+    "difficulty": "medium",
+    "en": "Dataset Alpha was used for training, whereas Dataset Beta was reserved for evaluation.",
+    "zh": "数据集Beta用于训练，数据集Alpha用于评估。",
+    "expected": "FAIL",
+    "why": "数据集角色颠倒"
+  },
+  {
+    "id": "NEW-09",
+    "category": "numbers_and_bounds",
+    "difficulty": "medium",
+    "en": "The main text must be no longer than 12 pages, excluding appendices.",
+    "zh": "正文不超过12页，附录不计入。",
+    "expected": "PASS",
+    "why": "上限与附录例外均保持"
+  },
+  {
+    "id": "NEW-10",
+    "category": "numbers_and_bounds",
+    "difficulty": "medium",
+    "en": "The main text must be no longer than 12 pages, excluding appendices.",
+    "zh": "正文不得少于12页，且附录计入。",
+    "expected": "FAIL",
+    "why": "上限/下限及附录范围冲突"
+  },
+  {
+    "id": "NEW-11",
+    "category": "technical_terms",
+    "difficulty": "medium",
+    "en": "The authors used PyTorch to train the image classifier.",
+    "zh": "作者使用PyTorch训练图像分类模型。",
+    "expected": "PASS",
+    "why": "框架、任务与角色一致"
+  },
+  {
+    "id": "NEW-12",
+    "category": "technical_terms",
+    "difficulty": "medium",
+    "en": "The authors used PyTorch to train the image classifier.",
+    "zh": "作者使用TensorFlow训练图像分类模型。",
+    "expected": "FAIL",
+    "why": "框架名称不一致"
+  },
+  {
+    "id": "NEW-13",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "en": "Students are not required to attach raw data files.",
+    "zh": "学生无需附上原始数据文件。",
+    "expected": "PASS",
+    "why": "否定必要性一致"
+  },
+  {
+    "id": "NEW-14",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "en": "Students are not required to attach raw data files.",
+    "zh": "学生必须附上原始数据文件。",
+    "expected": "FAIL",
+    "why": "非必要与强制冲突"
+  }
+]

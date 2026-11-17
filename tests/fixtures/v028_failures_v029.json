@@ -1,0 +1,831 @@
+{
+  "H28-02": {
+    "en": "The calibration error must stay below 0.8 millimetres.",
+    "zh": "校准误差不得超过0.8毫米。",
+    "expected": "FAIL",
+    "predicted": "PASS",
+    "english_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "The calibration error must stay below 0.8 millimetres.",
+        "evidence": "The calibration error must stay below 0.8 millimetres.",
+        "id": "en_1",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      }
+    ],
+    "chinese_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "校准误差不得超过0.8毫米。",
+        "evidence": "校准误差不得超过0.8毫米。",
+        "id": "zh_1",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "concept",
+        "claim": "校准误差是需被限制的技术参数。",
+        "evidence": "校准误差不得超过0.8毫米。",
+        "id": "zh_2",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "entity",
+        "claim": "0.8毫米是校准误差的数值上限。",
+        "evidence": "校准误差不得超过0.8毫米。",
+        "id": "zh_3",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_1"
+        ],
+        "relation": "equivalent",
+        "reason": "英文约束与中文约束在语义、数值和模态上完全一致，均要求校准误差低于0.8毫米。"
+      }
+    ],
+    "review": {
+      "verdict": "PASS",
+      "reason": "Both texts convey the same factual requirement with identical numerical bounds (0.8 millimetres) and polarity ('must stay below' in English aligns with 'not exceed' in Chinese). There is no conflict or missing information.",
+      "issues": []
+    }
+  },
+  "H28-03": {
+    "en": "Participants were monitored for 72 hours without interruption.",
+    "zh": "参与者接受连续三天的监测。",
+    "expected": "PASS",
+    "predicted": "FAIL",
+    "english_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "Participants were monitored for 72 hours without interruption.",
+        "evidence": "Participants were monitored for 72 hours without interruption.",
+        "id": "en_1",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      }
+    ],
+    "chinese_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "参与者接受连续三天的监测。",
+        "evidence": "参与者接受连续三天的监测。",
+        "id": "zh_1",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "entity",
+        "claim": "参与者",
+        "evidence": "参与者接受连续三天的监测。",
+        "id": "zh_2",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "entity",
+        "claim": "连续三天的监测",
+        "evidence": "参与者接受连续三天的监测。",
+        "id": "zh_3",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "监测持续三天",
+        "evidence": "参与者接受连续三天的监测。",
+        "id": "zh_4",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_1",
+          "zh_4"
+        ],
+        "relation": "equivalent",
+        "reason": "英文约束'72 小时不间断监测'与中文约束'连续三天监测'在时长和连续性语义上等价，且均指向参与者监测行为。"
+      }
+    ],
+    "review": {
+      "verdict": "FAIL",
+      "reason": "The English text specifies a precise duration of **72 hours** (3 days) without interruption, while the Chinese text uses an approximate phrasing ('连续三天') that could imply **anywhere from 72 to ~74.5 hours** (accounting for partial days). This introduces ambiguity in temporal bounds, violating strict factual consistency for academic requirements.",
+      "issues": [
+        {
+          "kind": "conflict",
+          "en_evidence": "Participants were monitored for 72 hours without interruption.",
+          "zh_evidence": "参与者接受连续三天的监测。",
+          "reason": "The English text explicitly states a fixed duration of **72 hours**, while the Chinese text does not guarantee this exact bound (e.g., '连续三天' may include partial days or slight variations).",
+          "en_paragraph_ids": [
+            "en_p1"
+          ],
+          "zh_paragraph_ids": [
+            "zh_p1"
+          ]
+        }
+      ]
+    }
+  },
+  "H28-04": {
+    "en": "Tables must use a font size between 9 and 11 points, inclusive.",
+    "zh": "表格字体大小须在9至12磅之间（包含两端）。",
+    "expected": "FAIL",
+    "predicted": "FAIL",
+    "english_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "id": "en_1",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "entity",
+        "claim": "Tables are the subject of the font size requirement.",
+        "evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "id": "en_2",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "entity",
+        "claim": "Font size is the attribute being constrained.",
+        "evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "id": "en_3",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "The minimum font size for tables is 9 points.",
+        "evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "id": "en_4",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "The maximum font size for tables is 11 points.",
+        "evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "id": "en_5",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "The font size range for tables is inclusive of the boundary values.",
+        "evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+        "id": "en_6",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      }
+    ],
+    "chinese_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小须在9至12磅之间（包含两端）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_1",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小范围是9到12磅，包含9磅和12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_2",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小最小值为9磅，最大值为12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_3",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小须在9至12磅之间（包含两端）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_4",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小必须包含9磅和12磅这两个端点值。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_5",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小单位是磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_6",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小是9至12磅之间的任意值。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_7",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小下限是9磅，上限是12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_8",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小要求是9磅到12磅的闭区间。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_9",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小须在9至12磅之间（包含两端）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_10",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小必须满足9磅至12磅的数值范围。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_11",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小须在9至12磅之间（包含两端）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_12",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小须在9至12磅之间（包含两端）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_13",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小要求是9磅到12磅之间。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_14",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小范围是9磅至12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_15",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小必须介于9磅和12磅之间。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_16",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小须在9至12磅之间（包含两端）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_17",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小最小9磅，最大12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_18",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小是9到12磅的闭区间值。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_19",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小要求9至12磅（含端点）。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_20",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小范围是9磅到12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_21",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小必须在9至12磅之间。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_22",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小是9至12磅的数值。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_23",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小要求是9至12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_24",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小范围是9至12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_25",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小是9至12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_26",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "表格字体大小要求9至12磅。",
+        "evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+        "id": "zh_27",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_1"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_2"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_3"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_4"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_5"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_6"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_7"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_8"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_9"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_10"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_11"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_12"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_13"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_14"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_15"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_16"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_17"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_18"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_19"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_20"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_21"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_22"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_23"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_24"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_25"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_26"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      },
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_27"
+        ],
+        "relation": "conflict",
+        "reason": "数值范围冲突：英文要求9-11点，中文要求9-12磅。"
+      }
+    ],
+    "review": {
+      "verdict": "FAIL",
+      "reason": "The Chinese requirement explicitly allows font sizes up to 12 points, while the English requirement restricts it to a maximum of 11 points. This is a clear conflict in the upper bound of the acceptable range.",
+      "issues": [
+        {
+          "kind": "conflict",
+          "en_evidence": "Tables must use a font size between 9 and 11 points, inclusive.",
+          "zh_evidence": "表格字体大小须在9至12磅之间（包含两端）。",
+          "reason": "English permits font sizes up to **11 points**, but Chinese permits up to **12 points** (inclusive). The upper limit differs by 1 point, violating factual consistency for the maximum allowed size.",
+          "en_paragraph_ids": [
+            "en_p1"
+          ],
+          "zh_paragraph_ids": [
+            "zh_p1"
+          ]
+        }
+      ]
+    }
+  },
+  "H28-13": {
+    "en": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+    "zh": "撤回同意后应删除录音，但法律要求留存的除外。",
+    "expected": "PASS",
+    "predicted": "PASS",
+    "english_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+        "evidence": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+        "id": "en_1",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "The recording must be deleted when consent is withdrawn.",
+        "evidence": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+        "id": "en_2",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      },
+      {
+        "kind": "constraint",
+        "claim": "The recording must be retained if the law requires retention.",
+        "evidence": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+        "id": "en_3",
+        "paragraph_ids": [
+          "en_p1"
+        ]
+      }
+    ],
+    "chinese_keywords": [
+      {
+        "kind": "constraint",
+        "claim": "撤回同意后应删除录音，但法律要求留存的除外。",
+        "evidence": "撤回同意后应删除录音，但法律要求留存的除外。",
+        "id": "zh_1",
+        "paragraph_ids": [
+          "zh_p1"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "en_ids": [
+          "en_1"
+        ],
+        "zh_ids": [
+          "zh_1"
+        ],
+        "relation": "equivalent",
+        "reason": "英文陈述与中文陈述在语义、约束条件和例外情况上完全一致，均表达了撤回同意后的删除义务及法律保留的例外。"
+      },
+      {
+        "en_ids": [
+          "en_2"
+        ],
+        "zh_ids": [
+          "zh_1"
+        ],
+        "relation": "equivalent",
+        "reason": "英文陈述与中文陈述在核心约束条件上完全一致，均表达了撤回同意后的删除义务，但中文未显式包含法律保留的例外，属于部分覆盖。"
+      },
+      {
+        "en_ids": [
+          "en_3"
+        ],
+        "zh_ids": [
+          "zh_1"
+        ],
+        "relation": "equivalent",
+        "reason": "英文陈述与中文陈述在核心约束条件上完全一致，均表达了法律要求时的保留义务，但中文未显式包含撤回同意后的删除义务，属于部分覆盖。"
+      }
+    ],
+    "review": {
+      "verdict": "PASS",
+      "reason": "The Chinese text accurately reflects the English requirement with a normative phrasing ('应' aligns with 'must') and preserves all conditions (withdrawal of consent, deletion obligation, exception for legal retention). The logical structure and exclusions match perfectly.",
+      "issues": []
+    }
+  }
+}

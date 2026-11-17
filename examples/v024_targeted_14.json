@@ -1,0 +1,128 @@
+[
+  {
+    "id": "ENU-03",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The submission contains text, figures, and tables.",
+    "zh": "提交材料应包含正文文字、插图和表格。",
+    "why": "三种材料均覆盖。"
+  },
+  {
+    "id": "DIR-04",
+    "category": "direction_and_roles",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The model was trained on Dataset A and tested on Dataset B.",
+    "zh": "模型使用数据集B训练，并在数据集A上测试。",
+    "why": "训练集与测试集角色对调。"
+  },
+  {
+    "id": "DIR-06",
+    "category": "direction_and_roles",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The model was evaluated on MNIST and CIFAR-10.",
+    "zh": "模型仅在MNIST上评估，并使用CIFAR-10训练。",
+    "why": "评估对象缺失且 CIFAR-10 的作用改变。"
+  },
+  {
+    "id": "NUM-10",
+    "category": "numbers_and_bounds",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The page limit is 20 pages, including references.",
+    "zh": "页数上限20页，不计参考文献。",
+    "why": "关键限制的适用范围相反。"
+  },
+  {
+    "id": "BAS-01",
+    "category": "basic_semantics",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The abstract describes the research objective and methodology.",
+    "zh": "摘要介绍了研究目标与研究方法。",
+    "why": "目标、方法完整对应。"
+  },
+  {
+    "id": "ENU-05",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The abstract must include purpose, methods, and results.",
+    "zh": "摘要须介绍研究目的与研究方法。",
+    "why": "中文缺 results。"
+  },
+  {
+    "id": "MOD-05",
+    "category": "modality_negation",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "Attendance is mandatory for all students.",
+    "zh": "所有学生均可选择不出席。",
+    "why": "必须参加与允许缺席明显冲突。"
+  },
+  {
+    "id": "ENU-01",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The abstract must report the purpose, methods, and results.",
+    "zh": "摘要须说明研究目的、采用的方法和研究结果。",
+    "why": "三个独立概念均存在。"
+  },
+  {
+    "id": "TEC-02",
+    "category": "technical_terms",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "A convolutional neural network (CNN) is trained for classification.",
+    "zh": "训练卷积神经网络用于分类。",
+    "why": "CNN 全称/缩写对应，任务一致。"
+  },
+  {
+    "id": "MOD-02",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "No additional references are required.",
+    "zh": "无需额外补充参考文献。",
+    "why": "否定必要性一致。"
+  },
+  {
+    "id": "POL-01",
+    "category": "normative_style_boundary",
+    "difficulty": "medium",
+    "en": "The application contains a title page, an abstract, and a reference list.",
+    "zh": "申请材料应包含封面、摘要和参考文献列表。",
+    "expected": "PASS",
+    "why": "核对构成要素完整，描述性 contains 与规范性 应包含 的表达差异允许。"
+  },
+  {
+    "id": "POL-02",
+    "category": "normative_style_boundary",
+    "difficulty": "easy",
+    "en": "Students must submit the final report.",
+    "zh": "学生可自行决定是否提交最终报告。",
+    "expected": "FAIL",
+    "why": "必须提交与可选提交改变实际义务，不应被宽松规则放行。"
+  },
+  {
+    "id": "POL-03",
+    "category": "normative_style_boundary",
+    "difficulty": "medium",
+    "en": "The report must include an abstract and references.",
+    "zh": "报告应包含摘要。",
+    "expected": "FAIL",
+    "why": "中文缺少单独要求的参考文献。"
+  },
+  {
+    "id": "POL-04",
+    "category": "normative_style_boundary",
+    "difficulty": "medium",
+    "en": "The report may include an appendix.",
+    "zh": "报告必须包含附录。",
+    "expected": "FAIL",
+    "why": "可选与必需改变实际强制力。"
+  }
+]

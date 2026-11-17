@@ -1,0 +1,16 @@
+{"id":"01","en":"The abstract includes purpose, method and results.","zh":"摘要包括目的、方法和结果。","expected":"PASS","why":"三项均对应"}
+{"id":"02","en":"The abstract includes purpose, method and results.","zh":"摘要包括目的和方法。","expected":"FAIL","why":"中文缺结果"}
+{"id":"03","en":"The abstract includes purpose and method.","zh":"摘要包括目的、方法及结果。","expected":"FAIL","why":"中文多结果，双向覆盖要求"}
+{"id":"04","en":"Machine learning is used.","zh":"采用机器学习方法。","expected":"PASS","why":"标准翻译"}
+{"id":"05","en":"The research methodology is described.","zh":"介绍了研究路径。","expected":"PASS","why":"合理模糊对应（以宽松标准）"}
+{"id":"06","en":"The paper must be no longer than 20 pages.","zh":"论文不得超过20页。","expected":"PASS","why":"约束一致"}
+{"id":"07","en":"The paper must be no longer than 20 pages.","zh":"论文至少30页。","expected":"FAIL","why":"数值及方向冲突"}
+{"id":"08","en":"The algorithm uses BFS and DFS.","zh":"算法使用广度优先搜索。","expected":"FAIL","why":"中文缺 DFS"}
+{"id":"09","en":"The algorithm uses breadth-first search and depth-first search.","zh":"算法采用BFS和DFS。","expected":"PASS","why":"缩写与全称一致"}
+{"id":"10","en":"The experiment uses Python 3 and PyTorch.","zh":"实验使用Python 3与PyTorch。","expected":"PASS","why":"工具相同"}
+{"id":"11","en":"The experiment uses Python 3 and PyTorch.","zh":"实验使用Python 3与TensorFlow。","expected":"FAIL","why":"框架不一致"}
+{"id":"12","en":"No extra references are required.","zh":"需要补充参考文献。","expected":"FAIL","why":"否定与肯定冲突"}
+{"id":"13","en":"The dataset consists of images, text and audio.","zh":"数据集包含图像、文本与音频。","expected":"PASS","why":"三个模态对应"}
+{"id":"14","en":"The dataset consists of images, text and audio.","zh":"数据集包含图像和音频。","expected":"FAIL","why":"缺文本"}
+{"id":"15","en":"Students must submit the report before Friday.","zh":"学生须在周五之前交报告。","expected":"PASS","why":"时间与义务一致"}
+{"id":"16","en":"Students must submit the report before Friday.","zh":"学生可以在周五之后提交报告。","expected":"FAIL","why":"时序和义务冲突"}

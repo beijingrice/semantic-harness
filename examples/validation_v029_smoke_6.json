@@ -1,0 +1,50 @@
+[
+  {
+    "id": "V29-SMOKE-01",
+    "category": "known_regression",
+    "en": "The calibration error must stay below 0.8 millimetres.",
+    "zh": "校准误差不得超过0.8毫米。",
+    "expected": "FAIL",
+    "why": "Recorded v0.2.8 failure or long-tail case: H28-02"
+  },
+  {
+    "id": "V29-SMOKE-02",
+    "category": "known_regression",
+    "en": "Participants were monitored for 72 hours without interruption.",
+    "zh": "参与者接受连续三天的监测。",
+    "expected": "PASS",
+    "why": "Recorded v0.2.8 failure or long-tail case: H28-03"
+  },
+  {
+    "id": "V29-SMOKE-03",
+    "category": "known_regression",
+    "en": "Tables must use a font size between 9 and 11 points, inclusive.",
+    "zh": "表格字体大小须在9至12磅之间（包含两端）。",
+    "expected": "FAIL",
+    "why": "Recorded v0.2.8 failure or long-tail case: H28-04"
+  },
+  {
+    "id": "V29-SMOKE-04",
+    "category": "known_regression",
+    "en": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+    "zh": "撤回同意后应删除录音，但法律要求留存的除外。",
+    "expected": "PASS",
+    "why": "Recorded v0.2.8 failure or long-tail case: H28-13"
+  },
+  {
+    "id": "V29-SMOKE-05",
+    "category": "generic_unit_equivalence",
+    "en": "The figure must be at least 1.2 centimetres wide.",
+    "zh": "图像宽度不得低于12毫米。",
+    "expected": "PASS",
+    "why": "1.2 cm = 12 mm, inclusive minimum"
+  },
+  {
+    "id": "V29-SMOKE-06",
+    "category": "unrelated_duty_safety",
+    "en": "Participants were monitored for 72 hours without interruption. The audio files must be archived.",
+    "zh": "参与者接受连续三天的监测。录音文件可以删除。",
+    "expected": "FAIL",
+    "why": "equal time but conflicting archiving obligations"
+  }
+]

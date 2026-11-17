@@ -1,0 +1,34 @@
+[
+  {
+    "id": "R28-01",
+    "category": "protocol_and_numbers",
+    "en": "If more than 12% of required fields are missing, reject the entry.",
+    "zh": "若必填字段缺失率超过12%，应拒绝该条记录。",
+    "expected": "PASS",
+    "why": "严格超过及动作一致"
+  },
+  {
+    "id": "R28-02",
+    "category": "protocol_and_numbers",
+    "en": "The incubation lasts exactly 48 hours.",
+    "zh": "培养持续两天，既不延长也不缩短。",
+    "expected": "PASS",
+    "why": "48h=2天，精度一致"
+  },
+  {
+    "id": "R28-03",
+    "category": "negative_control",
+    "en": "Results must be published within five working days.",
+    "zh": "结果必须在六个工作日内公布。",
+    "expected": "FAIL",
+    "why": "期限五和六工作日不同"
+  },
+  {
+    "id": "R28-04",
+    "category": "permissions",
+    "en": "The lab may share anonymised metadata, but it must not share personal records.",
+    "zh": "实验室可共享匿名化元数据，但不得共享个人记录。",
+    "expected": "PASS",
+    "why": "权限与禁止一致"
+  }
+]

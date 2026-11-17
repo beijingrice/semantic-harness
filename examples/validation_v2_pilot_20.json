@@ -1,0 +1,182 @@
+[
+  {
+    "id": "V2-CRS-05",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "After interviews, participants receive a debriefing sheet. They may request the removal of their recording within seven days.",
+    "zh": "访谈结束后，参与者会收到事后说明书；研究助理可在七天内要求删除这些录音。",
+    "why": "删除请求权利人由参与者变为研究助理。"
+  },
+  {
+    "id": "V2-MOD-02",
+    "category": "modality_negation",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "Participation in the pilot is voluntary.",
+    "zh": "参加试点项目是强制性的。",
+    "why": "自愿与强制是实质义务冲突。"
+  },
+  {
+    "id": "V2-MOD-11",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The protocol must be registered before participant recruitment begins. Retrospective registration does not satisfy this condition, even if the registry later assigns an official number. A study that never recruits participants is exempt from the registration requirement.",
+    "zh": "研究方案必须在招募参与者前完成注册。事后补注册即使取得正式编号也不符合要求；完全不涉及参与者招募的研究不受此注册义务约束。",
+    "why": "事前注册、事后补注册无效以及无招募研究豁免一致。"
+  },
+  {
+    "id": "V2-ENU-05",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The methods section identifies the population, recruitment process, and sampling strategy. It also states how missing observations were handled.",
+    "zh": "方法部分介绍研究总体、招募流程及抽样方案，并说明缺失观测值的处理方式。",
+    "why": "四个独立项目均对应。"
+  },
+  {
+    "id": "V2-ROL-09",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The analyst removes duplicate records before the statistician computes the final estimates. Quality officers approve the cleaned dataset.",
+    "zh": "统计人员先计算最终估计值，分析人员随后去除重复记录；清洗后的数据由质控人员批准。",
+    "why": "清洗与最终计算的先后次序反转。"
+  },
+  {
+    "id": "V2-MOD-01",
+    "category": "modality_negation",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "Authors need not submit source code with the initial draft.",
+    "zh": "初稿提交时不要求附上源代码。",
+    "why": "不要求提交与无需提交等价，并不等于禁止提交。"
+  },
+  {
+    "id": "V2-MOD-10",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The data-management statement should describe planned storage arrangements; it does not need to name a commercial cloud provider.",
+    "zh": "数据管理声明必须写明计划的存储安排，并列出所使用商业云服务商的名称。",
+    "why": "不要求具体云服务商被改成必须列出。"
+  },
+  {
+    "id": "V2-ENU-10",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "For each experiment, provide the random seed, software version, and hardware description. Report the number of repeated runs in the same section.",
+    "zh": "每项实验须注明随机种子及硬件配置，并在同一部分说明重复运行次数。",
+    "why": "中文遗漏软件版本。"
+  },
+  {
+    "id": "V2-PAR-11",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The manuscript evaluates the practical usefulness of the prototype. Participants provide qualitative observations rather than numerical ratings.",
+    "zh": "论文考察原型在实际场景中的应用价值，受试者给出文字性质的使用反馈，而非量化评分。",
+    "why": "评价目标与定性反馈性质相同。"
+  },
+  {
+    "id": "V2-CRS-08",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The analysis script produces a summary table and a diagnostic plot. Both outputs should be archived with the version of the script that generated them.",
+    "zh": "分析脚本输出汇总表和诊断图，两项产物均应连同生成它们的脚本版本一并归档。",
+    "why": "Both outputs 涵盖表和图，脚本版本归档关系一致。"
+  },
+  {
+    "id": "V2-ROL-12",
+    "category": "roles_directions",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Hospital A supplies the imaging data, while Hospital B provides independent annotations. The central laboratory performs quality checks and returns rejected images to Hospital A. Hospital B has no authority to remove records from the master archive.",
+    "zh": "医院A负责提供影像资料，医院B负责独立标注。中央实验室进行质量审查，不合格影像退回医院A；医院B不能从总档案中删除记录。",
+    "why": "影像、标注、质检及退回对象和删除权限均相同。"
+  },
+  {
+    "id": "V2-MIX-07",
+    "category": "long_mixed_constraints",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The thesis should not exceed 35 pages from the introduction through the conclusion. References and appendices are outside this limit, but tables placed in the main chapters count toward it. Any appendix containing identifiable interview material requires restricted access and explicit approval from the data steward. The public abstract must not disclose participant identities.",
+    "zh": "从引言到结论的论文章节不得超过35页。参考文献与附录不计入，但正文各章中的表格占用页数仍需计算。含可识别访谈资料的附录须限制访问并获得数据管理员明确批准；公开摘要不能披露参与者身份。",
+    "why": "章节范围和35页限制、各类材料计数、隐私附录双条件以及摘要匿名要求一致。"
+  },
+  {
+    "id": "V2-PAR-12",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The evaluation examines whether a system remains usable under intermittent network access. It does not measure battery life.",
+    "zh": "评估重点是设备在断网期间的续航表现，不涉及网络不稳定时的可用性。",
+    "why": "测试目标从不稳定网络下可用性变为续航。"
+  },
+  {
+    "id": "V2-ENU-04",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The submission requires a cover sheet, abstract, and signed declaration.",
+    "zh": "提交内容包含封面、摘要和目录。",
+    "why": "签字声明被目录替换。"
+  },
+  {
+    "id": "V2-NUM-12",
+    "category": "numeric_ranges_units",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+    "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例超过10%，该答卷无效。缺失率分母只统计必填字段，不得把可选的人口统计项目计入。",
+    "why": "最少120、超过10%才无效、仅必填字段为分母均一致。"
+  },
+  {
+    "id": "V2-EXC-01",
+    "category": "exceptions_scope",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "References are excluded from the page count, but captions are included.",
+    "zh": "参考文献不计入页数，图注和表注则计入。",
+    "why": "参考文献排除和图表注计入一致。"
+  },
+  {
+    "id": "V2-MOD-15",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Reviewers must preserve confidential material and shall not circulate draft manuscripts outside the assigned panel. They are permitted to request additional analyses through the editor, but may not contact study participants directly. These restrictions continue after the review ends.",
+    "zh": "评审人员须对材料保密，不得向指定评审组以外传播稿件；可以经编辑提出补充分析请求，但不能直接接触研究参与者。上述限制在评审结束后继续有效。",
+    "why": "保密、沟通权限和有效期均一致。"
+  },
+  {
+    "id": "V2-NUM-06",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The main text is limited to 8,000 words, excluding the bibliography. Footnotes count toward this ceiling.",
+    "zh": "正文最多8000词，参考文献列表和脚注均不计入字数上限。",
+    "why": "与上一条构成最小差异对：脚注是否计入字数不同。"
+  },
+  {
+    "id": "V2-MIX-06",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Use a consistent author–date citation style throughout. Every work cited in the text must appear in the reference list, and every item in that list must be cited in the text. Personal communications are cited in the text only and are excluded from the list.",
+    "zh": "全文统一采用作者—年份引文格式。正文引用的文献须列入参考文献表，表内条目也要在正文引用；私人通信须同时列入文后参考文献表。",
+    "why": "私人通信只作正文引用的例外被移除。"
+  },
+  {
+    "id": "V2-EXC-12",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Primary analyses must use the preregistered outcome definition. Investigators may report exploratory outcomes separately, provided those outcomes are labelled exploratory and do not replace the primary result. Any change to the primary definition requires an approved amendment dated before the data are unblinded.",
+    "zh": "主要分析采用预注册结局定义。探索性结果须另行标注且不得取代主要结果；主要结局定义可在数据揭盲后补办修订批准。",
+    "why": "预注册定义修订必须在揭盲前获批，被改为揭盲后可补办。"
+  }
+]

@@ -1,0 +1,326 @@
+[
+  {
+    "id": "H28-01",
+    "category": "numeric_and_units",
+    "difficulty": "medium",
+    "en": "The microscope images must be at least 2400 pixels wide.",
+    "zh": "显微图像的宽度不得低于2400像素。",
+    "expected": "PASS",
+    "why": "相同最小像素宽度"
+  },
+  {
+    "id": "H28-02",
+    "category": "numeric_and_units",
+    "difficulty": "medium",
+    "en": "The calibration error must stay below 0.8 millimetres.",
+    "zh": "校准误差不得超过0.8毫米。",
+    "expected": "FAIL",
+    "why": "<0.8 与 <=0.8 边界不同"
+  },
+  {
+    "id": "H28-03",
+    "category": "numeric_and_units",
+    "difficulty": "medium",
+    "en": "Participants were monitored for 72 hours without interruption.",
+    "zh": "参与者接受连续三天的监测。",
+    "expected": "PASS",
+    "why": "72小时与连续三天等价"
+  },
+  {
+    "id": "H28-04",
+    "category": "numeric_and_units",
+    "difficulty": "medium",
+    "en": "Tables must use a font size between 9 and 11 points, inclusive.",
+    "zh": "表格字体大小须在9至12磅之间（包含两端）。",
+    "expected": "FAIL",
+    "why": "上限11与12不同"
+  },
+  {
+    "id": "H28-05",
+    "category": "numeric_and_units",
+    "difficulty": "medium",
+    "en": "No more than twelve figures may appear in the supplementary file.",
+    "zh": "补充文件中的图最多可有十二幅。",
+    "expected": "PASS",
+    "why": "<=12 同义"
+  },
+  {
+    "id": "H28-06",
+    "category": "numeric_and_units",
+    "difficulty": "medium",
+    "en": "The recording frequency must be at least 50 hertz.",
+    "zh": "记录频率必须高于50赫兹。",
+    "expected": "FAIL",
+    "why": ">=50 与 >50不同"
+  },
+  {
+    "id": "H28-07",
+    "category": "obligation_and_permission",
+    "difficulty": "medium",
+    "en": "Authors may submit a translated summary, but doing so is not required.",
+    "zh": "作者可以另附翻译摘要，但没有必须提交的要求。",
+    "expected": "PASS",
+    "why": "可选不是义务"
+  },
+  {
+    "id": "H28-08",
+    "category": "obligation_and_permission",
+    "difficulty": "medium",
+    "en": "Every dataset description shall identify the licensing terms.",
+    "zh": "数据集描述可以标明许可条款。",
+    "expected": "FAIL",
+    "why": "必须与可以不同"
+  },
+  {
+    "id": "H28-09",
+    "category": "obligation_and_permission",
+    "difficulty": "medium",
+    "en": "Removing personal identifiers before release is mandatory.",
+    "zh": "发布前必须删除个人身份标识。",
+    "expected": "PASS",
+    "why": "发布前强制去标识"
+  },
+  {
+    "id": "H28-10",
+    "category": "obligation_and_permission",
+    "difficulty": "medium",
+    "en": "Reviewers are prohibited from editing the submitted raw data.",
+    "zh": "审稿人可以修改提交的原始数据。",
+    "expected": "FAIL",
+    "why": "禁止与允许相反"
+  },
+  {
+    "id": "H28-11",
+    "category": "obligation_and_permission",
+    "difficulty": "medium",
+    "en": "The corresponding author may nominate two additional reviewers.",
+    "zh": "通讯作者有权另外推荐两名审稿人。",
+    "expected": "PASS",
+    "why": "许可及数量一致"
+  },
+  {
+    "id": "H28-12",
+    "category": "obligation_and_permission",
+    "difficulty": "medium",
+    "en": "The archive administrator must approve every access request.",
+    "zh": "访问请求一般由档案管理员审核，必要时可以不经批准。",
+    "expected": "FAIL",
+    "why": "每次必须审批与可免审批不同"
+  },
+  {
+    "id": "H28-13",
+    "category": "conditions_and_exceptions",
+    "difficulty": "medium",
+    "en": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+    "zh": "撤回同意后应删除录音，但法律要求留存的除外。",
+    "expected": "PASS",
+    "why": "删除与法定保留例外一致"
+  },
+  {
+    "id": "H28-14",
+    "category": "conditions_and_exceptions",
+    "difficulty": "medium",
+    "en": "If the device overheats, sampling stops only after the operator confirms the alarm.",
+    "zh": "设备过热时，应立即停止采样，不必等待操作员确认警报。",
+    "expected": "FAIL",
+    "why": "是否等待确认不同"
+  },
+  {
+    "id": "H28-15",
+    "category": "conditions_and_exceptions",
+    "difficulty": "medium",
+    "en": "Only if the supervisor signs the form may the sample leave the laboratory.",
+    "zh": "样品只有在导师签署表格后才能离开实验室。",
+    "expected": "PASS",
+    "why": "必要先决条件相同"
+  },
+  {
+    "id": "H28-16",
+    "category": "conditions_and_exceptions",
+    "difficulty": "medium",
+    "en": "Late revisions are accepted except when the final review has already begun.",
+    "zh": "即使最终评审已经开始，迟交的修改稿仍可接收。",
+    "expected": "FAIL",
+    "why": "例外取消"
+  },
+  {
+    "id": "H28-17",
+    "category": "conditions_and_exceptions",
+    "difficulty": "medium",
+    "en": "A backup is required whenever two consecutive checks fail.",
+    "zh": "如果连续两次检查失败，就必须创建备份。",
+    "expected": "PASS",
+    "why": "触发条件和动作一致"
+  },
+  {
+    "id": "H28-18",
+    "category": "conditions_and_exceptions",
+    "difficulty": "medium",
+    "en": "An exemption applies unless the applicant has already obtained funding.",
+    "zh": "无论申请人是否已经获得资助，都适用豁免。",
+    "expected": "FAIL",
+    "why": "已有资助的例外被取消"
+  },
+  {
+    "id": "H28-19",
+    "category": "agents_and_directions",
+    "difficulty": "medium",
+    "en": "The ethics officer sends the approval letter to the principal investigator.",
+    "zh": "伦理专员将批准函发送给项目负责人。",
+    "expected": "PASS",
+    "why": "发送者与接收者一致"
+  },
+  {
+    "id": "H28-20",
+    "category": "agents_and_directions",
+    "difficulty": "medium",
+    "en": "The laboratory provides the samples to the hospital.",
+    "zh": "医院向实验室提供样本。",
+    "expected": "FAIL",
+    "why": "供给方向颠倒"
+  },
+  {
+    "id": "H28-21",
+    "category": "agents_and_directions",
+    "difficulty": "medium",
+    "en": "Under condition A, model X had lower error than model Y; under condition B, model Y had lower error.",
+    "zh": "在条件A下模型X误差小于模型Y；条件B下则是模型Y误差更小。",
+    "expected": "PASS",
+    "why": "两条件比较方向一致"
+  },
+  {
+    "id": "H28-22",
+    "category": "agents_and_directions",
+    "difficulty": "medium",
+    "en": "The student evaluates the prototype, and the advisor reviews the resulting report.",
+    "zh": "导师评估原型，学生审阅评估报告。",
+    "expected": "FAIL",
+    "why": "角色动作互换"
+  },
+  {
+    "id": "H28-23",
+    "category": "agents_and_directions",
+    "difficulty": "medium",
+    "en": "The editor must notify authors before contacting external reviewers.",
+    "zh": "编辑应先告知作者，再联系外部审稿人。",
+    "expected": "PASS",
+    "why": "顺序与责任一致"
+  },
+  {
+    "id": "H28-24",
+    "category": "agents_and_directions",
+    "difficulty": "medium",
+    "en": "The control group showed a higher response rate than the intervention group.",
+    "zh": "干预组的响应率高于对照组。",
+    "expected": "FAIL",
+    "why": "响应率比较方向反转"
+  },
+  {
+    "id": "H28-25",
+    "category": "enumeration_coverage",
+    "difficulty": "medium",
+    "en": "The appendix must contain the survey form, the recruitment script, and the consent template.",
+    "zh": "附录必须包含调查表、招募说明稿及知情同意模板。",
+    "expected": "PASS",
+    "why": "全部三项一致"
+  },
+  {
+    "id": "H28-26",
+    "category": "enumeration_coverage",
+    "difficulty": "medium",
+    "en": "The audit log records user ID, time, action, and outcome.",
+    "zh": "审计日志记录用户编号、时间与操作。",
+    "expected": "FAIL",
+    "why": "缺少执行结果"
+  },
+  {
+    "id": "H28-27",
+    "category": "enumeration_coverage",
+    "difficulty": "medium",
+    "en": "Report the mean, median, and interquartile range for each cohort.",
+    "zh": "对每个队列报告平均值、中位数和四分位距。",
+    "expected": "PASS",
+    "why": "三种统计指标一致"
+  },
+  {
+    "id": "H28-28",
+    "category": "enumeration_coverage",
+    "difficulty": "medium",
+    "en": "The application must support English, Chinese, and Spanish.",
+    "zh": "应用必须支持英语、中文、西班牙语以及法语。",
+    "expected": "FAIL",
+    "why": "中文新增强制语言"
+  },
+  {
+    "id": "H28-29",
+    "category": "enumeration_coverage",
+    "difficulty": "medium",
+    "en": "The package includes model weights, preprocessing code, and a reproducibility guide; their order is unrestricted.",
+    "zh": "提交包包含模型权重、预处理代码及复现指南，三项可以按任意顺序排列。",
+    "expected": "PASS",
+    "why": "列举及顺序自由一致"
+  },
+  {
+    "id": "H28-30",
+    "category": "enumeration_coverage",
+    "difficulty": "medium",
+    "en": "The methods section reports recruitment, allocation, blinding, and attrition.",
+    "zh": "方法部分报告招募、分组与盲法实施，不必提及受试者流失。",
+    "expected": "FAIL",
+    "why": "遗漏并排除流失"
+  },
+  {
+    "id": "H28-31",
+    "category": "cross_paragraph_and_reference",
+    "difficulty": "medium",
+    "en": "Raw audio must be encrypted before upload.\n\nThe same encryption rule also applies to backup copies.",
+    "zh": "原始音频上传前必须加密。\n\n该加密要求同样适用于备份副本。",
+    "expected": "PASS",
+    "why": "跨段引用规则均一致"
+  },
+  {
+    "id": "H28-32",
+    "category": "cross_paragraph_and_reference",
+    "difficulty": "medium",
+    "en": "All appendices use Arabic numerals.\n\nThis rule does not apply to the bibliography.",
+    "zh": "全部附录使用阿拉伯数字编号。\n\n该规则同样适用于参考文献表。",
+    "expected": "FAIL",
+    "why": "第二段例外反转"
+  },
+  {
+    "id": "H28-33",
+    "category": "cross_paragraph_and_reference",
+    "difficulty": "medium",
+    "en": "The initial report is due on 1 March.\n\nA corrected report may be submitted within seven days after that date.",
+    "zh": "初版报告应于3月1日提交。\n\n修订报告可以在此后七天内提交。",
+    "expected": "PASS",
+    "why": "两段时间点与期限一致"
+  },
+  {
+    "id": "H28-34",
+    "category": "cross_paragraph_and_reference",
+    "difficulty": "medium",
+    "en": "The main manuscript is publicly accessible.\n\nThe supporting participant records, however, are restricted to the audit team.",
+    "zh": "论文正文可公开访问。\n\n支持性的参与者记录同样向公众开放。",
+    "expected": "FAIL",
+    "why": "第二段访问权限不同"
+  },
+  {
+    "id": "H28-35",
+    "category": "cross_paragraph_and_reference",
+    "difficulty": "medium",
+    "en": "The lead investigator approves the collection protocol.\n\nOnly after this approval may field work begin.",
+    "zh": "首席研究者审批采集方案。\n\n只有审批完成后才允许开始现场工作。",
+    "expected": "PASS",
+    "why": "跨段前置审批约束一致"
+  },
+  {
+    "id": "H28-36",
+    "category": "cross_paragraph_and_reference",
+    "difficulty": "medium",
+    "en": "The figures in Section 4 must cite the measurement source.\n\nThis requirement also applies to the figures in Section 5.",
+    "zh": "第4节的图必须标明测量来源。\n\n第5节的图无须标明测量来源。",
+    "expected": "FAIL",
+    "why": "跨段同一规则的适用范围反转"
+  }
+]

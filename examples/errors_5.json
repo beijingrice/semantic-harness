@@ -1,0 +1,47 @@
+[
+  {
+    "id": "BAS-01",
+    "category": "basic_semantics",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The abstract describes the research objective and methodology.",
+    "zh": "摘要介绍了研究目标与研究方法。",
+    "why": "目标、方法完整对应。"
+  },
+  {
+    "id": "AMB-01",
+    "category": "ambiguity_paraphrases",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The study outlines its research methodology.",
+    "zh": "文章概述了研究采取的技术路线。",
+    "why": "方法与技术路线在本场景可合理对应，宽松通过。"
+  },
+  {
+    "id": "TEC-02",
+    "category": "technical_terms",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "A convolutional neural network (CNN) is trained for classification.",
+    "zh": "训练卷积神经网络用于分类。",
+    "why": "CNN 全称/缩写对应，任务一致。"
+  },
+  {
+    "id": "MOD-02",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "No additional references are required.",
+    "zh": "无需额外补充参考文献。",
+    "why": "否定必要性一致。"
+  },
+  {
+    "id": "AMB-05",
+    "category": "ambiguity_paraphrases",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The introduction states the research objectives.",
+    "zh": "引言明确研究要完成的主要任务。",
+    "why": "研究任务与研究目标可在此上下文合理对应。"
+  }
+]

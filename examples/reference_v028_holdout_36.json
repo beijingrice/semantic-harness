@@ -1,0 +1,520 @@
+{
+  "description": "Historical live v0.2.8 extraction baseline; pre-used test set, not blind",
+  "cases": [
+    {
+      "id": "H28-01",
+      "en": "The microscope images must be at least 2400 pixels wide.",
+      "zh": "显微图像的宽度不得低于2400像素。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 22.13,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-02",
+      "en": "The calibration error must stay below 0.8 millimetres.",
+      "zh": "校准误差不得超过0.8毫米。",
+      "expected": "FAIL",
+      "predicted": "PASS",
+      "elapsed_seconds": 17.92,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-03",
+      "en": "Participants were monitored for 72 hours without interruption.",
+      "zh": "参与者接受连续三天的监测。",
+      "expected": "PASS",
+      "predicted": "FAIL",
+      "elapsed_seconds": 13.75,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-04",
+      "en": "Tables must use a font size between 9 and 11 points, inclusive.",
+      "zh": "表格字体大小须在9至12磅之间（包含两端）。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 66.33,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-05",
+      "en": "No more than twelve figures may appear in the supplementary file.",
+      "zh": "补充文件中的图最多可有十二幅。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 8.2,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-06",
+      "en": "The recording frequency must be at least 50 hertz.",
+      "zh": "记录频率必须高于50赫兹。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 12.14,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-07",
+      "en": "Authors may submit a translated summary, but doing so is not required.",
+      "zh": "作者可以另附翻译摘要，但没有必须提交的要求。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 17.4,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-08",
+      "en": "Every dataset description shall identify the licensing terms.",
+      "zh": "数据集描述可以标明许可条款。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 17.0,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-09",
+      "en": "Removing personal identifiers before release is mandatory.",
+      "zh": "发布前必须删除个人身份标识。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 26.37,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-10",
+      "en": "Reviewers are prohibited from editing the submitted raw data.",
+      "zh": "审稿人可以修改提交的原始数据。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 14.0,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-11",
+      "en": "The corresponding author may nominate two additional reviewers.",
+      "zh": "通讯作者有权另外推荐两名审稿人。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 10.8,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-12",
+      "en": "The archive administrator must approve every access request.",
+      "zh": "访问请求一般由档案管理员审核，必要时可以不经批准。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 21.94,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-13",
+      "en": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+      "zh": "撤回同意后应删除录音，但法律要求留存的除外。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 62.02,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-14",
+      "en": "If the device overheats, sampling stops only after the operator confirms the alarm.",
+      "zh": "设备过热时，应立即停止采样，不必等待操作员确认警报。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 23.42,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-15",
+      "en": "Only if the supervisor signs the form may the sample leave the laboratory.",
+      "zh": "样品只有在导师签署表格后才能离开实验室。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 25.12,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-16",
+      "en": "Late revisions are accepted except when the final review has already begun.",
+      "zh": "即使最终评审已经开始，迟交的修改稿仍可接收。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 15.06,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-17",
+      "en": "A backup is required whenever two consecutive checks fail.",
+      "zh": "如果连续两次检查失败，就必须创建备份。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 17.52,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-18",
+      "en": "An exemption applies unless the applicant has already obtained funding.",
+      "zh": "无论申请人是否已经获得资助，都适用豁免。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 15.24,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-19",
+      "en": "The ethics officer sends the approval letter to the principal investigator.",
+      "zh": "伦理专员将批准函发送给项目负责人。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 13.86,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-20",
+      "en": "The laboratory provides the samples to the hospital.",
+      "zh": "医院向实验室提供样本。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 11.75,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-21",
+      "en": "Under condition A, model X had lower error than model Y; under condition B, model Y had lower error.",
+      "zh": "在条件A下模型X误差小于模型Y；条件B下则是模型Y误差更小。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 12.38,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-22",
+      "en": "The student evaluates the prototype, and the advisor reviews the resulting report.",
+      "zh": "导师评估原型，学生审阅评估报告。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 23.21,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-23",
+      "en": "The editor must notify authors before contacting external reviewers.",
+      "zh": "编辑应先告知作者，再联系外部审稿人。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 21.0,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-24",
+      "en": "The control group showed a higher response rate than the intervention group.",
+      "zh": "干预组的响应率高于对照组。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 17.56,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-25",
+      "en": "The appendix must contain the survey form, the recruitment script, and the consent template.",
+      "zh": "附录必须包含调查表、招募说明稿及知情同意模板。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 10.82,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-26",
+      "en": "The audit log records user ID, time, action, and outcome.",
+      "zh": "审计日志记录用户编号、时间与操作。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 25.75,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-27",
+      "en": "Report the mean, median, and interquartile range for each cohort.",
+      "zh": "对每个队列报告平均值、中位数和四分位距。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 11.48,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-28",
+      "en": "The application must support English, Chinese, and Spanish.",
+      "zh": "应用必须支持英语、中文、西班牙语以及法语。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 12.6,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-29",
+      "en": "The package includes model weights, preprocessing code, and a reproducibility guide; their order is unrestricted.",
+      "zh": "提交包包含模型权重、预处理代码及复现指南，三项可以按任意顺序排列。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 11.15,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-30",
+      "en": "The methods section reports recruitment, allocation, blinding, and attrition.",
+      "zh": "方法部分报告招募、分组与盲法实施，不必提及受试者流失。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 17.08,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-31",
+      "en": "Raw audio must be encrypted before upload.\n\nThe same encryption rule also applies to backup copies.",
+      "zh": "原始音频上传前必须加密。\n\n该加密要求同样适用于备份副本。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 10.89,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-32",
+      "en": "All appendices use Arabic numerals.\n\nThis rule does not apply to the bibliography.",
+      "zh": "全部附录使用阿拉伯数字编号。\n\n该规则同样适用于参考文献表。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 12.87,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-33",
+      "en": "The initial report is due on 1 March.\n\nA corrected report may be submitted within seven days after that date.",
+      "zh": "初版报告应于3月1日提交。\n\n修订报告可以在此后七天内提交。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 12.65,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-34",
+      "en": "The main manuscript is publicly accessible.\n\nThe supporting participant records, however, are restricted to the audit team.",
+      "zh": "论文正文可公开访问。\n\n支持性的参与者记录同样向公众开放。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 12.63,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-35",
+      "en": "The lead investigator approves the collection protocol.\n\nOnly after this approval may field work begin.",
+      "zh": "首席研究者审批采集方案。\n\n只有审批完成后才允许开始现场工作。",
+      "expected": "PASS",
+      "predicted": "PASS",
+      "elapsed_seconds": 24.37,
+      "requests": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "H28-36",
+      "en": "The figures in Section 4 must cite the measurement source.\n\nThis requirement also applies to the figures in Section 5.",
+      "zh": "第4节的图必须标明测量来源。\n\n第5节的图无须标明测量来源。",
+      "expected": "FAIL",
+      "predicted": "FAIL",
+      "elapsed_seconds": 12.8,
+      "requests": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    }
+  ]
+}

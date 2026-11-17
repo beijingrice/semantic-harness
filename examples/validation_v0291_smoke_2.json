@@ -1,0 +1,18 @@
+[
+  {
+    "id": "V291-FP-01",
+    "category": "fast_path_exception",
+    "en": "When consent is withdrawn, the recording must be deleted unless the law requires retention.",
+    "zh": "撤回同意后应删除录音，但法律要求留存的除外。",
+    "expected": "PASS",
+    "why": "Recorded v0.2.8 failure or long-tail case: H28-13"
+  },
+  {
+    "id": "V291-FP-02",
+    "category": "numeric_safety",
+    "en": "The calibration error must stay below 0.8 millimetres.",
+    "zh": "校准误差不得超过0.8毫米。",
+    "expected": "FAIL",
+    "why": "Recorded v0.2.8 failure or long-tail case: H28-02"
+  }
+]

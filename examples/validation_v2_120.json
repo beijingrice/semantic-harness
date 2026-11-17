@@ -1,0 +1,1082 @@
+[
+  {
+    "id": "V2-CRS-05",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "After interviews, participants receive a debriefing sheet. They may request the removal of their recording within seven days.",
+    "zh": "访谈结束后，参与者会收到事后说明书；研究助理可在七天内要求删除这些录音。",
+    "why": "删除请求权利人由参与者变为研究助理。"
+  },
+  {
+    "id": "V2-MOD-02",
+    "category": "modality_negation",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "Participation in the pilot is voluntary.",
+    "zh": "参加试点项目是强制性的。",
+    "why": "自愿与强制是实质义务冲突。"
+  },
+  {
+    "id": "V2-MOD-11",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The protocol must be registered before participant recruitment begins. Retrospective registration does not satisfy this condition, even if the registry later assigns an official number. A study that never recruits participants is exempt from the registration requirement.",
+    "zh": "研究方案必须在招募参与者前完成注册。事后补注册即使取得正式编号也不符合要求；完全不涉及参与者招募的研究不受此注册义务约束。",
+    "why": "事前注册、事后补注册无效以及无招募研究豁免一致。"
+  },
+  {
+    "id": "V2-ENU-05",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The methods section identifies the population, recruitment process, and sampling strategy. It also states how missing observations were handled.",
+    "zh": "方法部分介绍研究总体、招募流程及抽样方案，并说明缺失观测值的处理方式。",
+    "why": "四个独立项目均对应。"
+  },
+  {
+    "id": "V2-ROL-09",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The analyst removes duplicate records before the statistician computes the final estimates. Quality officers approve the cleaned dataset.",
+    "zh": "统计人员先计算最终估计值，分析人员随后去除重复记录；清洗后的数据由质控人员批准。",
+    "why": "清洗与最终计算的先后次序反转。"
+  },
+  {
+    "id": "V2-MOD-01",
+    "category": "modality_negation",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "Authors need not submit source code with the initial draft.",
+    "zh": "初稿提交时不要求附上源代码。",
+    "why": "不要求提交与无需提交等价，并不等于禁止提交。"
+  },
+  {
+    "id": "V2-MOD-10",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The data-management statement should describe planned storage arrangements; it does not need to name a commercial cloud provider.",
+    "zh": "数据管理声明必须写明计划的存储安排，并列出所使用商业云服务商的名称。",
+    "why": "不要求具体云服务商被改成必须列出。"
+  },
+  {
+    "id": "V2-ENU-10",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "For each experiment, provide the random seed, software version, and hardware description. Report the number of repeated runs in the same section.",
+    "zh": "每项实验须注明随机种子及硬件配置，并在同一部分说明重复运行次数。",
+    "why": "中文遗漏软件版本。"
+  },
+  {
+    "id": "V2-PAR-11",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The manuscript evaluates the practical usefulness of the prototype. Participants provide qualitative observations rather than numerical ratings.",
+    "zh": "论文考察原型在实际场景中的应用价值，受试者给出文字性质的使用反馈，而非量化评分。",
+    "why": "评价目标与定性反馈性质相同。"
+  },
+  {
+    "id": "V2-CRS-08",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The analysis script produces a summary table and a diagnostic plot. Both outputs should be archived with the version of the script that generated them.",
+    "zh": "分析脚本输出汇总表和诊断图，两项产物均应连同生成它们的脚本版本一并归档。",
+    "why": "Both outputs 涵盖表和图，脚本版本归档关系一致。"
+  },
+  {
+    "id": "V2-ROL-12",
+    "category": "roles_directions",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Hospital A supplies the imaging data, while Hospital B provides independent annotations. The central laboratory performs quality checks and returns rejected images to Hospital A. Hospital B has no authority to remove records from the master archive.",
+    "zh": "医院A负责提供影像资料，医院B负责独立标注。中央实验室进行质量审查，不合格影像退回医院A；医院B不能从总档案中删除记录。",
+    "why": "影像、标注、质检及退回对象和删除权限均相同。"
+  },
+  {
+    "id": "V2-MIX-07",
+    "category": "long_mixed_constraints",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The thesis should not exceed 35 pages from the introduction through the conclusion. References and appendices are outside this limit, but tables placed in the main chapters count toward it. Any appendix containing identifiable interview material requires restricted access and explicit approval from the data steward. The public abstract must not disclose participant identities.",
+    "zh": "从引言到结论的论文章节不得超过35页。参考文献与附录不计入，但正文各章中的表格占用页数仍需计算。含可识别访谈资料的附录须限制访问并获得数据管理员明确批准；公开摘要不能披露参与者身份。",
+    "why": "章节范围和35页限制、各类材料计数、隐私附录双条件以及摘要匿名要求一致。"
+  },
+  {
+    "id": "V2-PAR-12",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The evaluation examines whether a system remains usable under intermittent network access. It does not measure battery life.",
+    "zh": "评估重点是设备在断网期间的续航表现，不涉及网络不稳定时的可用性。",
+    "why": "测试目标从不稳定网络下可用性变为续航。"
+  },
+  {
+    "id": "V2-ENU-04",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The submission requires a cover sheet, abstract, and signed declaration.",
+    "zh": "提交内容包含封面、摘要和目录。",
+    "why": "签字声明被目录替换。"
+  },
+  {
+    "id": "V2-NUM-12",
+    "category": "numeric_ranges_units",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+    "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例超过10%，该答卷无效。缺失率分母只统计必填字段，不得把可选的人口统计项目计入。",
+    "why": "最少120、超过10%才无效、仅必填字段为分母均一致。"
+  },
+  {
+    "id": "V2-EXC-01",
+    "category": "exceptions_scope",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "References are excluded from the page count, but captions are included.",
+    "zh": "参考文献不计入页数，图注和表注则计入。",
+    "why": "参考文献排除和图表注计入一致。"
+  },
+  {
+    "id": "V2-MOD-15",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Reviewers must preserve confidential material and shall not circulate draft manuscripts outside the assigned panel. They are permitted to request additional analyses through the editor, but may not contact study participants directly. These restrictions continue after the review ends.",
+    "zh": "评审人员须对材料保密，不得向指定评审组以外传播稿件；可以经编辑提出补充分析请求，但不能直接接触研究参与者。上述限制在评审结束后继续有效。",
+    "why": "保密、沟通权限和有效期均一致。"
+  },
+  {
+    "id": "V2-NUM-06",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The main text is limited to 8,000 words, excluding the bibliography. Footnotes count toward this ceiling.",
+    "zh": "正文最多8000词，参考文献列表和脚注均不计入字数上限。",
+    "why": "与上一条构成最小差异对：脚注是否计入字数不同。"
+  },
+  {
+    "id": "V2-MIX-06",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Use a consistent author–date citation style throughout. Every work cited in the text must appear in the reference list, and every item in that list must be cited in the text. Personal communications are cited in the text only and are excluded from the list.",
+    "zh": "全文统一采用作者—年份引文格式。正文引用的文献须列入参考文献表，表内条目也要在正文引用；私人通信须同时列入文后参考文献表。",
+    "why": "私人通信只作正文引用的例外被移除。"
+  },
+  {
+    "id": "V2-EXC-12",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Primary analyses must use the preregistered outcome definition. Investigators may report exploratory outcomes separately, provided those outcomes are labelled exploratory and do not replace the primary result. Any change to the primary definition requires an approved amendment dated before the data are unblinded.",
+    "zh": "主要分析采用预注册结局定义。探索性结果须另行标注且不得取代主要结果；主要结局定义可在数据揭盲后补办修订批准。",
+    "why": "预注册定义修订必须在揭盲前获批，被改为揭盲后可补办。"
+  },
+  {
+    "id": "V2-MOD-03",
+    "category": "modality_negation",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The author must not fabricate citations.",
+    "zh": "作者不得编造引用来源。",
+    "why": "明确禁止义务一致。"
+  },
+  {
+    "id": "V2-ENU-01",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The package contains a consent form, a participant sheet, and a debriefing note.",
+    "zh": "资料包内有知情同意书、参与者说明页和事后说明。",
+    "why": "三个文件类别一一对应。"
+  },
+  {
+    "id": "V2-PAR-04",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The study compares two approaches to image restoration.",
+    "zh": "该研究只评估一种图像增强方案。",
+    "why": "英文比较两个图像修复方案，中文只有一个图像增强方案。"
+  },
+  {
+    "id": "V2-ENU-07",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Every case report records the date of onset, the intervention, and the observed outcome. A separate field captures adverse events.",
+    "zh": "每份病例报告均记录发病时间、干预措施、观察到的结果，另设不良事件栏。",
+    "why": "三个主要字段和单列不良事件均齐备。"
+  },
+  {
+    "id": "V2-ROL-03",
+    "category": "roles_directions",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "Treatment A reduced the error rate more than Treatment B.",
+    "zh": "与方案B相比，方案A使错误率下降得更多。",
+    "why": "比较方向一致。"
+  },
+  {
+    "id": "V2-EXC-07",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Data acquired before consent may be used only if the review board grants a waiver. Routine anonymization alone does not create such a waiver.",
+    "zh": "签署知情同意前的数据若已完成常规匿名化，即可直接使用，无须伦理委员会批准豁免。",
+    "why": "匿名化替代伦理豁免，违反唯一准入条件。"
+  },
+  {
+    "id": "V2-PAR-08",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The appendix provides a reproducibility checklist. It does not contain the experimental results, which are reported in the main text.",
+    "zh": "附录提供可复现性核查表，并收录全部实验结果；正文仅介绍研究背景。",
+    "why": "英文规定实验结果在正文且不在附录，中文反转。"
+  },
+  {
+    "id": "V2-NUM-01",
+    "category": "numeric_ranges_units",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The figure must be at least 300 dpi.",
+    "zh": "插图分辨率不得低于每英寸300点。",
+    "why": "300 dpi 与每英寸300点数值和下界一致。"
+  },
+  {
+    "id": "V2-CRS-13",
+    "category": "cross_sentence_coreference",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The supplementary spreadsheet lists all excluded observations. For each entry, it records the exclusion reason and the date of the decision. These dates must match the audit trail. If an observation is reinstated, the reinstatement must be recorded without erasing the original exclusion record.",
+    "zh": "补充表格列出排除观测、原因及决定日期，日期须与审计记录一致。若观测值恢复纳入，可以删除原排除记录，仅保留最终状态。",
+    "why": "重新纳入时不能擦除原排除记录，与中文可删除相矛盾。"
+  },
+  {
+    "id": "V2-NUM-15",
+    "category": "numeric_ranges_units",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
+    "zh": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。",
+    "why": "与上一条构成最小差异对：封面由计入30页改为不计入。"
+  },
+  {
+    "id": "V2-NUM-11",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "For the pilot, enrol 40 to 50 participants in total. At least 15 must come from each of the two sites.",
+    "zh": "试点总共招募40到50名参与者，两处地点各至少招募10人。",
+    "why": "总人数一致但每处最少15人变为10人。"
+  },
+  {
+    "id": "V2-PAR-09",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The authors report how often the system fails and describe the circumstances associated with those failures. No causal claim is made.",
+    "zh": "研究团队统计系统出错的频次，归纳故障出现时的情境，但不据此主张存在因果关系。",
+    "why": "故障频率、发生条件及不作因果断言均一致。"
+  },
+  {
+    "id": "V2-EXC-08",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Conference abstracts may omit detailed methods, whereas full articles must provide enough detail for replication. The exemption applies only to abstracts.",
+    "zh": "会议摘要可以省略详细方法，正式论文也可采用同样的简化写法，只要列出研究目标即可。",
+    "why": "摘要专属豁免被扩大至正式论文。"
+  },
+  {
+    "id": "V2-EXC-09",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Students ordinarily submit a signed authorship declaration with the final manuscript. Joint submissions require a declaration from each student, even when the manuscript has one corresponding author. A department may waive signatures only through a written exemption issued before submission.",
+    "zh": "通常每位学生须随最终稿提交签署的作者声明。合作提交时，即使仅有一名通讯作者，每个学生仍需单独声明；仅在提交前取得院系书面豁免，才可不签字。",
+    "why": "常规签字、联合提交每人签字及书面事前豁免一致。"
+  },
+  {
+    "id": "V2-EXC-10",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Students ordinarily submit a signed authorship declaration with the final manuscript. Joint submissions require a declaration from each student, even when the manuscript has one corresponding author. A department may waive signatures only through a written exemption issued before submission.",
+    "zh": "通常最终稿须附作者声明。合作提交时，只需通讯作者签署一份即可；院系在提交前出具书面文件可允许免签。",
+    "why": "合作提交每位学生均须声明被改成仅通讯作者签署。"
+  },
+  {
+    "id": "V2-PAR-01",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The paper investigates how learners engage with online courses.",
+    "zh": "本文考察学生参与网络教学活动的方式。",
+    "why": "研究对象和研究活动对应，investigates 与考察是合理转述。"
+  },
+  {
+    "id": "V2-ENU-08",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Every case report records the date of onset, the intervention, and the observed outcome. A separate field captures adverse events.",
+    "zh": "每份病例报告均记录发病时间、干预措施及观察结果，不良事件不作单独登记。",
+    "why": "与上一条构成最小差异对：独立不良事件字段缺失。"
+  },
+  {
+    "id": "V2-NUM-13",
+    "category": "numeric_ranges_units",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
+    "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例达到10%或以上，该答卷无效。计算缺失率时只考虑必填字段。",
+    "why": "与上一条构成最小差异对：大于10%与大于等于10%边界相异。"
+  },
+  {
+    "id": "V2-NUM-02",
+    "category": "numeric_ranges_units",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The body text uses 11-point type.",
+    "zh": "正文采用12磅字号。",
+    "why": "字号 11 与 12 不一致。"
+  },
+  {
+    "id": "V2-ENU-06",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The methods section identifies the population, recruitment process, and sampling strategy. It also states how missing observations were handled.",
+    "zh": "方法部分介绍研究总体、招募流程及抽样方案，但不说明缺失观测值的处理方式。",
+    "why": "与上一条构成最小差异对：否定缺失值处理说明。"
+  },
+  {
+    "id": "V2-ROL-04",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The corresponding author submits the revision; the editor acknowledges receipt. Reviewers do not upload files on behalf of authors.",
+    "zh": "修订稿由通讯作者提交，编辑负责确认收件；评审人不代替作者上传文件。",
+    "why": "提交、确认收件及禁止代传的主体均相同。"
+  },
+  {
+    "id": "V2-MIX-08",
+    "category": "long_mixed_constraints",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The thesis should not exceed 35 pages from the introduction through the conclusion. References and appendices are outside this limit, but tables placed in the main chapters count toward it. Any appendix containing identifiable interview material requires restricted access and explicit approval from the data steward. The public abstract must not disclose participant identities.",
+    "zh": "引言至结论的章节最多35页，参考文献与附录不计入，正文表格页数计入。含可识别访谈资料的附录须获得数据管理员批准，但批准后可随论文全文公开；公开摘要不得泄露参与者身份。",
+    "why": "隐私附录必须限制访问的要求被删除，改为获批即可公开。"
+  },
+  {
+    "id": "V2-EXC-03",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+    "zh": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
+    "why": "与上一条构成最小差异对：学位项目可强制中文摘要的例外被移除。"
+  },
+  {
+    "id": "V2-EXC-06",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Data acquired before consent may be used only if the review board grants a waiver. Routine anonymization alone does not create such a waiver.",
+    "zh": "同意书签署前收集的数据，只有伦理委员会批准豁免后才能使用；仅做常规匿名化不足以视为取得豁免。",
+    "why": "事前数据可用的豁免条件和匿名化不足条件一致。"
+  },
+  {
+    "id": "V2-MIX-05",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Use a consistent author–date citation style throughout. Every work cited in the text must appear in the reference list, and every item in that list must be cited in the text. Personal communications are cited in the text only and are excluded from the list.",
+    "zh": "全文统一采用作者—年份引文格式。正文引用的文献均须列入参考文献表，表内条目也须在正文出现；私人通信仅在正文注明，不列入文后表。",
+    "why": "双向引用完整性与私人通信例外全部一致。"
+  },
+  {
+    "id": "V2-MOD-12",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The protocol must be registered before participant recruitment begins. Retrospective registration does not satisfy this condition, even if the registry later assigns an official number. A study that never recruits participants is exempt from the registration requirement.",
+    "zh": "方案原则上须在招募前注册；若招募后补注册并获得正式编号，也视为符合注册要求。无需招募参与者的研究豁免。",
+    "why": "事后取得编号仍无效被改成可接受。"
+  },
+  {
+    "id": "V2-EXC-02",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
+    "zh": "英文撰写的论文必须附英文摘要；中文摘要通常可选，但学位项目另有要求时须遵守。",
+    "why": "英语摘要强制、中文摘要默认可选及项目要求例外一致。"
+  },
+  {
+    "id": "V2-ENU-15",
+    "category": "enumeration_completeness",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "A complete ethics submission includes the study protocol, recruitment message, consent materials, and a plan for storing personal data. If interviews are recorded, attach the recording script and deletion schedule as well. Documents that are not applicable should be marked accordingly, rather than silently omitted.",
+    "zh": "伦理审查材料须包含研究方案、招募信息、知情同意材料及个人数据存储计划。如访谈需录音，还须附录音说明与删除时间安排；不适用的项目应明确标注，不得直接略去。",
+    "why": "基础四项、条件增加两项、不适用项目的标注要求全部一致。"
+  },
+  {
+    "id": "V2-ENU-18",
+    "category": "enumeration_completeness",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The results chapter must give participant counts, exclusions, primary outcomes, and uncertainty intervals. Descriptive statistics belong in tables, while interpretation belongs in the discussion. Supplementary plots may be moved to the appendix if they are cited in the results.",
+    "zh": "结果章节须交代样本人数、排除情况、主要结局以及不确定性区间。描述性统计用表格呈现，解释置于讨论部分；补充图即便未在结果中引用，也可移至附录。",
+    "why": "与上一条构成最小差异对：删除附录补充图必须被正文引用的条件。"
+  },
+  {
+    "id": "V2-ROL-05",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The corresponding author submits the revision; the editor acknowledges receipt. Reviewers do not upload files on behalf of authors.",
+    "zh": "修订稿由编辑提交，通讯作者负责确认收件；评审人不代传材料。",
+    "why": "通讯作者与编辑的提交/确认角色互换。"
+  },
+  {
+    "id": "V2-NUM-03",
+    "category": "numeric_ranges_units",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The survey ran for exactly six weeks.",
+    "zh": "问卷调查持续了42天，既未延长也未缩短。",
+    "why": "精确六周等于42天。"
+  },
+  {
+    "id": "V2-NUM-10",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "A submission is accepted when at least 18 of the 24 checklist items are satisfied. Items marked not applicable still count in the denominator.",
+    "zh": "24项检查中至少满足18项方可受理；标记为不适用的项目仍计入总数24项。",
+    "why": "阈值18/24以及不适用项计入分母一致。"
+  },
+  {
+    "id": "V2-ROL-01",
+    "category": "roles_directions",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The supervisor signs the approval form, not the student.",
+    "zh": "审批表由指导教师签署，而不是学生。",
+    "why": "签署人和被排除角色一致。"
+  },
+  {
+    "id": "V2-MOD-05",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The committee may invite an external reviewer, but doing so is not required. The reviewer must declare any conflict of interest if invited.",
+    "zh": "委员会必须邀请外部评审；若邀请，则该评审必须申报利益冲突。",
+    "why": "与上一条构成最小差异对：可选邀请升级为必须邀请。"
+  },
+  {
+    "id": "V2-ROL-06",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+    "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，新系统得分超过基线。",
+    "why": "不同数据集上的胜负方向全部一致。"
+  },
+  {
+    "id": "V2-PAR-15",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The authors analyze how a training program is implemented across three campuses. They present differences in local delivery but do not rank the campuses by effectiveness. The analysis is descriptive and excludes student-level outcome comparisons.",
+    "zh": "作者研究一项培训计划在三个校区的实施方式，比较各校区的执行差异，并根据学生成绩对三个校区的培训效果排序。",
+    "why": "中文添加英文明确排除的学生结果比较和校区效果排名。"
+  },
+  {
+    "id": "V2-MIX-02",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The abstract must be 180–250 words and should explain the question, method, and principal finding. List three to five keywords on a separate line; they do not count toward the abstract limit.",
+    "zh": "摘要须为180至250词，并说明研究问题、方法及主要发现。另起一行列出3到5个关键词；关键词计入摘要字数。",
+    "why": "与上一条构成最小差异对：关键词是否计入摘要上限不同。"
+  },
+  {
+    "id": "V2-EXC-04",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Figures may be placed in supplementary files if they are cited in the main text. Tables containing primary outcomes must remain in the manuscript.",
+    "zh": "正文已引用的图可放入补充材料；载有主要结局指标的表格必须留在论文正文中。",
+    "why": "图进入补充文件的引用条件以及主要结局表保留条件一致。"
+  },
+  {
+    "id": "V2-EXC-15",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The standard retention period is five years after publication. For records that contain identifiable health information, a longer period may be required by applicable law; the stricter period prevails. Data scheduled for deletion must not be reused for a new study without renewed authorization.",
+    "zh": "数据通常须在发表后保存三年。可识别的健康信息如受法律规定需保留更久，应适用更严格期限；已计划删除的数据，在未重新获得授权前不得用于新研究。",
+    "why": "常规保存期由发表后五年改为三年，其余条件相同。"
+  },
+  {
+    "id": "V2-ENU-12",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+    "zh": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
+    "why": "与上一条构成最小差异对：关键词位置要求反转。"
+  },
+  {
+    "id": "V2-ENU-13",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The review addresses data quality, annotation consistency, and evaluation reproducibility. These topics may be discussed in any order.",
+    "zh": "综述需要涉及数据质量、标注一致性以及评测可复现性，三者的叙述顺序不作限制。",
+    "why": "三个主题完整，顺序自由要求对应。"
+  },
+  {
+    "id": "V2-ROL-02",
+    "category": "roles_directions",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The model was fitted on Cohort A and evaluated on Cohort B.",
+    "zh": "模型使用队列B拟合，并在队列A上评估。",
+    "why": "训练与评估队列角色完全对调。"
+  },
+  {
+    "id": "V2-ENU-19",
+    "category": "enumeration_completeness",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "An archive record shall identify the project, principal investigator, collection period, and license. For restricted data, it must also state the access approver and the retention deadline. The repository does not require a public download link for restricted files.",
+    "zh": "归档记录须说明项目、项目负责人、采集期间与许可协议。限制访问的数据还应注明访问审批人及保留期限；此类文件不必提供公开下载链接。",
+    "why": "基础字段四项、限制数据额外两项及公开链接例外均完整。"
+  },
+  {
+    "id": "V2-CRS-07",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "All photographs are assigned a unique identifier. This identifier must be used when the image is cited in the results section.",
+    "zh": "每张照片都分配唯一编号。在结果章节引用图像时，可以只写图片名称而不写编号。",
+    "why": "第二句取消了应使用唯一编号的义务。"
+  },
+  {
+    "id": "V2-MOD-07",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Researchers are not obliged to release identifiable data. If they choose to share derived statistics, they shall remove direct identifiers first.",
+    "zh": "研究人员不得公开任何形式的数据；即便是已去标识的汇总统计也不允许分享。",
+    "why": "英文允许自愿分享去标识汇总统计，中文全面禁止。"
+  },
+  {
+    "id": "V2-ENU-20",
+    "category": "enumeration_completeness",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "An archive record shall identify the project, principal investigator, collection period, and license. For restricted data, it must also state the access approver and the retention deadline. The repository does not require a public download link for restricted files.",
+    "zh": "归档记录须说明项目、项目负责人、采集期间与许可协议。限制访问的数据需注明访问审批人及保留期限，并且必须提供公开下载链接。",
+    "why": "与上一条构成最小差异对：限制文件公开下载要求被反转。"
+  },
+  {
+    "id": "V2-MOD-14",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Students may consult writing assistants for language polishing. They must personally verify every citation and are prohibited from submitting invented references. Use of assistance does not remove the duty to disclose it when the department requests a declaration.",
+    "zh": "学生可用写作工具润色语言，但核实引用的责任由工具提供方承担，不必逐条自行检查。禁止虚构文献；院系要求时仍需披露工具使用。",
+    "why": "中文转移了必须由学生本人承担的引文核验义务。"
+  },
+  {
+    "id": "V2-PAR-05",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "This chapter sets out the motivation for the project. It then explains the criteria used to evaluate the proposed approach.",
+    "zh": "本章先交代开展该项目的缘由，再介绍评判所提出方案的依据。",
+    "why": "研究动机与评价标准均保留；结构和词汇不同。"
+  },
+  {
+    "id": "V2-NUM-08",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Report confidence intervals at the 95% level. Round point estimates to two decimal places unless an established disciplinary convention requires otherwise.",
+    "zh": "置信区间采用90%水平，点估计保留两位小数；如学科惯例另有规定，可按其惯例处理。",
+    "why": "与上一条构成最小差异对：置信水平95%被改为90%。"
+  },
+  {
+    "id": "V2-EXC-05",
+    "category": "exceptions_scope",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Figures may be placed in supplementary files if they are cited in the main text. Tables containing primary outcomes must remain in the manuscript.",
+    "zh": "正文已引用的图可放入补充材料；载有主要结局指标的表格也可全部移入补充文件。",
+    "why": "与上一条构成最小差异对：主要结局表不得移走被改为允许移走。"
+  },
+  {
+    "id": "V2-ROL-08",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The analyst removes duplicate records before the statistician computes the final estimates. Quality officers approve the cleaned dataset.",
+    "zh": "分析人员先清除重复记录，统计人员再计算最终估计值；清洗后的数据由质控人员批准。",
+    "why": "清洗、计算、审批主体及顺序一致。"
+  },
+  {
+    "id": "V2-CRS-06",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "All photographs are assigned a unique identifier. This identifier must be used when the image is cited in the results section.",
+    "zh": "每张照片都分配唯一编号。在结果章节引用相应图像时，必须使用这个编号。",
+    "why": "This identifier 与“这个编号”指向同一唯一编号。"
+  },
+  {
+    "id": "V2-NUM-14",
+    "category": "numeric_ranges_units",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
+    "zh": "附录最多6页，不占正文报告30页的额度。移入附录的图仍须在报告正文中引用。封面计入30页限制，参考文献列表不计入。",
+    "why": "附录上界、正文上界、图引用条件及封面/参考文献范围均相同。"
+  },
+  {
+    "id": "V2-NUM-04",
+    "category": "numeric_ranges_units",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The file size must be below 25 MB.",
+    "zh": "文件大小可以等于25 MB，但不能超过。",
+    "why": "严格小于25 MB与允许等于25 MB的边界不同。"
+  },
+  {
+    "id": "V2-CRS-11",
+    "category": "cross_sentence_coreference",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Each participating school appoints a coordinator. The coordinator collects consent forms and forwards them to the central office. That office verifies completeness before researchers receive access to anonymized responses. Schools must not retain copies of the unredacted forms after transfer.",
+    "zh": "每所参与学校指定协调员，收集并移交同意书。中心办公室核对是否齐全，研究者随后获得匿名答卷访问权；移交后学校可以保留未遮盖的表格副本供内部使用。",
+    "why": "移交后禁止保留未经遮盖副本被改为允许保留。"
+  },
+  {
+    "id": "V2-CRS-09",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The analysis script produces a summary table and a diagnostic plot. Both outputs should be archived with the version of the script that generated them.",
+    "zh": "分析脚本输出汇总表和诊断图，但只需归档汇总表及其脚本版本，诊断图不必保存。",
+    "why": "Both outputs 被限制为仅汇总表，遗漏诊断图。"
+  },
+  {
+    "id": "V2-MIX-10",
+    "category": "long_mixed_constraints",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "For multicentre work, the methods must identify the recruitment site for each participant group without publishing direct personal identifiers. The analysis must report site-specific sample sizes, but pooled estimates may be presented if the pooling procedure is explained. If one site contributes fewer than five participants, its count should be masked in the public table and made available only in the restricted audit file. All numerical totals must remain internally consistent.",
+    "zh": "多中心研究须说明招募地点且不得公开直接身份标识。分析列出各中心样本量，交代合并方法后可报告汇总估计。如果某中心少于或等于5人，公开表格须遮蔽人数，仅在受限审计文件披露；合计数保持一致。",
+    "why": "隐私遮蔽边界由少于5人变为少于或等于5人，改变阈值包含性。"
+  },
+  {
+    "id": "V2-PAR-02",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The article describes a method for reducing memory consumption.",
+    "zh": "论文提出一种提高处理器运行频率的方法。",
+    "why": "英文核心目标为减少内存占用；中文变为提高 CPU 频率。"
+  },
+  {
+    "id": "V2-NUM-05",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The main text is limited to 8,000 words, excluding the bibliography. Footnotes count toward this ceiling.",
+    "zh": "正文最多8000词，参考文献列表不计入字数，脚注则计入上限。",
+    "why": "8000词上界、参考文献排除及脚注计入三项相同。"
+  },
+  {
+    "id": "V2-CRS-03",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The report includes a data-availability statement. It must name the repository and provide a persistent identifier.",
+    "zh": "报告附数据可用性声明。论文封面须列出存储库名称与永久标识符。",
+    "why": "英文 It 指数据可用性声明，中文把字段要求转给封面。"
+  },
+  {
+    "id": "V2-CRS-14",
+    "category": "cross_sentence_coreference",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "A student may request an embargo on a thesis containing patentable results. The request must be filed before the public deposit date and approved by the graduate office. If approved, the full text remains restricted for one year, but the metadata and abstract remain public throughout that period.",
+    "zh": "论文含可申请专利的结果时，学生可申请暂缓公开；申请须在公开存档日前提出，并获研究生管理部门批准。获批后全文限制访问一年，但在此期间元数据和摘要仍向公众开放。",
+    "why": "申请人、时间、审批、全文封禁一年及摘要/元数据持续公开均一致。"
+  },
+  {
+    "id": "V2-MIX-09",
+    "category": "long_mixed_constraints",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "For multicentre work, the methods must identify the recruitment site for each participant group without publishing direct personal identifiers. The analysis must report site-specific sample sizes, but pooled estimates may be presented if the pooling procedure is explained. If one site contributes fewer than five participants, its count should be masked in the public table and made available only in the restricted audit file. All numerical totals must remain internally consistent.",
+    "zh": "多中心研究的方法部分须交代各组参与者来自哪个招募地点，但不能公布直接身份标识。分析应列出各中心样本量；若说明合并方法，也可报告汇总估计。某中心少于5名参与者时，公开表格须遮蔽其人数，只在受限审计文件中提供；所有合计数须保持内部一致。",
+    "why": "地点标识与隐私、各中心样本量、合并条件、少于5人遮蔽及总数一致均对应。"
+  },
+  {
+    "id": "V2-MOD-06",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Researchers are not obliged to release identifiable data. If they choose to share derived statistics, they shall remove direct identifiers first.",
+    "zh": "研究人员没有公开可识别个人数据的义务。如自愿分享汇总统计，应事先移除直接身份标识。",
+    "why": "不强制共享与自愿共享后的去标识要求一致。"
+  },
+  {
+    "id": "V2-CRS-02",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The report includes a data-availability statement. It must name the repository and provide a persistent identifier.",
+    "zh": "报告附数据可用性声明。该声明须列出存储库名称与永久标识符。",
+    "why": "英文 It 与中文“该声明”指向同一对象，两个必需字段完整。"
+  },
+  {
+    "id": "V2-CRS-04",
+    "category": "cross_sentence_coreference",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "After interviews, participants receive a debriefing sheet. They may request the removal of their recording within seven days.",
+    "zh": "访谈结束后，参与者会收到事后说明书；这些参与者可在七天内申请删除自己的录音。",
+    "why": "They 指参与者，删除权利及七天期限一致。"
+  },
+  {
+    "id": "V2-CRS-01",
+    "category": "cross_sentence_coreference",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "A codebook accompanies the dataset. It defines every annotation label.",
+    "zh": "数据集附有代码本，其中解释了每一种标注标签。",
+    "why": "It/其中均指代码本，解释全部标注类别。"
+  },
+  {
+    "id": "V2-NUM-09",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "A submission is accepted when at least 18 of the 24 checklist items are satisfied. Items marked not applicable still count in the denominator.",
+    "zh": "检查表24项中达到18项即符合接收条件，不适用项从总项数中扣除后重新计算通过比例。",
+    "why": "不适用项仍计入分母与扣除分母相冲突。"
+  },
+  {
+    "id": "V2-MIX-01",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The abstract must be 180–250 words and should explain the question, method, and principal finding. List three to five keywords on a separate line; they do not count toward the abstract limit.",
+    "zh": "摘要须为180至250词，并说明研究问题、方法及主要发现。另起一行列出3到5个关键词；关键词不计入摘要字数。",
+    "why": "字数范围、三项内容、关键词数量/位置及计数例外一致。"
+  },
+  {
+    "id": "V2-MIX-04",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+    "zh": "论文须提交可搜索的PDF。插图可嵌入文档，表格的可编辑源文件也只需嵌在PDF中，无须单独上传；文件名使用学号。",
+    "why": "表格可编辑源文件需单独上传被取消。"
+  },
+  {
+    "id": "V2-ROL-13",
+    "category": "roles_directions",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "During the blind review, Panel X scores methodology and Panel Y scores clarity. The coordinator combines their scores but cannot change an individual rating. Appeals are decided by a committee that includes neither scoring panel.",
+    "zh": "匿名评审中，X组负责方法质量，Y组负责表达清晰度；协调员汇总成绩但不得修改个人评分。申诉由X组成员组成的委员会裁定。",
+    "why": "申诉委员会必须独立于两组评分者，而中文包含X组成员。"
+  },
+  {
+    "id": "V2-ROL-10",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The ethics board may approve the study, but only the data custodian can authorize access to restricted records. An investigator cannot grant access to themselves.",
+    "zh": "伦理委员会可批准研究开展，但限制性记录的访问权只能由数据保管人授权；研究者不得自行批准自己访问。",
+    "why": "研究批准与数据访问授权的不同角色保持一致。"
+  },
+  {
+    "id": "V2-ENU-09",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "For each experiment, provide the random seed, software version, and hardware description. Report the number of repeated runs in the same section.",
+    "zh": "每项实验须注明随机种子、软件版本、硬件配置，并在同一部分说明重复运行的次数。",
+    "why": "四种可复现性信息均保留。"
+  },
+  {
+    "id": "V2-ENU-03",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "The figures use legends, axis labels, and units.",
+    "zh": "图表标明图例、坐标轴名称和单位。",
+    "why": "三种图表要素完整对应。"
+  },
+  {
+    "id": "V2-PAR-06",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The report summarizes feedback collected after the pilot deployment. It discusses how that feedback informed a revision of the interface.",
+    "zh": "报告汇总正式上线前收集的意见，并说明这些意见如何促使模型架构发生调整。",
+    "why": "英文强调试点部署后的界面修订；中文改为正式上线前和模型架构调整。"
+  },
+  {
+    "id": "V2-MOD-13",
+    "category": "modality_negation",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Students may consult writing assistants for language polishing. They must personally verify every citation and are prohibited from submitting invented references. Use of assistance does not remove the duty to disclose it when the department requests a declaration.",
+    "zh": "学生可借助写作工具润色语言，但须自行核实每一条引文，不得提交虚构文献。若院系要求申报辅助工具使用情况，即使只是润色也要如实披露。",
+    "why": "润色许可、核实义务、虚构引用禁令及按需披露一致。"
+  },
+  {
+    "id": "V2-MOD-08",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Late submissions will normally be rejected. An extension approved before the deadline permits submission on the revised date.",
+    "zh": "逾期材料原则上不予受理；若截止前获批准延期，则可在调整后的日期提交。",
+    "why": "一般拒收和事先获批延期例外一致。"
+  },
+  {
+    "id": "V2-ENU-11",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
+    "zh": "摘要应覆盖研究动机、方法、核心结果与贡献；关键词置于摘要下方，而不写入摘要正文。",
+    "why": "四项内容和关键词位置一致。"
+  },
+  {
+    "id": "V2-ENU-02",
+    "category": "enumeration_completeness",
+    "difficulty": "easy",
+    "expected": "FAIL",
+    "en": "The dataset includes images, captions, and bounding-box annotations.",
+    "zh": "数据集包括图像和说明文字。",
+    "why": "中文缺 bounding-box 标注。"
+  },
+  {
+    "id": "V2-CRS-12",
+    "category": "cross_sentence_coreference",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The supplementary spreadsheet lists all excluded observations. For each entry, it records the exclusion reason and the date of the decision. These dates must match the audit trail. If an observation is reinstated, the reinstatement must be recorded without erasing the original exclusion record.",
+    "zh": "补充电子表格列明全部被排除的观测值，并逐项记录排除原因及决定日期。这些日期须与审计记录吻合；如某观测值重新纳入，须另记恢复决定，不得擦除原先的排除记录。",
+    "why": "日期的指代、审计一致性及恢复时保留原记录全部对应。"
+  },
+  {
+    "id": "V2-ENU-17",
+    "category": "enumeration_completeness",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "The results chapter must give participant counts, exclusions, primary outcomes, and uncertainty intervals. Descriptive statistics belong in tables, while interpretation belongs in the discussion. Supplementary plots may be moved to the appendix if they are cited in the results.",
+    "zh": "结果章节须交代样本人数、排除情况、主要结局以及不确定性区间。描述性统计用表格呈现，结论解释置于讨论部分；补充图可移至附录，但必须在结果中引用。",
+    "why": "结果要素四项、表格与讨论分工、附录图引用条件均对应。"
+  },
+  {
+    "id": "V2-PAR-14",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "The project sought to understand obstacles to remote collaboration. Interviews were used to identify recurring themes, and survey results served only to describe the participant group. The authors avoid treating theme frequency as a measure of importance.",
+    "zh": "项目探索远程协作障碍。访谈用于归纳主题，问卷用于刻画样本构成；研究者以每个主题被提到的次数作为其重要程度的主要衡量标准。",
+    "why": "中文把英文明确否定的“主题频率衡量重要性”变成主要指标。"
+  },
+  {
+    "id": "V2-ROL-07",
+    "category": "roles_directions",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
+    "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
+    "why": "与上一条构成最小差异对：第二组数据胜负反转。"
+  },
+  {
+    "id": "V2-EXC-14",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Open-access datasets should be linked in the methods section. When legal restrictions prevent public release, authors must instead identify the access authority and describe the application route. Merely stating that data are unavailable is insufficient, unless even disclosure of the authority is legally prohibited.",
+    "zh": "开放数据集应在方法部分提供链接。若法律限制公开发布，只要声明“数据不可用”即可，不必说明访问机构或申请途径。",
+    "why": "对受限制数据，中文取消了申请机构与流程要求且扩大豁免。"
+  },
+  {
+    "id": "V2-CRS-10",
+    "category": "cross_sentence_coreference",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Each participating school appoints a coordinator. The coordinator collects consent forms and forwards them to the central office. That office verifies completeness before researchers receive access to anonymized responses. Schools must not retain copies of the unredacted forms after transfer.",
+    "zh": "每所参与学校指定一名协调员，负责收集同意书并移交中心办公室。中心办公室核对材料是否齐全，之后研究者才能访问匿名化答卷；移交后学校不得留存未经遮盖的表格副本。",
+    "why": "协调员、中心办公室与研究者依序履行职责，原件留存禁令一致。"
+  },
+  {
+    "id": "V2-ENU-14",
+    "category": "enumeration_completeness",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The review addresses data quality, annotation consistency, and evaluation reproducibility. These topics may be discussed in any order.",
+    "zh": "综述必须先讨论数据质量，再讨论标注一致性，最后讨论评测可复现性。",
+    "why": "中文擅自增加固定顺序要求。"
+  },
+  {
+    "id": "V2-PAR-03",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "easy",
+    "expected": "PASS",
+    "en": "A field survey was conducted among first-year students.",
+    "zh": "研究人员面向大一新生开展了实地问卷调查。",
+    "why": "调查对象及方法一致，句式不同。"
+  },
+  {
+    "id": "V2-PAR-10",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The study explores correlations between sleep duration and academic performance. It makes no claim that either variable causes the other.",
+    "zh": "研究证明睡眠时间直接决定学业成绩，并据此提出延长睡眠即可提高分数。",
+    "why": "从相关性分析变成明确因果结论。"
+  },
+  {
+    "id": "V2-ROL-11",
+    "category": "roles_directions",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "Hospital A supplies the imaging data, while Hospital B provides independent annotations. The central laboratory performs quality checks and returns rejected images to Hospital A. Hospital B has no authority to remove records from the master archive.",
+    "zh": "医院A提供影像，医院B提供独立标注。中央实验室执行质检并将不合格影像退回医院B；医院B无权从主档案库删除记录。",
+    "why": "质检退回对象从医院A被换成医院B。"
+  },
+  {
+    "id": "V2-ENU-16",
+    "category": "enumeration_completeness",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "A complete ethics submission includes the study protocol, recruitment message, consent materials, and a plan for storing personal data. If interviews are recorded, attach the recording script and deletion schedule as well. Documents that are not applicable should be marked accordingly, rather than silently omitted.",
+    "zh": "伦理审查材料须包含研究方案、招募信息、知情同意材料及个人数据存储计划。如访谈需录音，还须附录音说明，但无需说明录音资料的删除时间；不适用项目须明确标注。",
+    "why": "与上一条构成最小差异对：录音删除计划被省去。"
+  },
+  {
+    "id": "V2-EXC-13",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Open-access datasets should be linked in the methods section. When legal restrictions prevent public release, authors must instead identify the access authority and describe the application route. Merely stating that data are unavailable is insufficient, unless even disclosure of the authority is legally prohibited.",
+    "zh": "开放数据集应在方法部分提供访问链接。若法律限制公开发布，作者须改为说明访问审批机构及申请途径；只说数据无法获取并不充分，除非法律连该审批机构的身份都禁止披露。",
+    "why": "公开链接与法律限制替代流程、极端保密例外一致。"
+  },
+  {
+    "id": "V2-PAR-07",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "We assess whether the intervention improves reading comprehension. Changes are measured using the same assessment before and after the course.",
+    "zh": "本文关注教学干预能否提升阅读理解水平，并使用课程前后相同的测验衡量变化。",
+    "why": "干预效果、测量指标和前后使用同一测验均对应。"
+  },
+  {
+    "id": "V2-CRS-15",
+    "category": "cross_sentence_coreference",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "A student may request an embargo on a thesis containing patentable results. The request must be filed before the public deposit date and approved by the graduate office. If approved, the full text remains restricted for one year, but the metadata and abstract remain public throughout that period.",
+    "zh": "论文含可申请专利成果时，学生可在公开存档前申请暂缓公开并获批准。获批后全文限制访问一年，元数据与摘要也同时保密一年。",
+    "why": "If approved 的效力仅封禁全文，中文错误扩大至元数据与摘要。"
+  },
+  {
+    "id": "V2-ROL-15",
+    "category": "roles_directions",
+    "difficulty": "hard",
+    "expected": "FAIL",
+    "en": "In phase one, the intervention group receives training and the control group receives routine guidance. After outcome measurement, the control group may receive the same training. Results must still be attributed to the original group allocation.",
+    "zh": "第一阶段干预组接受培训，对照组接受常规指导。结局测量后，对照组可接受相同培训；分析时将其归入干预组重新计算结果。",
+    "why": "按原始分组分析被改为按后续接受培训的组别分析。"
+  },
+  {
+    "id": "V2-MOD-04",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The committee may invite an external reviewer, but doing so is not required. The reviewer must declare any conflict of interest if invited.",
+    "zh": "委员会可以邀请外部评审，但不强制邀请。若邀请，则该评审必须申报利益冲突。",
+    "why": "邀请可选、受邀时申报冲突强制，两种模态正确。"
+  },
+  {
+    "id": "V2-PAR-13",
+    "category": "paraphrase_low_overlap",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Rather than estimating the prevalence of the condition, this review maps the kinds of evidence used in earlier studies. It groups papers by design and discusses limits to their applicability. It does not pool their numerical outcomes.",
+    "zh": "这项综述不计算某疾病的流行比例，而是整理既有研究采用的证据类型，按照研究设计归类，讨论结论的适用边界；各研究的数值结果不做合并分析。",
+    "why": "证据映射而非患病率估计、按设计分类、讨论适用性、无数值合并均一致。"
+  },
+  {
+    "id": "V2-NUM-07",
+    "category": "numeric_ranges_units",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Report confidence intervals at the 95% level. Round point estimates to two decimal places unless an established disciplinary convention requires otherwise.",
+    "zh": "置信区间采用95%水平，点估计保留两位小数；如学科惯例另有规定，可按其惯例处理。",
+    "why": "置信水平、保留位数与学科惯例例外一致。"
+  },
+  {
+    "id": "V2-EXC-11",
+    "category": "exceptions_scope",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "Primary analyses must use the preregistered outcome definition. Investigators may report exploratory outcomes separately, provided those outcomes are labelled exploratory and do not replace the primary result. Any change to the primary definition requires an approved amendment dated before the data are unblinded.",
+    "zh": "主要分析须采用预注册的结局定义。探索性结果可以另行报告，但须标注其探索性质，不能替代主要结果。若要修改主要结局定义，必须在数据揭盲之前获得注明日期的修订批准。",
+    "why": "预注册主要结局、探索性结果限制及事前修订获批条件一致。"
+  },
+  {
+    "id": "V2-MIX-03",
+    "category": "long_mixed_constraints",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Submit the manuscript as a searchable PDF. Figures may be embedded, but editable source files for tables must be uploaded separately. The file name should contain the student number rather than the student’s full name.",
+    "zh": "论文须提交可搜索的PDF。插图可嵌入文档，但表格的可编辑源文件需另行上传；文件名应使用学号而非学生姓名全称。",
+    "why": "格式、插图、表格源文件与命名要求一致。"
+  },
+  {
+    "id": "V2-MOD-09",
+    "category": "modality_negation",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Late submissions will normally be rejected. An extension approved before the deadline permits submission on the revised date.",
+    "zh": "逾期材料原则上不予受理；即使截止前已经获得延期批准，也不得在调整后的日期提交。",
+    "why": "已批准延期的例外被否定。"
+  },
+  {
+    "id": "V2-ROL-14",
+    "category": "roles_directions",
+    "difficulty": "hard",
+    "expected": "PASS",
+    "en": "In phase one, the intervention group receives training and the control group receives routine guidance. After outcome measurement, the control group may receive the same training. Results must still be attributed to the original group allocation.",
+    "zh": "第一阶段干预组接受培训，对照组接受常规指导。结局测量完成后，对照组可以参加同样的培训，但分析仍按最初分组归属结果。",
+    "why": "组别的处理、交叉培训时间及原始分组分析规则一致。"
+  }
+]
