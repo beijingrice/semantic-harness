@@ -14,6 +14,7 @@
 - 配置值无效时（如 `LM_MAX_TOKENS=abc`、未知的 `LM_PIPELINE`）抛出指明变量名的 `ConfigError`：API 返回清楚的 500 错误，CLI 以退出码 2 退出。
 - OpenAI-compatible 后端在读取 `choices`、`message`、`usage` 之前先检查类型，提供商返回的结构异常时会得到 `BackendError`，不再泄出 `AttributeError`。
 - 离线测试通过 `tests/conftest.py` 与本地 `.env` 隔离。
+- 数值守卫：修复几种等价写法被误读成"恰好等于"、进而被一票否决判成 FAIL 的问题。单位后的"以上/or more/or fewer"（如"10 页以上"）、exceed、above 现在能正确识别；within、内、以内只对时间单位按上限处理；"not exceeding" 不再被误读成 `>`。
 
 **工程**
 - 加入 git 版本管理、ruff lint 配置和 GitHub Actions CI。

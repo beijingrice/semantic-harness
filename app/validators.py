@@ -133,14 +133,25 @@ _UNIT_PATTERNS: tuple[tuple[re.Pattern, str, Decimal], ...] = tuple(
 # "more than 10%" is parsed, whereas an unrelated "more" elsewhere is ignored.
 _GE = re.compile(r"(?:\b(?:no fewer than|not less than|at least|greater than or equal to|"
                  r"more than or equal to|minimum of|(?:must\s+)?not\s+(?:be\s+)?below|no lower than|must not fall below)\s*|(?:至少|不少于|不低于|不得低于|不得少于|大于等于|高于或等于)\s*)$", re.I)
-_GT = re.compile(r"(?:\b(?:more than|greater than|over|exceeding)\s*|(?:超过|高于|大于|多于)\s*)$", re.I)
-_LE = re.compile(r"(?:\b(?:no more than|not more than|at most|up to|not exceed|must not exceed|"
+_GT = re.compile(r"(?:\b(?:more than|greater than|over|exceed(?:s|ing)?|in excess of|above)\s*|"
+                 r"(?:超过|高于|大于|多于)\s*)$", re.I)
+_LE = re.compile(r"(?:\b(?:no more than|not more than|at most|up to|(?:not|never|cannot)\s+(?:to\s+)?exceed(?:s|ing)?|\w+n't\s+exceed|"
                  r"maximum of|limited to|less than or equal to|(?:must\s+)?not\s+(?:be\s+)?above|no higher than|no greater than)\s*|(?:最多|至多|不超过|不得超过|"
                  r"不高于|不得高于|上限为|小于等于)\s*)$", re.I)
 _LT = re.compile(r"(?:\b(?:less than|fewer than|under|below)\s*|(?:少于|低于|小于|不到)\s*)$", re.I)
 _EQ = re.compile(r"(?:\b(?:exactly|precisely|equal to)\s*|(?:恰好|正好|刚好|等于|固定为)\s*)$", re.I)
 _GE_SUFFIX = re.compile(r"^\s*(?:%\s*)?(?:或以上|及以上|以上|or\s+(?:higher|more)|and\s+above)", re.I)
 _LE_SUFFIX = re.compile(r"^\s*(?:%\s*)?(?:或以下|及以下|以下|or\s+(?:lower|less)|and\s+below)", re.I)
+# Bound words AFTER the unit ("10 页以上", "30 pages or more", "七天内").
+# Lowest priority in parse_quantity: any comparator before the number wins.
+_GE_AFTER_UNIT = re.compile(r"^\s*(?:或以上|及以上|以上|or\s+(?:higher|more|above|greater)|and\s+(?:above|more))", re.I)
+_LE_AFTER_UNIT = re.compile(r"^\s*(?:或以下|及以下|以下|or\s+(?:lower|less|fewer|below)|and\s+(?:below|less))", re.I)
+# "within 6 weeks" / "七天内" are upper bounds only for TIME spans. For other
+# units they often mean inclusion ("the cover page is counted within 30 pages"
+# / "封面计入30页内"), so they are not treated as bounds there.
+_TIME_DIMENSIONS = frozenset({"duration_days", "duration_years"})
+_LE_TIME = re.compile(r"\b(?:within|no later than|not later than)\s*$", re.I)
+_LE_TIME_AFTER_UNIT = re.compile(r"^\s*(?:以内|之内|内(?![容部]))")
 # Chinese may place a verb between the quantifier and number: "至少保留五天".
 # Stay within the same punctuation-delimited clause; do not use arbitrary far
 # upstream words. If multiple different operators appear, abstain.
@@ -152,11 +163,18 @@ _REMOTE_CN = (
 )
 
 
-def _unit(after: str) -> tuple[str, Decimal] | None:
+def _unit_match(after: str) -> tuple[str, Decimal, int] | None:
+    """(dimension, factor, end offset of the unit within ``after``)."""
     for rx, dimension, factor in _UNIT_PATTERNS:
-        if rx.search(after):
-            return dimension, factor
+        found = rx.search(after)
+        if found:
+            return dimension, factor, found.end()
     return None
+
+
+def _unit(after: str) -> tuple[str, Decimal] | None:
+    found = _unit_match(after)
+    return None if found is None else found[:2]
 
 
 def parse_quantity(text: str) -> Quantity | None:
@@ -170,11 +188,14 @@ def parse_quantity(text: str) -> Quantity | None:
     if len(candidates) != 1:
         return None
     match, value = candidates[0]
-    unit = _unit(text[match.end():])
-    if unit is None:
+    unit_found = _unit_match(text[match.end():])
+    if unit_found is None:
         return None
+    unit = unit_found[:2]
     prefix = text[max(0, match.start() - 80):match.start()].strip()
     suffix = text[match.end():match.end() + 45]
+    # Bound words usually follow the unit ("10 页以上", "30 pages or more").
+    after_unit = text[match.end() + unit_found[2]:match.end() + unit_found[2] + 45]
     # Approximate quantities must not be elevated into formal EXACT equivalence.
     # Keep these out of deterministic equality certificates and guard verdicts.
     if (re.search(r"\b(?:about|around|approximately|roughly|nearly|circa)\s*$|"
@@ -185,6 +206,8 @@ def parse_quantity(text: str) -> Quantity | None:
     if _GE.search(prefix) or _GE_SUFFIX.search(suffix):
         comp = ">="
     elif _LE.search(prefix) or _LE_SUFFIX.search(suffix):
+        comp = "<="
+    elif unit[0] in _TIME_DIMENSIONS and _LE_TIME.search(prefix):
         comp = "<="
     elif _GT.search(prefix):
         comp = ">"
@@ -198,6 +221,14 @@ def parse_quantity(text: str) -> Quantity | None:
             return None
         if remote:
             comp = remote.pop()
+        # Lowest priority: a bound word after the unit ("10 页以上",
+        # "30 pages or more", "七天内"). An explicit comparator before the
+        # number always wins, e.g. "少于五天内" stays "<".
+        elif _GE_AFTER_UNIT.search(after_unit):
+            comp = ">="
+        elif _LE_AFTER_UNIT.search(after_unit) or (
+                unit[0] in _TIME_DIMENSIONS and _LE_TIME_AFTER_UNIT.search(after_unit)):
+            comp = "<="
         else:
             # Declarative values ("ran for six weeks" / "持续了42天")
             # are exact reported facts, not approximate inequality bounds.
