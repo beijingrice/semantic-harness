@@ -9,7 +9,7 @@ import httpx
 import pytest
 
 from app.config import Settings
-from app.direct_pipeline import direct_numeric_conflicts
+from app.direct_pipeline import check_direct, direct_numeric_conflicts
 from app.llm import ChatClient
 from app.paragraphs import build_paragraphs
 from app.pipeline import Checker
@@ -31,12 +31,14 @@ def run_http(en, zh, responses, mode='dual'):
             'choices': [{'message': {'content': json.dumps(responses[index], ensure_ascii=False)},
                          'finish_reason': 'stop'}]})
     http = httpx.Client(transport=httpx.MockTransport(handler))
+    # LM_PIPELINE=direct was removed in v0.3.0; check_direct is still the
+    # first stage of direct_hardened, so it is exercised directly here.
     cfg = Settings(model='qwen-local', verifier_model='ministral-local',
-                   evidence_mode='paragraph', pipeline='direct', json_schema=True)
+                   evidence_mode='paragraph', json_schema=True)
     client = ChatClient(cfg, http)
     client.start_trace()
     try:
-        result = Checker(client, cfg).check(en, zh, mode=mode)
+        result = check_direct(Checker(client, cfg), en, zh, mode=mode)
         return result, calls, client.trace_snapshot()
     finally:
         client.close()

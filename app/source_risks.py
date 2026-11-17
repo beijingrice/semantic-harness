@@ -86,3 +86,62 @@ def source_risks(english: str, chinese: str) -> list[SourceRisk]:
             f'原文计入关系数量不一致（英文肯定 {en_pos}，中文肯定 {zh_pos}）；'
             '这只是漏检风险提示，并非跨语言实体配对证明。', english, chinese))
     return risks
+
+
+# --- Shared by the direct_hardened pipeline (moved from removed v0.2.11/v0.2.12 modes) ---
+
+@dataclass(frozen=True)
+class Span:
+    id: str
+    text: str
+
+
+def source_spans(text: str, prefix: str) -> list[Span]:
+    """Give selectable citations. No cross-language alignment or semantic cuts.
+
+    A full-text option is always offered. Punctuation-separated subspans are
+    OPTIONAL short cites, preserving literal bytes and the full text separately.
+    They are not provided to the primary model or interpreted as paired facts.
+    """
+    options = [Span(f'{prefix}_all', text)]
+    if len(text) > 6000:
+        return options
+    # Semicolons are citation boundaries, never required logic boundaries.
+    # Preserve punctuation as part of the verbatim span for unambiguous tracing.
+    cuts = list(re.finditer(r'(?<!\d)\.(?!\d)|[。！？!?；;\n]', text))
+    start = 0
+    for cut in cuts:
+        value = text[start:cut.end()]
+        if value.strip():
+            options.append(Span(f'{prefix}_s{len(options)}', value))
+        start = cut.end()
+    if text[start:].strip():
+        options.append(Span(f'{prefix}_s{len(options)}', text[start:]))
+    # Avoid huge evidence menus for long documents; in that case the whole
+    # paragraph is still always available for precise source-grounding.
+    if len(options) > 18:
+        return [options[0]]
+    return options
+
+
+def _source_quantitative_issue_only(english: str, chinese: str):
+    """Very narrow proof scope: one unambiguous reported quantity each side.
+
+    Existence of a certificate does NOT prove entire passage equivalence.
+    A separate focused semantic recheck must refute any alleged extra duty.
+    """
+    certificate = formal_single_quantity_equivalence(english, chinese)
+    if certificate is None:
+        return None
+    # Even a numeral equality is no proof for a second independent sentence.
+    # Trailing sentence punctuation is ignored; decimals are not sentence stops.
+    for source in (english, chinese):
+        body = source.strip().rstrip('.。!?！？')
+        if re.search(r'(?<!\d)\.(?!\d)|[。!?！？；;\n]', body):
+            return None
+    # Do not erase additional explicit obligations merely because a quantity
+    # happens to be equal on both sides. This is a *strict* safe subset.
+    extra_obligation = re.compile(
+        r"\b(?:must|shall|should|required|mandatory|may|prohibited|forbidden)\b|"
+        r"必须|须|应当|应提交|不得|不允许|禁止|除非|仅当|才可|上传|另行|同时|而且|另外|还要", re.I)
+    return certificate if not (extra_obligation.search(english) or extra_obligation.search(chinese)) else None

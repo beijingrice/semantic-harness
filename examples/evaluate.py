@@ -157,8 +157,8 @@ def main() -> None:
                         help="累计 N 个执行 ERROR 后立即停止，保留部分报告；0 表示不限制")
     parser.add_argument("--model", help="主模型 ID（覆盖 LM_MODEL）")
     parser.add_argument("--verifier-model", help="独立复核模型 ID（覆盖 LM_VERIFIER_MODEL）")
-    parser.add_argument("--pipeline", choices=("extraction", "direct", "direct_grounded", "direct_verified", "direct_questions", "direct_relations", "direct_hardened"),
-                        help="架构对照：extraction=旧流程，direct=初版直接比较，direct_grounded=v0.2.11 证据复核，direct_verified=结构化定向验证，direct_questions=固定疑点验证，direct_relations=结构化关系验证，direct_hardened=v0.2.15 稳健验证")
+    parser.add_argument("--pipeline", choices=("extraction", "direct_hardened"),
+                        help="extraction=默认的提取+匹配流程；direct_hardened=整段双模型比较+固定疑点核查（实验）")
     parser.add_argument("--mode", choices=("primary", "dual"), default="dual",
                         help="primary 只跑主模型；dual 追加独立复核和必要仲裁")
     parser.add_argument("--category", help="只运行指定类型，例：enumeration_completeness")
@@ -211,9 +211,9 @@ def main() -> None:
                              else config.extraction_fast_path,
         coverage_audit=(args.coverage_audit == "on") if args.coverage_audit else config.coverage_audit,
         atomic_refinement=(args.atomic_refinement == "on") if args.atomic_refinement else config.atomic_refinement)
-    if config.pipeline not in ("extraction", "direct", "direct_grounded", "direct_verified", "direct_questions", "direct_relations", "direct_hardened"):
-        parser.error("--pipeline 只能为 extraction、direct、direct_grounded、direct_verified 、direct_questions 、direct_relations 或 direct_hardened")
-    n_calls = (1 if args.mode == "primary" else 2) if config.pipeline in ("direct", "direct_grounded", "direct_verified", "direct_questions", "direct_relations", "direct_hardened") else (3 if args.mode == "primary" else 4)
+    if config.pipeline not in ("extraction", "direct_hardened"):
+        parser.error("LM_PIPELINE / --pipeline 只能为 extraction 或 direct_hardened")
+    n_calls = (1 if args.mode == "primary" else 2) if config.pipeline == "direct_hardened" else (3 if args.mode == "primary" else 4)
     print(f"准备评测 {len(rows)} 条样例，Pipeline={config.pipeline}，模式={args.mode}；"
           f"基础约 {len(rows)*n_calls} 次模型请求（Direct 实验模式触发定向证据复核时另计）。", flush=True)
     print(f"提取模式={config.extraction_prompt}；覆盖审计={'on' if config.coverage_audit else 'off'}；"

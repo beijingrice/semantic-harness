@@ -85,7 +85,7 @@ class Settings:
     # off: do not call /models. Useful for managed deployments.
     model_discovery: str = _str("LM_MODEL_DISCOVERY", "required", lower=True)
     generation_recovery: bool = _bool("LM_GENERATION_RECOVERY", True)
-    # v0.2.14: additionally supports experimental direct_relations.
+    # extraction (default) or direct_hardened (experimental paragraph-direct).
     pipeline: str = _str("LM_PIPELINE", "extraction", lower=True)
     # v0.2.9.2: source-only fast paths for a cohesive short clause or safe two-clause pairs.
     extraction_fast_path: bool = _bool("LM_EXTRACTION_FAST_PATH", True)

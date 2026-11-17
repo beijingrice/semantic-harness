@@ -15,11 +15,10 @@ from app.config import Settings
 from app.llm import ChatClient
 from app.models import RelationVerificationDraft
 from app.pipeline import Checker
-from app.question_direct import choose_questions
-from app.relation_direct import Question, _prove, _scalar_source_scope
-from app.verified_direct import source_spans
+from app.relation_direct import Question, _prove, _scalar_source_scope, choose_questions
+from app.source_risks import source_spans
 
-REPORT = json.loads(Path('examples/reference_v0213_questions_11.json').read_text())
+REPORT = json.loads(Path('tests/fixtures/replay_v0213_questions_11.json').read_text())
 CASES = {case['id']:case for case in REPORT['cases']}
 
 
@@ -35,7 +34,7 @@ def third_from_real(key):
             'finding':v['finding'],'reason':v['reason']}
 
 
-def run(key, third=None, pipeline='direct_relations', mode='dual'):
+def run(key, third=None, pipeline='direct_hardened', mode='dual'):
     c=CASES[key]
     pri=c['detail']['direct_primary']
     review=c['detail']['review']
@@ -60,8 +59,13 @@ def run(key, third=None, pipeline='direct_relations', mode='dual'):
         client.close()
 
 
+# v0.3.0: these replays now run through direct_hardened (direct_relations was
+# removed). Hardened exception checks require an entity-specific subject; the
+# v0.2.13-era V2-EXC-03 reply names a whole sentence, so the host abstains
+# (fail closed). The entity-subject replay of V2-EXC-03 -> FAIL is covered in
+# test_v0215_hardened.py.
 @pytest.mark.parametrize('key,expected',[
-    ('V2-NUM-15','FAIL'),('V2-NUM-13','FAIL'),('V2-EXC-03','FAIL'),
+    ('V2-NUM-15','FAIL'),('V2-NUM-13','FAIL'),('V2-EXC-03','REVIEW_REQUIRED'),
     ('V2-NUM-03','PASS'),('V2-ROL-07','FAIL')])
 def test_replay_actual_prior_model_explanations_with_new_relation_contract(key,expected):
     third=third_from_real(key)
@@ -107,7 +111,8 @@ def local_prove(key,draft,en_id=None,zh_id=None,en_source=None,zh_source=None):
 
 
 def test_event_no_is_not_a_synonym_for_difference_in_outcome():
-    for key in ('V2-NUM-15','V2-NUM-13','V2-EXC-03','V2-ROL-07'):
+    # V2-EXC-03 excluded: see the hardened exception-subject note above.
+    for key in ('V2-NUM-15','V2-NUM-13','V2-ROL-07'):
         audit=third_from_real(key)
         audit['same_event']='no'
         r,_,_=run(key,audit)
@@ -169,7 +174,8 @@ def test_scalar_equivalent_only_for_single_same_activity_no_new_duty():
 
 
 def test_false_model_equivalence_does_not_erase_source_proven_mismatch():
-    for key in ('V2-NUM-15','V2-NUM-13','V2-EXC-03','V2-ROL-07'):
+    # V2-EXC-03 excluded: see the hardened exception-subject note above.
+    for key in ('V2-NUM-15','V2-NUM-13','V2-ROL-07'):
         a=third_from_real(key)
         a.update(finding='EQUIVALENT',same_event='yes')
         r,_,_=run(key,a)
@@ -186,8 +192,3 @@ def test_invalid_task_id_one_attempt_and_fail_closed():
 def test_primary_only_high_risk_cannot_pass():
     r,req,_=run('V2-NUM-15',mode='primary')
     assert r.verdict=='REVIEW_REQUIRED' and len(req)==1
-
-
-def test_original_question_pipeline_unchanged():
-    from app.models import QuestionVerificationDraft
-    assert QuestionVerificationDraft.model_fields['same_requirement']

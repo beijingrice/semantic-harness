@@ -211,20 +211,6 @@ class CheckRequest(StrictModel):
         return value.strip()
 
 
-class QuestionVerificationDraft(StrictModel):
-    """One task chosen by the host. Operands are hypotheses checked against sources."""
-    task_id: str = Field(min_length=1, max_length=60)
-    question_type: Literal["numeric_boundary", "inclusion_exclusion", "exception_scope",
-                           "direction_reversal", "scalar_equivalence", "undetermined"]
-    same_requirement: Literal["yes", "no", "unknown"]
-    en_evidence_id: str = Field(min_length=1, max_length=30)
-    zh_evidence_id: str = Field(min_length=1, max_length=30)
-    en_value: str = Field(max_length=150)
-    zh_value: str = Field(max_length=150)
-    finding: Literal["CONFLICT", "EQUIVALENT", "UNCERTAIN"]
-    reason: str = Field(min_length=1, max_length=600)
-
-
 class RelationVerificationDraft(StrictModel):
     """v0.2.14: same_event is scope identity, NOT whether two rules agree.
 

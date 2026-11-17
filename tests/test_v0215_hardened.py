@@ -13,9 +13,9 @@ from app.relation_direct import (
     _hardened_schema, _host_anchor_direction, _numeric_symbol_unicode,
     _focus_exception_evidence,
 )
-from app.verified_direct import source_spans
+from app.source_risks import source_spans
 
-HISTORY = json.loads(Path('examples/reference_v0214_relations_11.json').read_text())
+HISTORY = json.loads(Path('tests/fixtures/replay_v0214_relations_11.json').read_text())
 CASES = {r['id']: r for r in HISTORY['cases']}
 
 

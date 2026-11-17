@@ -455,38 +455,15 @@ class Checker:
 
     def check(self, english: str, chinese: str, requested_model: str | None = None,
               requested_verifier: str | None = None, mode: str = "dual") -> CheckResult:
-        if self.settings.pipeline not in ("extraction", "direct", "direct_grounded", "direct_verified", "direct_questions", "direct_relations", "direct_hardened"):
-            raise ConfigError("LM_PIPELINE 只能为 extraction、direct、direct_grounded、direct_verified 、direct_questions 、direct_relations 或 direct_hardened")
+        if self.settings.pipeline not in ("extraction", "direct_hardened"):
+            raise ConfigError("LM_PIPELINE 只能为 extraction 或 direct_hardened"
+                              "（direct / direct_grounded / direct_verified / direct_questions / "
+                              "direct_relations 已在 v0.3.0 移除，可从 git tag v0.2.16 找回）")
         if self.settings.pipeline == "direct_hardened":
             if self.settings.evidence_mode != "paragraph":
                 raise ConfigError("Paragraph-Direct 要求 LM_EVIDENCE_MODE=paragraph")
-            from app.hardened_direct import check_hardened
+            from app.relation_direct import check_hardened
             return check_hardened(self, english, chinese, requested_model, requested_verifier, mode)
-        if self.settings.pipeline == "direct_relations":
-            if self.settings.evidence_mode != "paragraph":
-                raise ConfigError("Paragraph-Direct 要求 LM_EVIDENCE_MODE=paragraph")
-            from app.relation_direct import check_relations
-            return check_relations(self, english, chinese, requested_model, requested_verifier, mode)
-        if self.settings.pipeline == "direct_questions":
-            if self.settings.evidence_mode != "paragraph":
-                raise ConfigError("Paragraph-Direct 要求 LM_EVIDENCE_MODE=paragraph")
-            from app.question_direct import check_questions
-            return check_questions(self, english, chinese, requested_model, requested_verifier, mode)
-        if self.settings.pipeline == "direct_verified":
-            if self.settings.evidence_mode != "paragraph":
-                raise ConfigError("Paragraph-Direct 要求 LM_EVIDENCE_MODE=paragraph")
-            from app.verified_direct import check_verified
-            return check_verified(self, english, chinese, requested_model, requested_verifier, mode)
-        if self.settings.pipeline == "direct_grounded":
-            if self.settings.evidence_mode != "paragraph":
-                raise ConfigError("Paragraph-Direct 要求 LM_EVIDENCE_MODE=paragraph")
-            from app.grounded_direct import check_grounded
-            return check_grounded(self, english, chinese, requested_model, requested_verifier, mode)
-        if self.settings.pipeline == "direct":
-            if self.settings.evidence_mode != "paragraph":
-                raise ConfigError("Paragraph-Direct 要求 LM_EVIDENCE_MODE=paragraph")
-            from app.direct_pipeline import check_direct
-            return check_direct(self, english, chinese, requested_model, requested_verifier, mode)
         if self.settings.evidence_mode == "paragraph":
             from app.paragraph_pipeline import check_paragraph
             return check_paragraph(self, english, chinese, requested_model,

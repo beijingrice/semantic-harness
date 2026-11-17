@@ -18,13 +18,11 @@ from pydantic import create_model
 from dataclasses import dataclass
 
 from app.direct_pipeline import check_direct
-from app.grounded_direct import _source_quantitative_issue_only
 from app.llm import LLMError
 from app.models import GroundedEvidenceDraft, RelationVerificationDraft
-from app.source_risks import source_risks
+from app.source_risks import source_risks, source_spans, _source_quantitative_issue_only
 from app.validators import parse_quantity, numeric_tokens
 from app.source_risks import formal_single_quantity_equivalence
-from app.verified_direct import source_spans
 
 
 _SYSTEM = """You must answer EXACTLY ONE FIXED bilingual academic requirement question.
@@ -431,7 +429,7 @@ def _scalar_source_scope(english: str, chinese: str) -> bool:
 
 
 def _prove(question: Question, reply: RelationVerificationDraft, en_text: str, zh_text: str,
-           whole_en: str, whole_zh: str, english: str, chinese: str, *, hardened: bool=False) -> str:
+           whole_en: str, whole_zh: str, english: str, chinese: str) -> str:
     """Strict source checking, never conflate event identity with agreement.
 
     `same_event=no` may be a model's mistaken way of saying the rules conflict.
@@ -445,8 +443,7 @@ def _prove(question: Question, reply: RelationVerificationDraft, en_text: str, z
         if len(numeric_tokens(en_text))!=1 or len(numeric_tokens(zh_text))!=1:
             return 'REVIEW_REQUIRED'
         a,b=parse_quantity(question.en_hint),parse_quantity(question.zh_hint)
-        parser = _numeric_symbol_unicode if hardened else _numeric_symbol
-        x,y=parser(reply.en_value),parser(reply.zh_value)
+        x,y=_numeric_symbol_unicode(reply.en_value),_numeric_symbol_unicode(reply.zh_value)
         if not (a and b and x and y and a.dimension==b.dimension):
             return 'REVIEW_REQUIRED'
         if (x[0],x[1])!=(a.comparator,a.value) or (y[0],y[1])!=(b.comparator,b.value):
@@ -463,8 +460,7 @@ def _prove(question: Question, reply: RelationVerificationDraft, en_text: str, z
     if question.kind=='direction_reversal':
         if not _same_condition(en_text,zh_text):
             return 'REVIEW_REQUIRED'
-        winner_fn=_winning_actor_hardened if hardened else _winning_actor
-        a,b=winner_fn(en_text,'en'),winner_fn(zh_text,'zh')
+        a,b=_winning_actor_hardened(en_text,'en'),_winning_actor_hardened(zh_text,'zh')
         if a is None or b is None:
             return 'REVIEW_REQUIRED'
         en_named=(reply.en_subject or reply.en_value).strip().lower()
@@ -491,13 +487,14 @@ def _validate_question(a: RelationVerificationDraft, task: Question,
         raise LLMError('复核选择了不存在的原文证据 ID')
 
 
-def check_relations(checker, english: str, chinese: str, requested_model=None,
-                    requested_verifier=None, mode: str = 'dual', *, hardened: bool=False):
+def check_hardened(checker, english: str, chinese: str, requested_model=None,
+                   requested_verifier=None, mode: str = 'dual'):
+    """LM_PIPELINE=direct_hardened: full-paragraph dual judgment + host-checked fixed questions."""
     result=check_direct(checker,english,chinese,requested_model,requested_verifier,mode)
     risks=source_risks(english,chinese)
     result.grounded_risks=[f'{r.kind}: {r.detail}' for r in risks]
     if result.deterministic_issues:
-        result.diagnostics.append('direct_relations: preserve original deterministic numeric veto')
+        result.diagnostics.append('direct_hardened: preserve original deterministic numeric veto')
         return result
     first=result.direct_primary.verdict
     second=result.review.verdict if result.review else None
@@ -511,7 +508,7 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
     tasks=choose_questions(english,chinese,first,second,allegations)
     # Untriggered cases keep the exactly-two-call baseline.
     if not tasks:
-        result.diagnostics.append('direct_relations: no source risk / disagreement; preserve direct result')
+        result.diagnostics.append('direct_hardened: no source risk / disagreement; preserve direct result')
         return result
     result.verdict='REVIEW_REQUIRED'
     ens={a.id:a.text for a in source_spans(english,'en')}
@@ -532,10 +529,10 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
         target=result.verifier_model if first=='FAIL' else result.model
         try:
             answer=checker._structured(
-                'direct_hardened_verify' if hardened else 'direct_relation_verify', result.diagnostics,target, _SYSTEM,
+                'direct_hardened_verify', result.diagnostics,target, _SYSTEM,
                 json.dumps(payload,ensure_ascii=False),
-                _hardened_schema(ens,zhs) if hardened else RelationVerificationDraft,
-                'relation_verification_v0215' if hardened else 'relation_verification_v0214',
+                _hardened_schema(ens,zhs),
+                'relation_verification_v0215',
                 validate_result=lambda a: _validate_question(a,task,ens,zhs),
                 max_tokens=min(checker.settings.max_tokens,1536),max_attempts=1)
         except LLMError as ex:
@@ -543,7 +540,7 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
             # bilingual clauses may independently establish a unique mismatch.
             # This is an explicit source proof, not a fabricated model citation.
             id_problem=('证据 ID' in str(ex) or 'en_evidence_id' in str(ex) or 'zh_evidence_id' in str(ex))
-            anchor = (_host_anchor_direction(ens,zhs) if hardened and id_problem and task.kind=='direction_reversal' else None)
+            anchor = (_host_anchor_direction(ens,zhs) if id_problem and task.kind=='direction_reversal' else None)
             if anchor is not None:
                 ei,zi,e,z=anchor
                 synthetic=RelationVerificationDraft(
@@ -552,7 +549,7 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
                     en_subject='',zh_subject='',en_condition='',zh_condition='',
                     en_value='',zh_value='',finding='UNCERTAIN',
                     reason='Independent host source anchoring after invalid model evidence ID')
-                proof=_prove(task,synthetic,e,z,english,chinese,english,chinese,hardened=True)
+                proof=_prove(task,synthetic,e,z,english,chinese,english,chinese)
                 if proof=='FAIL':
                     result.verification_questions.append({
                         'task_id':task.id,'question_type':task.kind,
@@ -563,19 +560,19 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
                     result.diagnostics.append(f'direct_hardened: {task.id} recovered by source-only unique scoped proof')
                     outcome='FAIL'
                     continue
-            result.diagnostics.append(f'direct_relations: {task.id} invalid; fail closed: {ex}')
+            result.diagnostics.append(f'direct_hardened: {task.id} invalid; fail closed: {ex}')
             result.verification_questions.append({'task_id':task.id, 'outcome':'INVALID'})
             continue
         e,z=ens[answer.en_evidence_id],zhs[answer.zh_evidence_id]
         focused_ids=None
-        if hardened and task.kind=='exception_scope':
+        if task.kind=='exception_scope':
             focused_ids=_focus_exception_evidence(
                 ens,zhs,answer.en_evidence_id,answer.zh_evidence_id,
                 answer.en_subject,answer.zh_subject)
             if focused_ids is not None:
                 _,_,e,z=focused_ids
-        conclusion=(_prove(task,answer,e,z,english,chinese,english,chinese,hardened=hardened)
-                    if not (hardened and task.kind=='exception_scope' and focused_ids is None)
+        conclusion=(_prove(task,answer,e,z,english,chinese,english,chinese)
+                    if not (task.kind=='exception_scope' and focused_ids is None)
                     else 'REVIEW_REQUIRED')
         result.verification_questions.append({'task_id':task.id,'question_type':task.kind,
             'finding':answer.finding,'same_event':answer.same_event,
@@ -587,7 +584,7 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
             **({'host_evidence_id_en':focused_ids[0],
                 'host_evidence_id_zh':focused_ids[1]}
                if focused_ids else {})})
-        result.diagnostics.append(f'direct_relations: {task.id} => {conclusion} (finding={answer.finding})')
+        result.diagnostics.append(f'direct_hardened: {task.id} => {conclusion} (finding={answer.finding})')
         if len(e)<=600 and len(z)<=600:
             result.grounded_evidence_audit=GroundedEvidenceDraft(
                 status=answer.finding,en_quote=e,zh_quote=z,reason=answer.reason)
@@ -601,7 +598,7 @@ def check_relations(checker, english: str, chinese: str, requested_model=None,
        any(x.get('host_conclusion')!='PASS' for x in result.verification_questions)):
         outcome='REVIEW_REQUIRED'
     result.verdict=outcome
-    result.summary=(f'{outcome}：' + ('Hardened relation verification' if hardened else 'Relation-aware Paragraph-Direct') + '；'
+    result.summary=(f'{outcome}：' + 'Hardened relation verification' + '；'
         f'主模型 {first}；独立复核 {second}；'
         f'固定疑点 {len(tasks)} 项；逐项结果 '
         + ', '.join(f"{x['task_id']}={x.get('host_conclusion','INVALID')}" for x in result.verification_questions))
