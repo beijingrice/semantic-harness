@@ -4,7 +4,8 @@ import json
 import sys
 from pathlib import Path
 
-from app.config import Settings
+from app.backends import BackendError
+from app.config import ConfigError, Settings
 from app.llm import ChatClient, LLMError
 from app.pipeline import Checker
 
@@ -34,6 +35,9 @@ def main() -> None:
             client.close()
         print(json.dumps(result.model_dump(), ensure_ascii=False, indent=2))
         sys.exit(0 if result.verdict == "PASS" else 3 if result.verdict == "REVIEW_REQUIRED" else 1)
+    except (ConfigError, BackendError) as exc:
+        print(f"CONFIG ERROR: {exc}", file=sys.stderr)
+        sys.exit(2)
     except (OSError, LLMError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(2)

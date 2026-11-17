@@ -83,11 +83,19 @@ class OpenAIChatBackend:
             data = response.json()
             if not isinstance(data, dict):
                 raise BackendError("chat/completions: expected JSON object")
-            choice = data["choices"][0]
-            message = choice["message"]
+            choices = data.get("choices")
+            if not isinstance(choices, list) or not choices or not isinstance(choices[0], dict):
+                raise BackendError("chat/completions: choices must be a non-empty array of objects")
+            choice = choices[0]
+            message = choice.get("message")
+            if not isinstance(message, dict):
+                raise BackendError("chat/completions: choices[0].message must be an object")
+            # Validate each level's type BEFORE calling .get() on it.
             usage = data.get("usage") or {}
+            if not isinstance(usage, dict):
+                raise BackendError("chat/completions: invalid usage")
             details = usage.get("completion_tokens_details") or {}
-            if not isinstance(usage, dict) or not isinstance(details, dict):
+            if not isinstance(details, dict):
                 raise BackendError("chat/completions: invalid usage")
             content = message.get("content")
             reasoning = message.get("reasoning_content")
@@ -103,7 +111,7 @@ class OpenAIChatBackend:
                 reasoning_tokens=details.get("reasoning_tokens"),
                 http_status=response.status_code,
             )
-        except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
+        except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError, AttributeError) as exc:
             raise BackendError(f"API transport/protocol failure ({type(exc).__name__})") from exc
 
     def models(self) -> list[str] | None:

@@ -7,7 +7,7 @@ from typing import Any, Callable
 import httpx
 from pydantic import BaseModel, ValidationError
 
-from app.config import Settings
+from app.config import ConfigError, Settings
 from app.backends import (BackendConfig, BackendError, BackendResponse, LLMBackend,
                           UnsupportedNativeSchema, build_backend)
 
@@ -53,9 +53,9 @@ class ChatClient:
                  verifier_http_client: httpx.Client | None = None):
         self.settings = settings
         if settings.schema_mode not in ("legacy", "on", "off", "auto"):
-            raise ValueError("LM_SCHEMA_MODE must be legacy/on/off/auto")
+            raise ConfigError("LM_SCHEMA_MODE must be legacy/on/off/auto")
         if settings.model_discovery not in ("required", "optional", "off"):
-            raise ValueError("LM_MODEL_DISCOVERY must be required/optional/off")
+            raise ConfigError("LM_MODEL_DISCOVERY must be required/optional/off")
         self.http = http_client or httpx.Client(timeout=settings.timeout_seconds)
         self.owns_http = http_client is None
         separate = bool(settings.verifier_base_url or settings.verifier_api_key or settings.verifier_backend)

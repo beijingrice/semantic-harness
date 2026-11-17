@@ -5,7 +5,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.config import Settings
+from app.backends import BackendError
+from app.config import ConfigError, Settings
 from app.llm import ChatClient, LLMError
 from app.models import CheckRequest, CheckResult
 from app.pipeline import Checker
@@ -23,7 +24,11 @@ def home():
 @app.get("/api/status")
 def status():
     """即使没有开 LM Studio，网页也应能加载并给出可行动的错误消息。"""
-    client = ChatClient(Settings())
+    try:
+        client = ChatClient(Settings())
+    except (ConfigError, BackendError) as exc:
+        # 配置错误时页面仍可加载，并明确指出是哪项配置有问题。
+        return {"connected": False, "models": [], "error": f"配置错误：{exc}", "base_url": None}
     try:
         connected = None  # unknown is NOT the same as connected
         try:
@@ -51,9 +56,15 @@ def status():
 
 @app.post("/api/check", response_model=CheckResult)
 def check(request: CheckRequest):
-    client = ChatClient(Settings())
+    try:
+        client = ChatClient(Settings())
+    except (ConfigError, BackendError) as exc:
+        raise HTTPException(status_code=500, detail=f"配置错误：{exc}") from exc
     try:
         return Checker(client, client.settings).check(request.english, request.chinese, request.model, request.verifier_model, request.mode)
+    except ConfigError as exc:
+        # 服务端配置问题，不是模型故障，也不是业务 FAIL。
+        raise HTTPException(status_code=500, detail=f"配置错误：{exc}") from exc
     except LLMError as exc:
         # 失败不是 FAIL：HTTP 502 表示基础模型不可用/无效；不伪造业务判定。
         raise HTTPException(status_code=502, detail=str(exc)) from exc

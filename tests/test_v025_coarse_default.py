@@ -43,10 +43,12 @@ def settings(**overrides):
 
 
 def test_default_settings_are_simplified(monkeypatch):
-    # Static source default contract. Explicit overrides remain possible for A/B.
-    assert Settings.__dataclass_fields__["extraction_prompt"].default == "coarse"
-    assert Settings.__dataclass_fields__["atomic_refinement"].default is False
-    assert Settings.__dataclass_fields__["coverage_audit"].default is False
+    # Source default contract (conftest clears LM_* env, so these are the code
+    # defaults, not .env values). Explicit overrides remain possible for A/B.
+    defaults = Settings()
+    assert defaults.extraction_prompt == "coarse"
+    assert defaults.atomic_refinement is False
+    assert defaults.coverage_audit is False
     assert "DO NOT FORCE ATOMIC LIST SPLITTING" in EXTRACTION_SYSTEM_COARSE
     assert "contiguous exact" in FALLBACK_EXTRACTION_SYSTEM_COARSE
 
