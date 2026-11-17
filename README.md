@@ -5,6 +5,8 @@
 提供 Web UI、JSON API（FastAPI）和命令行三种用法；模型通过 OpenAI-compatible API 接入（本地开发用 LM Studio），也可以接自定义后端 Adapter。Prompt 中没有任何模型品牌或服务商专用指令。
 
 > **当前版本 v0.3.0。** 各版本的改动见 [CHANGELOG.md](CHANGELOG.md)，历史版本的详细说明在 [docs/history/](docs/history/)。
+>
+> 想完整了解架构、用法和工作原理，看 **[docs/architecture.md](docs/architecture.md)**。
 
 ## 判决结果的含义
 
