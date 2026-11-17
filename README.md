@@ -131,7 +131,7 @@ python -m pytest -q        # 离线测试
 ruff check .               # Lint
 ```
 
-CI（GitHub Actions）会在 Python 3.10 和 3.13 上跑 ruff 和 pytest，配置在 [.github/workflows/ci.yml](.github/workflows/ci.yml)。测试通过 `tests/conftest.py` 与本地 `.env` 隔离。
+CI（GitHub Actions）会在 Python 3.10 和 3.14 上跑 ruff 和 pytest，配置在 [.github/workflows/ci.yml](.github/workflows/ci.yml)。测试通过 `tests/conftest.py` 与本地 `.env` 隔离。
 
 ## 已知边界
 
