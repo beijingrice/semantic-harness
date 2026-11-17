@@ -15,7 +15,7 @@ from app.config import Settings
 from app.llm import ChatClient
 from app.models import RelationVerificationDraft
 from app.pipeline import Checker
-from app.relation_direct import Question, _prove, _scalar_source_scope, choose_questions
+from app.relation_direct import _prove, _scalar_source_scope, choose_questions
 from app.source_risks import source_spans
 
 REPORT = json.loads(Path('tests/fixtures/replay_v0213_questions_11.json').read_text())

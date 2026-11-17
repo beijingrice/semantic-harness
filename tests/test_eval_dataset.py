@@ -6,7 +6,6 @@ import pytest
 
 from examples.evaluate import load_cases, summarize
 
-
 CASES_DIR = Path(__file__).resolve().parents[1] / 'examples'
 
 

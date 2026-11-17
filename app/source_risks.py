@@ -9,7 +9,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 
-from app.validators import parse_quantity, numeric_tokens, Quantity
+from app.validators import Quantity, numeric_tokens, parse_quantity
 
 _SENTENCE = re.compile(r"(?<!\d)\.(?!\d)|[。！？!?；;\n]+")
 _EN_COUNT_POS = re.compile(r"\b(?:is|are|was|were|be|being)\s+included\b|\bcounted\s+(?:in|towards|within)\b", re.I)

@@ -7,17 +7,21 @@ import json
 from pathlib import Path
 
 import pytest
+from test_v027_paragraph_grounding import Fake, arb, config, extract
 
-from app.dispute_resolution import numeric_equivalence_certificates, narrow_exactness_refutation
-from app.models import (KeyUnit, Link, MatchDraft, ParagraphExtractedDraft,
-                        ParagraphArbitrationDraft, ParagraphDisputeRecheckDraft,
-                        ParagraphReviewDraft)
+from app.dispute_resolution import narrow_exactness_refutation, numeric_equivalence_certificates
+from app.models import (
+    KeyUnit,
+    Link,
+    MatchDraft,
+    ParagraphDisputeRecheckDraft,
+    ParagraphExtractedDraft,
+    ParagraphReviewDraft,
+)
 from app.paragraph_pipeline import extract_paragraph
 from app.paragraphs import build_paragraphs
 from app.pipeline import Checker
-from app.validators import (parse_quantity, parse_range, clear_numeric_conflicts,
-                            source_isolated_quantity_conflicts)
-from test_v027_paragraph_grounding import Fake, config, extract, match, review, arb
+from app.validators import clear_numeric_conflicts, parse_range, source_isolated_quantity_conflicts
 
 SAMPLES = json.loads((Path(__file__).parent / 'fixtures/v028_failures_v029.json').read_text())
 
@@ -156,7 +160,7 @@ def test_72_hours_three_days_certificate_does_not_override_unrelated_duty():
     different_zh = zh + ' 录音可以删除。'
     certs = numeric_equivalence_certificates(e,z,link,build_paragraphs(different_en,'en'),
                                              build_paragraphs(different_zh,'zh'))
-    from app.models import ParagraphReviewIssue, ParagraphIssueRecheck
+    from app.models import ParagraphIssueRecheck, ParagraphReviewIssue
     issue=ParagraphReviewIssue(kind='conflict', en_paragraph_ids=['en_p1'],zh_paragraph_ids=['zh_p1'],
                                reason='The numeric duration matches, but archival permissions differ.')
     answer=ParagraphIssueRecheck(issue_index=0,status='refuted',basis='formal_numeric',

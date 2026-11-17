@@ -4,13 +4,14 @@ These tests exercise explicit numeric semantics and the paragraph-mode control
 flow with mocked semantic outputs; they don't claim a live-model accuracy rate.
 """
 import pytest
+from test_v027_paragraph_grounding import Fake, config, extract, match, review
 
 from app.models import KeyUnit, Link
-from app.validators import (
-    clear_numeric_conflicts, clear_inclusion_conflicts, parse_quantity,
-)
-from test_v027_paragraph_grounding import Fake, config, extract, match, review
 from app.pipeline import Checker
+from app.validators import (
+    clear_inclusion_conflicts,
+    clear_numeric_conflicts,
+)
 
 
 def paired(en, zh, relation="equivalent"):

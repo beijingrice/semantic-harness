@@ -13,8 +13,11 @@ For a different real API implement the conversion accordingly. Never alter the
 semantic Pipeline, only this adapter. JSON validation stays in ChatClient.
 """
 from __future__ import annotations
+
 from typing import Any
+
 import httpx
+
 from app.backends import BackendConfig, BackendError, BackendResponse
 
 

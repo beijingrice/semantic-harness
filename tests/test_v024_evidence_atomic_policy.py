@@ -4,7 +4,6 @@ These mocked API replies check protocol and control flow, not real model accurac
 """
 from __future__ import annotations
 
-from dataclasses import replace
 import json
 
 import httpx
@@ -13,9 +12,9 @@ import pytest
 from app.config import Settings
 from app.evidence import resolve_evidence
 from app.llm import ChatClient, LLMError
-from app.models import ArbitrationDraft, AlignmentEvidenceDraft, ExtractedDraft, ReviewIssue
+from app.models import AlignmentEvidenceDraft, ArbitrationDraft, ExtractedDraft, ReviewIssue
 from app.pipeline import Checker
-from app.prompts import ATOMIC_REFINEMENT_SYSTEM, ARBITRATION_SYSTEM, MATCH_SYSTEM, REVIEW_SYSTEM
+from app.prompts import ARBITRATION_SYSTEM, ATOMIC_REFINEMENT_SYSTEM, MATCH_SYSTEM, REVIEW_SYSTEM
 
 
 def unit(claim, evidence, kind="concept"):

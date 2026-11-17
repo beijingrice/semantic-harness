@@ -6,24 +6,41 @@ Semantic support is NOT proved by a valid source ID.
 """
 from __future__ import annotations
 
+from app.dispute_resolution import (
+    narrow_exactness_refutation,
+    numeric_equivalence_certificates,
+)
+from app.extraction_fast_path import bounded_clause_anchor_pair, source_anchor_pair
 from app.llm import LLMError
-from app.extraction_fast_path import source_anchor_pair, bounded_clause_anchor_pair
 from app.models import (
-    ArbitrationDraft, CheckResult, KeyUnit, Link, MatchDraft,
-    ParagraphAlignmentDraft, ParagraphArbitrationDraft, ParagraphExtractedDraft,
-    ParagraphReviewDraft, ParagraphDisputeRecheckDraft, NumericEquivalenceCertificate,
-    ReviewDraft, ReviewIssue,
+    ArbitrationDraft,
+    CheckResult,
+    KeyUnit,
+    MatchDraft,
+    ParagraphAlignmentDraft,
+    ParagraphArbitrationDraft,
+    ParagraphDisputeRecheckDraft,
+    ParagraphExtractedDraft,
+    ParagraphReviewDraft,
+    ReviewDraft,
+    ReviewIssue,
 )
 from app.paragraphs import build_paragraphs, compact_paragraphs, paragraph_evidence, verify_ids
-from app.dispute_resolution import (numeric_equivalence_certificates,
-                                    certificate_covers_issue, narrow_exactness_refutation)
 from app.prompts import (
-    ARBITRATION_SYSTEM_PARAGRAPH, EVIDENCE_SUPPORT_SYSTEM_PARAGRAPH,
-    EXTRACTION_SYSTEM_PARAGRAPH, FALLBACK_EXTRACTION_SYSTEM_PARAGRAPH,
-    MATCH_SYSTEM, REVIEW_SYSTEM_PARAGRAPH, REVIEW_OBJECTION_CHECK_SYSTEM_PARAGRAPH, match_user,
-    paragraph_arbitrate_user, paragraph_extract_user, paragraph_review_user, paragraph_recheck_user,
+    ARBITRATION_SYSTEM_PARAGRAPH,
+    EVIDENCE_SUPPORT_SYSTEM_PARAGRAPH,
+    EXTRACTION_SYSTEM_PARAGRAPH,
+    FALLBACK_EXTRACTION_SYSTEM_PARAGRAPH,
+    MATCH_SYSTEM,
+    REVIEW_OBJECTION_CHECK_SYSTEM_PARAGRAPH,
+    REVIEW_SYSTEM_PARAGRAPH,
+    match_user,
+    paragraph_arbitrate_user,
+    paragraph_extract_user,
+    paragraph_recheck_user,
+    paragraph_review_user,
 )
-from app.validators import clear_numeric_conflicts, clear_inclusion_conflicts, source_isolated_quantity_conflicts
+from app.validators import clear_inclusion_conflicts, clear_numeric_conflicts, source_isolated_quantity_conflicts
 
 
 def extract_paragraph(checker, source: str, language: str, prefix: str,

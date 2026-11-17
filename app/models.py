@@ -4,6 +4,7 @@ All model-produced quotes must be checked against the ORIGINAL source text by pi
 Schema validity is not evidence of semantic correctness.
 """
 from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 

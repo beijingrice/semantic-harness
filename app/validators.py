@@ -9,9 +9,10 @@ Never compare raw paragraph-level evidence: it may contain many unrelated facts.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from decimal import Decimal
-import re
+
 from app.models import KeyUnit, Link
 
 _CN_DIGITS = {"零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3, "四": 4,

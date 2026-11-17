@@ -7,9 +7,15 @@ from typing import Any, Callable
 import httpx
 from pydantic import BaseModel, ValidationError
 
+from app.backends import (
+    BackendConfig,
+    BackendError,
+    BackendResponse,
+    LLMBackend,
+    UnsupportedNativeSchema,
+    build_backend,
+)
 from app.config import ConfigError, Settings
-from app.backends import (BackendConfig, BackendError, BackendResponse, LLMBackend,
-                          UnsupportedNativeSchema, build_backend)
 
 
 class LLMError(RuntimeError):
@@ -162,7 +168,7 @@ class ChatClient:
             return content
         except GenerationAnomaly:
             raise
-        except UnsupportedNativeSchema as exc:
+        except UnsupportedNativeSchema:
             record["outcome"] = "native_schema_unsupported"
             raise
         except (BackendError, ValueError, KeyError, TypeError, IndexError) as exc:

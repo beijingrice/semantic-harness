@@ -5,11 +5,12 @@ Mocks imitate model output; these DO NOT prove real Qwen/Ministral recovery.
 from __future__ import annotations
 
 import json
+
 import httpx
 import pytest
 
 from app.config import Settings
-from app.llm import ChatClient, LLMError
+from app.llm import ChatClient
 from app.pipeline import Checker, PipelineStageError
 
 

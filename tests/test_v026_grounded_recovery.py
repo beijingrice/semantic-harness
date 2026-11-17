@@ -5,8 +5,8 @@ from dataclasses import replace
 import pytest
 
 from app.config import Settings
-from app.pipeline import Checker, PipelineStageError
-from app.prompts import EXTRACTION_SYSTEM_COARSE, MATCH_SYSTEM, ARBITRATION_SYSTEM
+from app.pipeline import Checker
+from app.prompts import ARBITRATION_SYSTEM, EXTRACTION_SYSTEM_COARSE, MATCH_SYSTEM
 
 
 class Fake:

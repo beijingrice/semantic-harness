@@ -1,7 +1,9 @@
 """Mock LM Studio protocol; assert dispatch to the right model for each stage."""
 import json
+
 import httpx
 from fastapi.testclient import TestClient
+
 from app import api
 from app.config import Settings
 from app.llm import ChatClient

@@ -7,7 +7,9 @@ against the ORIGINAL source: no NFC, case folding, character replacements, or
 whitespace editing is performed.
 """
 from __future__ import annotations
+
 import re
+
 from app.models import SourceParagraph
 
 _BLANK = re.compile(r"\n[ \t\f\v]*\n(?:[ \t\f\v]*\n)*")
@@ -19,7 +21,7 @@ def build_paragraphs(source: str, prefix: str) -> list[SourceParagraph]:
     segments: list[SourceParagraph] = []
     starts = [0] + [m.end() for m in _BLANK.finditer(source)]
     ends = [m.start() for m in _BLANK.finditer(source)] + [len(source)]
-    for start, end in zip(starts, ends):
+    for start, end in zip(starts, ends, strict=True):
         # Trim exterior whitespace by moving offsets, never by changing chars.
         while start < end and source[start].isspace():
             start += 1

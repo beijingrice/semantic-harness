@@ -6,19 +6,16 @@ review, numeric safety and protected dispute handling still run normally.
 from __future__ import annotations
 
 import json
-from dataclasses import replace
 
 import httpx
 import pytest
+from test_v027_paragraph_grounding import Fake, config, match, review
 
 from app.config import Settings
 from app.extraction_fast_path import source_anchor_pair
 from app.llm import ChatClient
-from app.models import MatchDraft, ParagraphReviewDraft
 from app.paragraphs import build_paragraphs
 from app.pipeline import Checker
-from test_v027_paragraph_grounding import Fake, config, match, review
-
 
 CONDITIONAL_EN = 'When consent is withdrawn, the recording must be deleted unless the law requires retention.'
 CONDITIONAL_ZH = '撤回同意后应删除录音，但法律要求留存的除外。'
@@ -141,8 +138,9 @@ def test_multi_paragraph_sources_keep_original_generation_budget():
 
 
 def test_fast_path_does_not_auto_pass_when_review_cites_true_non_numeric_conflict():
-    from app.models import ParagraphDisputeRecheckDraft
     from test_v027_paragraph_grounding import arb
+
+    from app.models import ParagraphDisputeRecheckDraft
     en='The recording must be deleted.'
     zh='录音不得删除。'
     assert pair(en,zh) is not None

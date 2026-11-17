@@ -11,11 +11,14 @@ import pytest
 from app.config import Settings
 from app.llm import ChatClient
 from app.models import (
-    ParagraphExtractedDraft, ParagraphReviewDraft, ParagraphArbitrationDraft,
     ParagraphAlignmentDraft,
+    ParagraphArbitrationDraft,
+    ParagraphExtractedDraft,
+    ParagraphReviewDraft,
 )
 from app.prompts import (
-    EXTRACTION_SYSTEM_PARAGRAPH, FALLBACK_EXTRACTION_SYSTEM_PARAGRAPH,
+    EXTRACTION_SYSTEM_PARAGRAPH,
+    FALLBACK_EXTRACTION_SYSTEM_PARAGRAPH,
     paragraph_extract_user,
 )
 

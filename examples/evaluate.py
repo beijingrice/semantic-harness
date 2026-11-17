@@ -10,13 +10,18 @@ from __future__ import annotations
 
 import argparse
 import csv
-from dataclasses import replace
-from collections import Counter, defaultdict
 import json
-from pathlib import Path
 import sys
 import time
+from collections import Counter, defaultdict
+from dataclasses import replace
+from pathlib import Path
 from typing import Any
+
+from app.config import Settings
+from app.llm import ChatClient, LLMError
+from app.pipeline import Checker
+from app.telemetry import evidence_integrity, reliability_summary
 
 
 def paired_reference_comparison(results: list[dict[str, Any]], reference_file: Path) -> dict[str, Any]:
@@ -57,11 +62,6 @@ def paired_reference_comparison(results: list[dict[str, Any]], reference_file: P
         "per_case": compared,
     }
 
-
-from app.config import Settings
-from app.llm import ChatClient, LLMError
-from app.pipeline import Checker
-from app.telemetry import evidence_integrity, reliability_summary
 
 VALID_LABELS = frozenset({"PASS", "FAIL"})
 
@@ -228,13 +228,12 @@ def main() -> None:
             if args.mode == "dual" and primary == verifier:
                 raise LLMError("主模型与复核模型不能相同")
             if hasattr(client, "validate_model_access"):
-                discovery = client.validate_model_access(primary, verifier)
+                client.validate_model_access(primary, verifier)
             else:  # older mocked evaluation clients
                 available = client.models()
                 for name in ([primary, verifier] if args.mode == "dual" else [primary]):
                     if name not in available:
                         raise LLMError(f"未找到模型 {name!r}，可用模型：{available}")
-                discovery = "legacy_required"
             print(f"预检成功：主模型 {primary}" + (f"；复核模型 {verifier}" if verifier else "（不启用复核）"), flush=True)
         except LLMError as exc:
             print(f"模型预检失败：{exc}", file=sys.stderr)

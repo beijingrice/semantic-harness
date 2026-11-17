@@ -10,9 +10,9 @@ import re
 
 from app.llm import LLMError
 from app.models import CheckResult, ParagraphReviewDraft
+from app.paragraph_pipeline import _review_public, _verify_review
 from app.paragraphs import build_paragraphs, compact_paragraphs
-from app.paragraph_pipeline import _verify_review, _review_public
-from app.prompts import paragraph_review_user, REVIEW_SYSTEM_PARAGRAPH
+from app.prompts import REVIEW_SYSTEM_PARAGRAPH, paragraph_review_user
 from app.validators import numeric_tokens, parse_quantity, parse_range
 
 DIRECT_PRIMARY_SYSTEM = """You are the FIRST independent judge of bilingual academic

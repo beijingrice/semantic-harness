@@ -1,16 +1,19 @@
 """Offline state-machine and certificate safety checks; no LM Studio calls."""
 import pytest
+from test_v027_paragraph_grounding import Fake, arb, config, extract, match, review
 
-from app.models import (
-    ParagraphDisputeRecheckDraft, ParagraphReviewIssue, KeyUnit, Link,
-)
-from app.dispute_resolution import numeric_equivalence_certificates, certificate_covers_issue
-from app.paragraphs import build_paragraphs
-from app.pipeline import Checker, PipelineStageError
-from app.paragraph_pipeline import _verify_objection_recheck
+from app.dispute_resolution import numeric_equivalence_certificates
 from app.llm import LLMError
+from app.models import (
+    KeyUnit,
+    Link,
+    ParagraphDisputeRecheckDraft,
+    ParagraphReviewIssue,
+)
+from app.paragraph_pipeline import _verify_objection_recheck
+from app.paragraphs import build_paragraphs
+from app.pipeline import Checker
 from examples.evaluate import summarize
-from test_v027_paragraph_grounding import Fake, config, extract, match, review, arb
 
 
 def issue(en=('en_p1',), zh=('zh_p1',), reason='exactly six weeks versus 42 days'):
@@ -160,7 +163,9 @@ def test_numeric_recheck_refuted_other_basis_only_on_isolated_precision_dispute(
 def test_recheck_schema_retry_uses_correct_protocol_not_legacy_issue_arrays():
     """Regression for the v0.2.7 extraction-specific retry mixup."""
     import json
+
     import httpx
+
     from app.config import Settings
     from app.llm import ChatClient
 

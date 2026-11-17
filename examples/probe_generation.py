@@ -1,5 +1,6 @@
 """Opt-in four-request diagnostic only. Not an accuracy benchmark or an automatic test."""
 from __future__ import annotations
+
 import argparse
 import json
 from pathlib import Path

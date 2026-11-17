@@ -3,7 +3,6 @@
 No real LM Studio invocation or accuracy claim is made by these mocks.
 """
 import json
-from dataclasses import replace
 
 import httpx
 import pytest
@@ -13,7 +12,6 @@ from app.direct_pipeline import check_direct, direct_numeric_conflicts
 from app.llm import ChatClient
 from app.paragraphs import build_paragraphs
 from app.pipeline import Checker
-from app.prompts import paragraph_review_user
 
 EN = ('The review addresses data quality, annotation consistency, and evaluation '
       'reproducibility. These topics may be discussed in any order.')
@@ -158,8 +156,9 @@ def test_legacy_settings_still_default_to_extraction():
 
 
 def test_matched_reference_comparison_does_not_call_models():
-    from examples.evaluate import paired_reference_comparison, load_cases
     from pathlib import Path
+
+    from examples.evaluate import load_cases, paired_reference_comparison
     path=Path('examples/reference_v028_regression_11.json')
     ref=json.loads(path.read_text())
     assert len(load_cases(Path('examples/v2_regression_11.json')))==11
@@ -173,8 +172,9 @@ def test_matched_reference_comparison_does_not_call_models():
 
 
 def test_reference_mismatch_rejected():
-    from examples.evaluate import paired_reference_comparison
     from pathlib import Path
+
+    from examples.evaluate import paired_reference_comparison
     path=Path('examples/reference_v028_regression_11.json')
     example=dict(json.loads(path.read_text())['cases'][0])
     example['zh']='stale and invalid data'

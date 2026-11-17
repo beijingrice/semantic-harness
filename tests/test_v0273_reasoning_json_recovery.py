@@ -153,6 +153,7 @@ def test_full_paragraph_dual_pipeline_recovers_qwen_json_from_reasoning(monkeypa
     independent reviewer returns normal content. All grounding still applies.
     """
     from fastapi.testclient import TestClient
+
     from app import api
     calls = []
     outputs = [

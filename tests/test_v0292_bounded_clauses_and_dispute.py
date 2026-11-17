@@ -6,6 +6,7 @@ import json
 
 import httpx
 import pytest
+from test_v027_paragraph_grounding import Fake, arb, config, match, review
 
 from app.config import Settings
 from app.extraction_fast_path import bounded_clause_anchor_pair
@@ -13,7 +14,6 @@ from app.llm import ChatClient
 from app.models import MatchDraft
 from app.paragraphs import build_paragraphs
 from app.pipeline import Checker
-from test_v027_paragraph_grounding import Fake, config, match, review, arb
 
 EN = ('The review addresses data quality, annotation consistency, and evaluation '
       'reproducibility. These topics may be discussed in any order.')

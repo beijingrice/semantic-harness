@@ -1,7 +1,9 @@
 """Exercise the actual JSON Schema HTTP adapter with paragraph wire schemas."""
 import json
+
 import httpx
 from fastapi.testclient import TestClient
+
 from app import api
 from app.config import Settings
 from app.llm import ChatClient
@@ -126,7 +128,7 @@ def test_v0274_http_manual_review_is_200_not_fake_semantic_fail_or_502(monkeypat
     calls = []
     def handler(request):
         calls.append(request)
-        payload = json.loads(request.content)
+        json.loads(request.content)  # body must be valid JSON
         idx = len(calls)-1
         return httpx.Response(200, json={
             'choices': [{'message': {'content': json.dumps(outputs[idx], ensure_ascii=False)},

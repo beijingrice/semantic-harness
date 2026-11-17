@@ -4,8 +4,9 @@ Environment variables are read every time ``Settings()`` is constructed (not
 once at import time), so runtime changes and test isolation behave as expected.
 Explicit keyword arguments always override the environment.
 """
-from dataclasses import dataclass, field
 import os
+from dataclasses import dataclass, field
+
 from dotenv import load_dotenv
 
 load_dotenv()

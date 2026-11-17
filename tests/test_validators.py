@@ -1,5 +1,5 @@
-from app.validators import numeric_tokens, clear_numeric_conflicts
 from app.models import KeyUnit, Link
+from app.validators import clear_numeric_conflicts, numeric_tokens
 
 
 def test_digits_and_chinese_numbers():

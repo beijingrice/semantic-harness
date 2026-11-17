@@ -5,22 +5,46 @@ Legacy quote mode remains available for controlled A/B comparisons.
 Semantic truth is NOT guaranteed by schemas or source IDs.
 """
 from __future__ import annotations
+
 import re
 
 from app.config import ConfigError, Settings
 from app.evidence import resolve_evidence
 from app.llm import ChatClient, LLMError
-from app.models import (AlignmentEvidenceDraft, ArbitrationDraft, CheckResult, CoverageAuditDraft, ExtractedDraft, KeyUnit, Link,
-                        MatchDraft, ReviewDraft, ReviewIssue)
-from app.prompts import (ARBITRATION_SYSTEM, ATOMIC_REFINEMENT_SYSTEM,
-                         COVERAGE_AUDIT_SYSTEM, EVIDENCE_SUPPORT_SYSTEM,
-                         EXTRACTION_SYSTEM, EXTRACTION_SYSTEM_LEGACY, EXTRACTION_SYSTEM_COARSE,
-                         FALLBACK_EXTRACTION_SYSTEM_COARSE,
-                         FALLBACK_EXTRACTION_SYSTEM, MATCH_SYSTEM, REVIEW_SYSTEM,
-                         arbitrate_user, atomic_refinement_user, coverage_audit_user,
-                         evidence_support_user, extract_user,
-                         fallback_extract_user, match_user, review_user)
-from app.validators import clear_numeric_conflicts, clear_inclusion_conflicts
+from app.models import (
+    AlignmentEvidenceDraft,
+    ArbitrationDraft,
+    CheckResult,
+    CoverageAuditDraft,
+    ExtractedDraft,
+    KeyUnit,
+    Link,
+    MatchDraft,
+    ReviewDraft,
+    ReviewIssue,
+)
+from app.prompts import (
+    ARBITRATION_SYSTEM,
+    ATOMIC_REFINEMENT_SYSTEM,
+    COVERAGE_AUDIT_SYSTEM,
+    EVIDENCE_SUPPORT_SYSTEM,
+    EXTRACTION_SYSTEM,
+    EXTRACTION_SYSTEM_COARSE,
+    EXTRACTION_SYSTEM_LEGACY,
+    FALLBACK_EXTRACTION_SYSTEM,
+    FALLBACK_EXTRACTION_SYSTEM_COARSE,
+    MATCH_SYSTEM,
+    REVIEW_SYSTEM,
+    arbitrate_user,
+    atomic_refinement_user,
+    coverage_audit_user,
+    evidence_support_user,
+    extract_user,
+    fallback_extract_user,
+    match_user,
+    review_user,
+)
+from app.validators import clear_inclusion_conflicts, clear_numeric_conflicts
 
 
 class PipelineStageError(LLMError):

@@ -7,11 +7,10 @@ Examples:
 from __future__ import annotations
 
 import argparse
-from collections import Counter
-from dataclasses import replace
 import json
-from pathlib import Path
 import time
+from dataclasses import replace
+from pathlib import Path
 
 from app.config import Settings
 from app.llm import ChatClient, LLMError

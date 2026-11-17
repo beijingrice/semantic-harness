@@ -10,11 +10,11 @@ LM_JSON_SCHEMA=true python -m examples.diagnose --cases examples/errors_5.json -
 from __future__ import annotations
 
 import argparse
-from dataclasses import replace
 import json
-from pathlib import Path
 import sys
 import time
+from dataclasses import replace
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -23,7 +23,6 @@ from app.config import Settings
 from app.llm import ChatClient, LLMError, parse_json_object
 from app.pipeline import Checker
 from examples.evaluate import load_cases
-
 
 STAGE_MARKERS = (
     ("alignment_evidence_check", "focused BILINGUAL EVIDENCE CHECKER"),

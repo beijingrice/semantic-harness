@@ -1,14 +1,17 @@
 """v0.2.7 contract tests. Simulated responses, NOT live-model accuracy."""
 import json
 from dataclasses import replace
-from typing import Any
 
 import pytest
+
 from app.config import Settings
-from app.llm import LLMError
 from app.models import (
-    ParagraphAlignmentDraft, ParagraphArbitrationDraft,
-    ParagraphExtractedDraft, ParagraphReviewDraft, ParagraphDisputeRecheckDraft, MatchDraft,
+    MatchDraft,
+    ParagraphAlignmentDraft,
+    ParagraphArbitrationDraft,
+    ParagraphDisputeRecheckDraft,
+    ParagraphExtractedDraft,
+    ParagraphReviewDraft,
 )
 from app.paragraphs import build_paragraphs, paragraph_evidence, verify_ids
 from app.pipeline import Checker, PipelineStageError

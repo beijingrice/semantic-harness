@@ -13,17 +13,20 @@ from __future__ import annotations
 import json
 import re
 import unicodedata
-from typing import Literal
-from pydantic import create_model
 from dataclasses import dataclass
+from typing import Literal
+
+from pydantic import create_model
 
 from app.direct_pipeline import check_direct
 from app.llm import LLMError
 from app.models import GroundedEvidenceDraft, RelationVerificationDraft
-from app.source_risks import source_risks, source_spans, _source_quantitative_issue_only
-from app.validators import parse_quantity, numeric_tokens
-from app.source_risks import formal_single_quantity_equivalence
-
+from app.source_risks import (
+    _source_quantitative_issue_only,
+    source_risks,
+    source_spans,
+)
+from app.validators import numeric_tokens, parse_quantity
 
 _SYSTEM = """You must answer EXACTLY ONE FIXED bilingual academic requirement question.
 Read BOTH COMPLETE original paragraphs. Citations are original source spans, NOT
@@ -533,7 +536,7 @@ def check_hardened(checker, english: str, chinese: str, requested_model=None,
                 json.dumps(payload,ensure_ascii=False),
                 _hardened_schema(ens,zhs),
                 'relation_verification_v0215',
-                validate_result=lambda a: _validate_question(a,task,ens,zhs),
+                validate_result=lambda a, task=task: _validate_question(a,task,ens,zhs),
                 max_tokens=min(checker.settings.max_tokens,1536),max_attempts=1)
         except LLMError as ex:
             # No second model call. On the ONLY narrow direction task, original

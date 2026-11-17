@@ -10,8 +10,9 @@ from app.config import Settings
 from app.llm import ChatClient
 from app.pipeline import Checker
 from app.relation_direct import (
-    _hardened_schema, _host_anchor_direction, _numeric_symbol_unicode,
     _focus_exception_evidence,
+    _host_anchor_direction,
+    _numeric_symbol_unicode,
 )
 from app.source_risks import source_spans
 

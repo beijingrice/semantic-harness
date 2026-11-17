@@ -12,7 +12,6 @@ from app.config import ConfigError, Settings
 from app.llm import ChatClient, LLMError
 from app.models import ReviewDraft
 
-
 # --- Settings reads the environment at construction time -------------------
 
 def test_settings_reads_env_at_construction(monkeypatch):

@@ -146,8 +146,8 @@ def test_telemetry_rates_latency_and_outcomes():
 
 
 def test_holdout_36_balanced_and_frozen():
-    from collections import Counter
     import hashlib
+    from collections import Counter
     p=Path(__file__).resolve().parents[1]/'examples'/'validation_v028_holdout_36.json'
     cases=load_cases(p)
     assert len(cases)==36 and len({x['id'] for x in cases})==36
@@ -158,6 +158,7 @@ def test_holdout_36_balanced_and_frozen():
 
 def test_evaluate_reports_trace_even_on_failure_and_exports_audit(monkeypatch,tmp_path):
     import sys
+
     from examples import evaluate
     input_file=tmp_path/'sample.json'
     input_file.write_text(json.dumps([{'id':'case','en':'A','zh':'甲',

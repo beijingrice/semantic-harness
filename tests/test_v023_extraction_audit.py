@@ -2,15 +2,15 @@
 from __future__ import annotations
 
 import json
-from dataclasses import replace
+
 import httpx
 import pytest
 
 from app.config import Settings
-from app.llm import ChatClient, LLMError
+from app.llm import ChatClient
 from app.models import KeyUnit
 from app.pipeline import Checker, PipelineStageError
-from app.prompts import EXTRACTION_SYSTEM, EXTRACTION_SYSTEM_LEGACY, COVERAGE_AUDIT_SYSTEM
+from app.prompts import COVERAGE_AUDIT_SYSTEM, EXTRACTION_SYSTEM, EXTRACTION_SYSTEM_LEGACY
 
 
 def unit(claim: str, evidence: str, kind: str = "concept"):
