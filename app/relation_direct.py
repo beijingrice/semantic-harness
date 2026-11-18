@@ -579,6 +579,17 @@ def check_hardened(checker, english: str, chinese: str, requested_model=None,
     zhs={a.id:a.text for a in source_spans(chinese,'zh')}
     outcome='REVIEW_REQUIRED'
     for task in tasks:
+        if task.kind == 'undetermined':
+            # _prove has no source check for an undetermined dispute: whatever
+            # the model answers, the host conclusion is REVIEW_REQUIRED. Skip
+            # the call (live: up to ~3 minutes of truncated reasoning) with an
+            # identical verdict.
+            result.verification_questions.append({
+                'task_id': task.id, 'question_type': task.kind,
+                'host_conclusion': 'REVIEW_REQUIRED', 'outcome': 'SKIPPED_NOT_SOURCE_CHECKABLE'})
+            result.diagnostics.append(f'direct_hardened: {task.id} skipped; an undetermined '
+                                      'dispute cannot be source-checked, so manual review is required')
+            continue
         payload={
             'task_id':task.id, 'question_type':task.kind, 'FIXED_question':task.question,
             'complete_english':english, 'complete_chinese':chinese,

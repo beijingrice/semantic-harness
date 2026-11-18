@@ -68,3 +68,44 @@ def test_model_naming_a_different_known_entity_still_abstains():
     chinese = "封面不计入25页的篇幅限制，附录也不计入。"
     assert prove(english, chinese, en_subject="appendix", zh_subject="附录") == "REVIEW_REQUIRED"
     assert prove(english, chinese) == "FAIL"
+
+
+def test_undetermined_dispute_skips_the_model_call():
+    """Disagreement with no source-checkable risk -> Q_DISPUTED_CLAIM.
+
+    _prove can only return REVIEW_REQUIRED for it, so no third model call is
+    made (live, that call spent ~3 minutes truncating) and the verdict is the same.
+    """
+    import json
+
+    import httpx
+
+    from app.config import Settings
+    from app.llm import ChatClient
+    from app.pipeline import Checker
+
+    replies = [
+        {"verdict": "PASS", "reason": "same duty", "issues": []},
+        {"verdict": "FAIL", "reason": "alleged difference", "issues": [
+            {"kind": "conflict", "en_paragraph_ids": ["en_p1"], "zh_paragraph_ids": ["zh_p1"],
+             "reason": "alleged wording difference"}]},
+    ]
+    calls = []
+
+    def handler(request):
+        calls.append(json.loads(request.content))
+        assert len(calls) <= len(replies), "unexpected extra model call"
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(replies[len(calls) - 1])},
+                                                      "finish_reason": "stop"}]})
+
+    http = httpx.Client(transport=httpx.MockTransport(handler))
+    cfg = Settings(model="primary", verifier_model="verifier", evidence_mode="paragraph",
+                   pipeline="direct_hardened", json_schema=True)
+    client = ChatClient(cfg, http)
+    result = Checker(client, cfg).check("Authors must upload the dataset.", "作者须上传数据集。", mode="dual")
+    http.close()
+    assert len(calls) == 2
+    assert result.verdict == "REVIEW_REQUIRED"
+    assert result.verification_questions == [{
+        "task_id": "Q_DISPUTED_CLAIM", "question_type": "undetermined",
+        "host_conclusion": "REVIEW_REQUIRED", "outcome": "SKIPPED_NOT_SOURCE_CHECKABLE"}]
