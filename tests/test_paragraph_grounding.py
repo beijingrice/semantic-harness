@@ -1,65 +1,14 @@
-"""v0.2.7 contract tests. Simulated responses, NOT live-model accuracy."""
-import json
-from dataclasses import replace
+"""Paragraph-ID grounding contract. Simulated responses, NOT live-model accuracy."""
 
 import pytest
+from helpers import Fake, arb, config, extract, match, review
 
 from app.checker import Checker, PipelineStageError
-from app.config import Settings
 from app.models import (
-    MatchDraft,
     ParagraphAlignmentDraft,
-    ParagraphArbitrationDraft,
     ParagraphDisputeRecheckDraft,
-    ParagraphExtractedDraft,
-    ParagraphReviewDraft,
 )
 from app.paragraphs import build_paragraphs, paragraph_evidence, verify_ids
-
-
-def config(**kw):
-    return replace(Settings(evidence_mode="paragraph", extraction_prompt="coarse",
-                            coverage_audit=False, atomic_refinement=False,
-                            extraction_fast_path=False, model="primary", verifier_model="independent"), **kw)
-
-
-def extract(claim, pid, kind="constraint"):
-    return ParagraphExtractedDraft.model_validate({"units":[{"kind":kind,
-        "claim":claim,"paragraph_ids":list(pid) if isinstance(pid, tuple) else [pid]}]})
-
-
-def match(relation="equivalent", reason="same"):
-    return MatchDraft.model_validate({"links":[{"en_ids":["en_1"],
-        "zh_ids":["zh_1"],"relation":relation,"reason":reason}]})
-
-
-def review(verdict="PASS", issues=None):
-    return ParagraphReviewDraft.model_validate({"verdict":verdict,
-        "reason":"independently inspected original texts", "issues":issues or []})
-
-
-def arb(verdict="FAIL", kind="conflict", en=None, zh=None):
-    return ParagraphArbitrationDraft.model_validate({"verdict":verdict,
-        "issue_kind":kind,"en_paragraph_ids":en or [],"zh_paragraph_ids":zh or [],
-        "reason":"independently checked constraints"})
-
-
-class Fake:
-    def __init__(self, *answers):
-        self.answers = list(answers)
-        self.calls = []
-    def choose_model(self, requested=None):
-        return requested or "primary"
-    def choose_verifier(self, requested=None):
-        return requested or "independent"
-    def structured(self, model, system, user, schema_model, schema_name, validate_result=None):
-        self.calls.append({"model":model,"system":system,"user":json.loads(user),
-                           "schema":schema_name})
-        answer = self.answers.pop(0)
-        assert isinstance(answer, schema_model), (type(answer), schema_model)
-        if validate_result:
-            validate_result(answer)
-        return answer
 
 
 def test_unicode_punctuation_and_whitespace_never_retyped():

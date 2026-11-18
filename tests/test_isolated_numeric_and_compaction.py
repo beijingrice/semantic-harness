@@ -1,4 +1,4 @@
-"""v0.2.9 isolated numeric predicates and lossless single-source compaction.
+"""Isolated numeric predicates and lossless single-source compaction.
 
 Some fixtures are taken from actual v0.2.8 holdout model outputs. All tests
 are offline; successful replay is not a promise of identical live inference.
@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 import pytest
-from test_v027_paragraph_grounding import Fake, arb, config, extract
+from helpers import Fake, arb, config, extract
 
 from app.checker import Checker
 from app.dispute_resolution import narrow_exactness_refutation, numeric_equivalence_certificates

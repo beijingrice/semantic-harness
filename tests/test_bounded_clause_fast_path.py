@@ -1,4 +1,4 @@
-"""v0.2.9.2 pre-generation safeguards and disagreement safety gates.
+"""Bounded-clause fast path: pre-generation safeguards and disagreement safety gates.
 
 These are offline protocol assertions, not claims of real Qwen accuracy.
 """
@@ -6,7 +6,7 @@ import json
 
 import httpx
 import pytest
-from test_v027_paragraph_grounding import Fake, arb, config, match, review
+from helpers import Fake, arb, config, match, review
 
 from app.checker import Checker
 from app.config import Settings

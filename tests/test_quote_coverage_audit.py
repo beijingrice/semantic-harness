@@ -1,4 +1,4 @@
-"""v0.2.3 source coverage audit protocol tests; simulated LLM output only."""
+"""Source coverage audit protocol tests; simulated LLM output only."""
 from __future__ import annotations
 
 import json

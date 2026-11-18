@@ -4,7 +4,7 @@ These tests exercise explicit numeric semantics and the paragraph-mode control
 flow with mocked semantic outputs; they don't claim a live-model accuracy rate.
 """
 import pytest
-from test_v027_paragraph_grounding import Fake, config, extract, match, review
+from helpers import Fake, config, extract, match, review
 
 from app.checker import Checker
 from app.models import KeyUnit, Link

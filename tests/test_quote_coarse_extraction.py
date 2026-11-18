@@ -1,4 +1,4 @@
-"""v0.2.5 simplified extraction: mocked model protocol, NOT accuracy evidence."""
+"""Coarse (default) extraction prompt: mocked model protocol, NOT accuracy evidence."""
 from __future__ import annotations
 
 from dataclasses import replace

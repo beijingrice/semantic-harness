@@ -9,7 +9,7 @@ from pathlib import Path
 
 import httpx
 import pytest
-from test_v027_paragraph_grounding import Fake, config
+from helpers import Fake, config
 
 from app.checker import Checker
 from app.config import Settings

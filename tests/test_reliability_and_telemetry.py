@@ -1,4 +1,4 @@
-"""v0.2.8: no real LLM calls; inspect actual HTTP payloads and evidence validators."""
+"""Generation recovery and telemetry: no real LLM calls; inspect actual HTTP payloads and evidence validators."""
 import json
 from pathlib import Path
 

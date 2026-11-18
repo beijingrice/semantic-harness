@@ -1,4 +1,4 @@
-"""v0.2.6 regression: mocks check protocol and safety, not LLM accuracy."""
+"""Grounded recovery regression: mocks check protocol and safety, not LLM accuracy."""
 import json
 from dataclasses import replace
 

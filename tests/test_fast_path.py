@@ -1,4 +1,4 @@
-"""v0.2.9.1: prove that source-anchor fast path saves REAL HTTP calls.
+"""Prove that the source-anchor fast path saves REAL HTTP calls.
 
 The fast path never decides bilingual equivalence. Model matching, full-original
 review, numeric safety and protected dispute handling still run normally.
@@ -9,7 +9,7 @@ import json
 
 import httpx
 import pytest
-from test_v027_paragraph_grounding import Fake, config, match, review
+from helpers import Fake, config, match, review
 
 from app.checker import Checker
 from app.config import Settings
@@ -62,7 +62,7 @@ def test_multi_requirements_and_lists_must_abstain(en,zh):
 
 
 def test_opt_out_preserves_old_llm_extraction_path():
-    from test_v027_paragraph_grounding import extract
+    from helpers import extract
     client=Fake(extract(CONDITIONAL_EN,'en_p1'),extract(CONDITIONAL_ZH,'zh_p1'),match(),review())
     out=Checker(client,config(extraction_fast_path=False)).check(CONDITIONAL_EN,CONDITIONAL_ZH,mode='dual')
     assert out.verdict=='PASS'
@@ -138,7 +138,7 @@ def test_multi_paragraph_sources_keep_original_generation_budget():
 
 
 def test_fast_path_does_not_auto_pass_when_review_cites_true_non_numeric_conflict():
-    from test_v027_paragraph_grounding import arb
+    from helpers import arb
 
     from app.models import ParagraphDisputeRecheckDraft
     en='The recording must be deleted.'

@@ -1,4 +1,4 @@
-"""v0.2.4 offline regression: source anchoring, atomic units and task boundary.
+"""Offline regression: source anchoring, atomic units and task boundary.
 
 These mocked API replies check protocol and control flow, not real model accuracy.
 """

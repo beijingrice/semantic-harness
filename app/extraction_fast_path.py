@@ -91,7 +91,7 @@ def source_anchor_pair(english_paragraphs: list[SourceParagraph],
                        claim=p.text, paragraph_ids=[p.id], evidence=p.text)
     return [anchor(en, 'en')], [anchor(zh, 'zh')]
 
-# v0.2.9.2: A narrow second pre-generation route for TWO explicit adjacent
+# A narrow second pre-generation route for TWO explicit adjacent
 # clauses. It never uses an LLM to create or paraphrase claims; each anchor is
 # a verbatim substring of the original source with the original paragraph ID.
 # A single English period may correspond to a Chinese comma. Preserve both

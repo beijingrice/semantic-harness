@@ -1,6 +1,6 @@
 """Offline state-machine and certificate safety checks; no LM Studio calls."""
 import pytest
-from test_v027_paragraph_grounding import Fake, arb, config, extract, match, review
+from helpers import Fake, arb, config, extract, match, review
 
 from app.checker import Checker
 from app.dispute_resolution import numeric_equivalence_certificates
