@@ -1,4 +1,5 @@
 """Shared plumbing for every pipeline: model calls by stage, model selection, errors."""
+
 from __future__ import annotations
 
 from typing import Callable, Protocol
@@ -25,10 +26,19 @@ class StageRunner:
         self.client = client
         self.settings = settings
 
-    def call(self, stage: str, diagnostics: list[str], model: str, system: str, user: str,
-             schema: type[BaseModel], schema_name: str,
-             validate: Callable[[BaseModel], None] | None = None,
-             max_tokens: int | None = None, max_attempts: int | None = None):
+    def call(
+        self,
+        stage: str,
+        diagnostics: list[str],
+        model: str,
+        system: str,
+        user: str,
+        schema: type[BaseModel],
+        schema_name: str,
+        validate: Callable[[BaseModel], None] | None = None,
+        max_tokens: int | None = None,
+        max_attempts: int | None = None,
+    ):
         """One structured model call. Failures become PipelineStageError(stage)."""
         kwargs = {"validate_result": validate}
         if max_tokens is not None:
@@ -45,8 +55,7 @@ class StageRunner:
         diagnostics.append(f"{stage}: OK ({model})")
         return answer
 
-    def choose_models(self, mode: str, requested_model: str | None,
-                      requested_verifier: str | None) -> tuple[str, str]:
+    def choose_models(self, mode: str, requested_model: str | None, requested_verifier: str | None) -> tuple[str, str]:
         """(primary, verifier); verifier is "" in primary-only mode."""
         if mode not in ("primary", "dual"):
             raise LLMError("mode 只能是 primary 或 dual")
@@ -60,6 +69,12 @@ class StageRunner:
 
 
 class Pipeline(Protocol):
-    def __call__(self, runner: StageRunner, english: str, chinese: str,
-                 requested_model: str | None, requested_verifier: str | None,
-                 mode: str) -> CheckResult: ...
+    def __call__(
+        self,
+        runner: StageRunner,
+        english: str,
+        chinese: str,
+        requested_model: str | None,
+        requested_verifier: str | None,
+        mode: str,
+    ) -> CheckResult: ...

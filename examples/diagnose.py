@@ -7,6 +7,7 @@ The model's reply may quote confidential input. Trace files stay on your machine
 python -m examples.diagnose --cases examples/errors_5.json --out debug_v026.jsonl
 LM_JSON_SCHEMA=true python -m examples.diagnose --cases examples/errors_5.json --out debug_v026_schema.jsonl
 """
+
 from __future__ import annotations
 
 import argparse
@@ -99,7 +100,7 @@ class TracedHttp:
                 event["message_keys"] = sorted(message)
                 event["content_type"] = type(content).__name__
                 event["content_length"] = len(content) if isinstance(content, str) else None
-                event["content_preview"] = content[:self.preview_chars] if isinstance(content, str) else None
+                event["content_preview"] = content[: self.preview_chars] if isinstance(content, str) else None
                 reasoning_content = message.get("reasoning_content")
                 event["reasoning_content_length"] = len(str(reasoning_content or ""))
                 event["reasoning_length"] = len(str(message.get("reasoning") or ""))
@@ -110,10 +111,10 @@ class TracedHttp:
                 event["usage"] = data.get("usage")
                 event.update(parse_summary(content))
                 if response.is_error:
-                    event["error_body_preview"] = response.text[:self.preview_chars]
+                    event["error_body_preview"] = response.text[: self.preview_chars]
             except (ValueError, TypeError) as exc:
                 event["http_parse_error"] = str(exc)
-                event["body_preview"] = response.text[:self.preview_chars]
+                event["body_preview"] = response.text[: self.preview_chars]
             return response
         except Exception as exc:
             event["transport_error"] = f"{type(exc).__name__}: {exc}"
@@ -134,8 +135,9 @@ def main() -> int:
     parser.add_argument("--extraction-prompt", choices=("legacy", "proposition"))
     parser.add_argument("--coverage-audit", choices=("on", "off"))
     parser.add_argument("--atomic-refinement", choices=("on", "off"))
-    parser.add_argument("--preview-chars", type=int, default=1200,
-                        help="number of characters of raw model reply to save per request")
+    parser.add_argument(
+        "--preview-chars", type=int, default=1200, help="number of characters of raw model reply to save per request"
+    )
     args = parser.parse_args()
     cases = load_cases(args.cases)
     if args.case_ids:
@@ -144,17 +146,21 @@ def main() -> int:
         print("No matching cases", file=sys.stderr)
         return 2
     if args.limit > 0:
-        cases = cases[:args.limit]
+        cases = cases[: args.limit]
     settings = Settings()
-    settings = replace(settings,
+    settings = replace(
+        settings,
         extraction_prompt=args.extraction_prompt or settings.extraction_prompt,
         coverage_audit=(args.coverage_audit == "on") if args.coverage_audit else settings.coverage_audit,
-        atomic_refinement=(args.atomic_refinement == "on") if args.atomic_refinement else settings.atomic_refinement)
+        atomic_refinement=(args.atomic_refinement == "on") if args.atomic_refinement else settings.atomic_refinement,
+    )
     args.out.unlink(missing_ok=True)
     print(f"Trace: {args.out.resolve()}")
-    print(f"Effective LM_JSON_SCHEMA={settings.json_schema}; max_tokens={settings.max_tokens}; "
-          f"mode={args.mode}; extraction={settings.extraction_prompt}; audit={settings.coverage_audit}; "
-          f"atomic={settings.atomic_refinement}")
+    print(
+        f"Effective LM_JSON_SCHEMA={settings.json_schema}; max_tokens={settings.max_tokens}; "
+        f"mode={args.mode}; extraction={settings.extraction_prompt}; audit={settings.coverage_audit}; "
+        f"atomic={settings.atomic_refinement}"
+    )
     print("Trace includes excerpts of MODEL OUTPUT; review before sharing if your source texts are private.")
     inner = httpx.Client(timeout=settings.timeout_seconds)
     trace = TracedHttp(inner, args.out, max(0, args.preview_chars))
@@ -166,11 +172,12 @@ def main() -> int:
             start = time.monotonic()
             try:
                 result = checker.check(item["en"], item["zh"], mode=args.mode)
-                print(f"{item['id']}: {result.verdict} (expected {item['expected']}) "
-                      f"{time.monotonic()-start:.1f}s")
+                print(f"{item['id']}: {result.verdict} (expected {item['expected']}) {time.monotonic() - start:.1f}s")
             except LLMError as exc:
-                print(f"{item['id']}: ERROR stage={getattr(exc, 'stage', 'unknown')} "
-                      f"{time.monotonic()-start:.1f}s: {exc}")
+                print(
+                    f"{item['id']}: ERROR stage={getattr(exc, 'stage', 'unknown')} "
+                    f"{time.monotonic() - start:.1f}s: {exc}"
+                )
     finally:
         client.close()
         inner.close()
@@ -178,11 +185,13 @@ def main() -> int:
     for line in args.out.read_text(encoding="utf-8").splitlines():
         item = json.loads(line)
         if not item.get("parse_ok", True) or item.get("finish_reason") == "length":
-            print(f"  {item['case_id']} #{item['sequence']} {item['stage']} "
-                  f"model={item['model']} finish={item.get('finish_reason')} "
-                  f"content_len={item.get('content_length')} "
-                  f"reasoning_len={item.get('reasoning_content_length')} "
-                  f"parse={item.get('parse_error', 'OK')}")
+            print(
+                f"  {item['case_id']} #{item['sequence']} {item['stage']} "
+                f"model={item['model']} finish={item.get('finish_reason')} "
+                f"content_len={item.get('content_length')} "
+                f"reasoning_len={item.get('reasoning_content_length')} "
+                f"parse={item.get('parse_error', 'OK')}"
+            )
     return 0
 
 

@@ -1,4 +1,5 @@
 """Public entry point: ``Checker(client, settings).check(english, chinese)``."""
+
 from __future__ import annotations
 
 from app.config import Settings
@@ -22,14 +23,28 @@ class Checker:
         self.settings = settings
         self.runner = StageRunner(client, settings)
 
-    def check(self, english: str, chinese: str, requested_model: str | None = None,
-              requested_verifier: str | None = None, mode: str = "dual") -> CheckResult:
+    def check(
+        self,
+        english: str,
+        chinese: str,
+        requested_model: str | None = None,
+        requested_verifier: str | None = None,
+        mode: str = "dual",
+    ) -> CheckResult:
         pipeline = select(self.settings)
         return pipeline(self.runner, english, chinese, requested_model, requested_verifier, mode)
 
-    def extract(self, text: str, language: str, prefix: str, model: str,
-                fallback_model: str | None = None, diagnostics: list[str] | None = None) -> list[KeyUnit]:
+    def extract(
+        self,
+        text: str,
+        language: str,
+        prefix: str,
+        model: str,
+        fallback_model: str | None = None,
+        diagnostics: list[str] | None = None,
+    ) -> list[KeyUnit]:
         """The extraction stage alone (used by examples/evaluate_extraction.py)."""
         module = paragraph if self.settings.evidence_mode == "paragraph" else quote
-        return module.extract(self.runner, text, language, prefix, model, fallback_model,
-                              diagnostics if diagnostics is not None else [])
+        return module.extract(
+            self.runner, text, language, prefix, model, fallback_model, diagnostics if diagnostics is not None else []
+        )

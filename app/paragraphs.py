@@ -6,6 +6,7 @@ styles must not force an artificial sentence boundary). Keep Python offsets
 against the ORIGINAL source: no NFC, case folding, character replacements, or
 whitespace editing is performed.
 """
+
 from __future__ import annotations
 
 import re
@@ -29,8 +30,9 @@ def build_paragraphs(source: str, prefix: str) -> list[SourceParagraph]:
             end -= 1
         if start == end:
             continue
-        segments.append(SourceParagraph(id=f"{prefix}_p{len(segments) + 1}",
-                                        start=start, end=end, text=source[start:end]))
+        segments.append(
+            SourceParagraph(id=f"{prefix}_p{len(segments) + 1}", start=start, end=end, text=source[start:end])
+        )
     return segments
 
 

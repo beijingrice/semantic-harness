@@ -4,6 +4,7 @@ A custom provider may expose *any* protocol on the wire. The adapter must
 translate it into BackendResponse. See README_V0216_BACKENDS.md for a sample.
 No custom adapter is imported unless explicitly configured by the operator.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -51,13 +52,19 @@ def _schema_rejected(status: int, body: str) -> bool:
     if status not in (400, 415, 422):
         return False
     import re
+
     signal = bool(re.search(r"response[_ -]?format|json[_ -]?schema|structured[_ -]?output", body, re.I))
-    rejection = bool(re.search(r"unsupported|not supported|unrecognized|unknown|not available|not permitted|not implemented", body, re.I))
+    rejection = bool(
+        re.search(
+            r"unsupported|not supported|unrecognized|unknown|not available|not permitted|not implemented", body, re.I
+        )
+    )
     return signal and rejection
 
 
 class OpenAIChatBackend:
     """OpenAI-compatible /chat/completions adapter; /models is optional by policy."""
+
     def __init__(self, config: BackendConfig, http_client: httpx.Client):
         self.config = config
         self.http = http_client
@@ -70,7 +77,8 @@ class OpenAIChatBackend:
         try:
             response = self.http.post(
                 f"{self.config.base_url.rstrip('/')}/chat/completions",
-                json=payload, headers=self._headers(),
+                json=payload,
+                headers=self._headers(),
                 timeout=self.config.timeout_seconds,
             )
             if response.is_error:
@@ -104,7 +112,8 @@ class OpenAIChatBackend:
             if reasoning is not None and not isinstance(reasoning, str):
                 reasoning = None
             return BackendResponse(
-                content=content, reasoning_content=reasoning,
+                content=content,
+                reasoning_content=reasoning,
                 finish_reason=choice.get("finish_reason"),
                 prompt_tokens=usage.get("prompt_tokens"),
                 completion_tokens=usage.get("completion_tokens"),
@@ -118,7 +127,8 @@ class OpenAIChatBackend:
         try:
             response = self.http.get(
                 f"{self.config.base_url.rstrip('/')}/models",
-                headers=self._headers(), timeout=self.config.timeout_seconds,
+                headers=self._headers(),
+                timeout=self.config.timeout_seconds,
             )
             if response.is_error:
                 raise BackendError(f"GET /models returned HTTP {response.status_code}")
@@ -138,7 +148,12 @@ def build_backend(kind: str, config: BackendConfig, http_client: httpx.Client) -
     if ":" not in kind:
         raise BackendError("LM_BACKEND must be 'openai' or 'module.path:ClassName'")
     module_name, class_name = kind.split(":", 1)
-    if not module_name or not class_name or not all(part.isidentifier() for part in module_name.split(".")) or not class_name.isidentifier():
+    if (
+        not module_name
+        or not class_name
+        or not all(part.isidentifier() for part in module_name.split("."))
+        or not class_name.isidentifier()
+    ):
         raise BackendError("Invalid custom backend import path")
     try:
         cls = getattr(import_module(module_name), class_name)

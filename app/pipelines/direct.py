@@ -4,6 +4,7 @@ This is the first half of direct_hardened (pipelines/hardened.py). Both models s
 the same numbered original paragraphs; no alignment of paragraph or sentence order
 is assumed. Agreement is an LLM judgment, not proof of exhaustive alignment.
 """
+
 from __future__ import annotations
 
 import re
@@ -17,7 +18,9 @@ from app.prompts import DIRECT_PRIMARY_SYSTEM, REVIEW_SYSTEM_PARAGRAPH, paragrap
 from app.validators import numeric_tokens, parse_quantity, parse_range
 
 _END = re.compile(r"[。！？!?]|(?<!\d)\.(?!\d)")
-_CONDITIONAL = re.compile(r"\b(?:if|unless|except|provided|whereas|when|until)\b|如果|若|除非|除外|但|否则|当.*时", re.I)
+_CONDITIONAL = re.compile(
+    r"\b(?:if|unless|except|provided|whereas|when|until)\b|如果|若|除非|除外|但|否则|当.*时", re.I
+)
 
 
 def _simple_numeric_source(text: str) -> bool:
@@ -49,8 +52,10 @@ def direct_numeric_conflicts(english: str, chinese: str, en_paragraphs, zh_parag
         return []
     x, y = parse_quantity(english), parse_quantity(chinese)
     if x and y and x.dimension == y.dimension and (x.value, x.comparator) != (y.value, y.comparator):
-        return [f"原文数字边界不同：{english!r} ({x.comparator} {x.value} {x.dimension}) "
-                f"↔ {chinese!r} ({y.comparator} {y.value} {y.dimension})"]
+        return [
+            f"原文数字边界不同：{english!r} ({x.comparator} {x.value} {x.dimension}) "
+            f"↔ {chinese!r} ({y.comparator} {y.value} {y.dimension})"
+        ]
     return []
 
 
@@ -67,8 +72,14 @@ def _fuse(first: str, second: str | None, numeric_issues: list[str], diagnostics
     return "REVIEW_REQUIRED"
 
 
-def run_direct(runner: StageRunner, english: str, chinese: str, requested_model: str | None = None,
-               requested_verifier: str | None = None, mode: str = "dual") -> CheckResult:
+def run_direct(
+    runner: StageRunner,
+    english: str,
+    chinese: str,
+    requested_model: str | None = None,
+    requested_verifier: str | None = None,
+    mode: str = "dual",
+) -> CheckResult:
     if mode in ("primary", "dual") and (not english.strip() or not chinese.strip()):
         raise LLMError("中英文均须有非空原文；空内容无法比较")
     model, verifier = runner.choose_models(mode, requested_model, requested_verifier)
@@ -76,35 +87,65 @@ def run_direct(runner: StageRunner, english: str, chinese: str, requested_model:
     diagnostics = ["pipeline: paragraph_direct (no extraction, no claim matching, no sentence alignment)"]
     user = paragraph_review_user(english, chinese, compact_paragraphs(ep), compact_paragraphs(zp))
     first: ParagraphReviewDraft = runner.call(
-        "direct_primary", diagnostics, model, DIRECT_PRIMARY_SYSTEM, user,
-        ParagraphReviewDraft, "direct_primary_review",
-        validate=lambda a: verify_review(a, ep, zp))
+        "direct_primary",
+        diagnostics,
+        model,
+        DIRECT_PRIMARY_SYSTEM,
+        user,
+        ParagraphReviewDraft,
+        "direct_primary_review",
+        validate=lambda a: verify_review(a, ep, zp),
+    )
     second: ParagraphReviewDraft | None = None
     review = None
     if mode == "dual":
         second = runner.call(
-            "direct_independent_review", diagnostics, verifier, REVIEW_SYSTEM_PARAGRAPH, user,
-            ParagraphReviewDraft, "paragraph_review",
-            validate=lambda a: verify_review(a, ep, zp))
+            "direct_independent_review",
+            diagnostics,
+            verifier,
+            REVIEW_SYSTEM_PARAGRAPH,
+            user,
+            ParagraphReviewDraft,
+            "paragraph_review",
+            validate=lambda a: verify_review(a, ep, zp),
+        )
         review = review_public(second, ep, zp)
 
     issues = direct_numeric_conflicts(english, chinese, ep, zp)
     final = _fuse(first.verdict, second.verdict if second else None, issues, diagnostics)
     if final == "PASS":
         diagnostics.append("direct_fusion: agreement is an LLM judgment, NOT formal proof of exhaustive alignment")
-    description = (f"{final}：Paragraph-Direct；主模型 {first.verdict}"
-                   + (f"；独立复核 {second.verdict}" if second else "（未启用独立复核）")
-                   + f"；原文数值冲突 {len(issues)} 项。")
+    description = (
+        f"{final}：Paragraph-Direct；主模型 {first.verdict}"
+        + (f"；独立复核 {second.verdict}" if second else "（未启用独立复核）")
+        + f"；原文数值冲突 {len(issues)} 项。"
+    )
     return CheckResult(
-        evidence_mode="paragraph", english_paragraphs=ep, chinese_paragraphs=zp,
-        verdict=final, model=model, verifier_model=verifier, mode=mode,
-        english_keywords=[], chinese_keywords=[], links=[],
-        missing_in_chinese=[], missing_in_english=[], conflicts=[],
-        preliminary_missing_in_chinese=[], preliminary_missing_in_english=[],
-        preliminary_conflicts=[], review=review,
+        evidence_mode="paragraph",
+        english_paragraphs=ep,
+        chinese_paragraphs=zp,
+        verdict=final,
+        model=model,
+        verifier_model=verifier,
+        mode=mode,
+        english_keywords=[],
+        chinese_keywords=[],
+        links=[],
+        missing_in_chinese=[],
+        missing_in_english=[],
+        conflicts=[],
+        preliminary_missing_in_chinese=[],
+        preliminary_missing_in_english=[],
+        preliminary_conflicts=[],
+        review=review,
         review_issues=(review.issues if review else review_public(first, ep, zp).issues),
-        arbitration=None, arbitrated=False, dispute_recheck=None,
-        review_warnings=[], deterministic_issues=issues,
+        arbitration=None,
+        arbitrated=False,
+        dispute_recheck=None,
+        review_warnings=[],
+        deterministic_issues=issues,
         initial_verdict=(first.verdict if first.verdict != "UNSURE" else "FAIL"),
-        summary=description, diagnostics=diagnostics, direct_primary=first,
+        summary=description,
+        diagnostics=diagnostics,
+        direct_primary=first,
     )

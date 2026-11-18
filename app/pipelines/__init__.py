@@ -3,6 +3,7 @@
 Every pipeline has the signature of ``base.Pipeline``:
 ``run(runner, english, chinese, requested_model, requested_verifier, mode)``.
 """
+
 from __future__ import annotations
 
 from app.config import Settings

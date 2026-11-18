@@ -1,4 +1,5 @@
 """Backend-independent structured generation and source-validated retry orchestration."""
+
 import json
 import re
 import time
@@ -49,14 +50,19 @@ def parse_json_object(raw: str) -> dict:
 
 class GenerationAnomaly(LLMError):
     """An incomplete generation, not a semantic verdict or ordinary schema error."""
+
     def __init__(self, category: str, message: str):
         super().__init__(message)
         self.category = category
 
 
 class ChatClient:
-    def __init__(self, settings: Settings, http_client: httpx.Client | None = None,
-                 verifier_http_client: httpx.Client | None = None):
+    def __init__(
+        self,
+        settings: Settings,
+        http_client: httpx.Client | None = None,
+        verifier_http_client: httpx.Client | None = None,
+    ):
         self.settings = settings  # enum values are validated by Settings itself
         self.http = http_client or httpx.Client(timeout=settings.timeout_seconds)
         self.owns_http = http_client is None
@@ -67,12 +73,17 @@ class ChatClient:
             self.verifier_http = httpx.Client(timeout=settings.timeout_seconds)
             self._owns_verifier_http = True
         primary_cfg = BackendConfig(settings.base_url, settings.api_key, settings.timeout_seconds)
-        verifier_cfg = BackendConfig(settings.verifier_base_url or settings.base_url,
-                                     settings.verifier_api_key if settings.verifier_api_key else settings.api_key,
-                                     settings.timeout_seconds)
+        verifier_cfg = BackendConfig(
+            settings.verifier_base_url or settings.base_url,
+            settings.verifier_api_key if settings.verifier_api_key else settings.api_key,
+            settings.timeout_seconds,
+        )
         self.primary_backend = build_backend(settings.backend, primary_cfg, self.http)
-        self.verifier_backend = (build_backend(settings.verifier_backend or settings.backend, verifier_cfg,
-                                               self.verifier_http) if separate else self.primary_backend)
+        self.verifier_backend = (
+            build_backend(settings.verifier_backend or settings.backend, verifier_cfg, self.verifier_http)
+            if separate
+            else self.primary_backend
+        )
         self._runtime_verifier_model = settings.verifier_model
         self._runtime_primary_model = settings.model
         self._native_support: dict[tuple[str, str], bool] = {}
@@ -106,13 +117,17 @@ class ChatClient:
             return True
         return self._native_support.get((self._role_for(model), model), True)
 
-    def _completion(self, *, payload: dict[str, Any], model: str,
-                    schema_name: str, attempt: int, recovery: bool) -> str:
+    def _completion(
+        self, *, payload: dict[str, Any], model: str, schema_name: str, attempt: int, recovery: bool
+    ) -> str:
         """One API operation; backend normalizes response before semantic parsing."""
         began = time.monotonic()
         record: dict[str, Any] = {
-            "stage": self.stage_label or schema_name, "schema": schema_name,
-            "model": model, "attempt": attempt, "recovery": recovery,
+            "stage": self.stage_label or schema_name,
+            "schema": schema_name,
+            "model": model,
+            "attempt": attempt,
+            "recovery": recovery,
             "backend_role": self._role_for(model),
             "schema_mode": "json_schema" if "response_format" in payload else "prompt_only",
             "max_tokens": payload.get("max_tokens"),
@@ -124,25 +139,29 @@ class ChatClient:
                 raise BackendError("Adapter must return BackendResponse")
             content = data.content
             reasoning = data.reasoning_content
-            record.update({
-                "http_status": data.http_status,
-                "finish_reason": data.finish_reason,
-                "prompt_tokens": data.prompt_tokens,
-                "completion_tokens": data.completion_tokens,
-                "reasoning_tokens": data.reasoning_tokens,
-                "content_chars": len(content) if isinstance(content, str) else 0,
-                "reasoning_chars": len(reasoning) if isinstance(reasoning, str) else 0,
-                "response_source": "content",
-            })
+            record.update(
+                {
+                    "http_status": data.http_status,
+                    "finish_reason": data.finish_reason,
+                    "prompt_tokens": data.prompt_tokens,
+                    "completion_tokens": data.completion_tokens,
+                    "reasoning_tokens": data.reasoning_tokens,
+                    "content_chars": len(content) if isinstance(content, str) else 0,
+                    "reasoning_chars": len(reasoning) if isinstance(reasoning, str) else 0,
+                    "response_source": "content",
+                }
+            )
             if data.finish_reason == "length":
                 record["outcome"] = "truncated"
-                raise GenerationAnomaly("truncated",
+                raise GenerationAnomaly(
+                    "truncated",
                     f"模型输出被 max_tokens 截断；finish_reason=length stage={schema_name} model={model} "
                     f"completion_tokens={record['completion_tokens']} "
                     f"reasoning_tokens={record['reasoning_tokens']} "
                     f"content_chars={record['content_chars']} "
                     f"reasoning_chars={record['reasoning_chars']} "
-                    f"max_tokens={record['max_tokens']}。")
+                    f"max_tokens={record['max_tokens']}。",
+                )
             if not isinstance(content, str):
                 # Null content is allowed by a few OpenAI-compatible APIs.
                 content = "" if content is None else content
@@ -173,8 +192,9 @@ class ChatClient:
         except (BackendError, ValueError, KeyError, TypeError, IndexError) as exc:
             record["outcome"] = "http_or_protocol_error"
             record["error_type"] = type(exc).__name__
-            raise LLMError(f"模型 API 请求失败；stage={schema_name} model={model} "
-                           f"error_type={type(exc).__name__}: {exc}") from exc
+            raise LLMError(
+                f"模型 API 请求失败；stage={schema_name} model={model} error_type={type(exc).__name__}: {exc}"
+            ) from exc
         finally:
             record["duration_ms"] = round((time.monotonic() - began) * 1000, 1)
 
@@ -199,8 +219,10 @@ class ChatClient:
         if policy == "off":
             return "skipped"
         cached_discovery: dict[int, list[str] | None] = {}
-        for role, backend, model in (("primary", self.primary_backend, primary),
-                                     ("verifier", self.verifier_backend, verifier)):
+        for role, backend, model in (
+            ("primary", self.primary_backend, primary),
+            ("verifier", self.verifier_backend, verifier),
+        ):
             if not model:
                 continue
             try:
@@ -243,9 +265,17 @@ class ChatClient:
         self._runtime_verifier_model = value
         return value
 
-    def structured(self, model: str, system: str, user: str, schema_model: type[BaseModel],
-                   schema_name: str, validate_result: Callable[[BaseModel], None] | None = None,
-                   max_tokens: int | None = None, max_attempts: int = 3) -> BaseModel:
+    def structured(
+        self,
+        model: str,
+        system: str,
+        user: str,
+        schema_model: type[BaseModel],
+        schema_name: str,
+        validate_result: Callable[[BaseModel], None] | None = None,
+        max_tokens: int | None = None,
+        max_attempts: int = 3,
+    ) -> BaseModel:
         """Ask for JSON matching ``schema_model`` and pass it through ``validate_result``.
 
         Up to ``max_attempts`` attempts, each retry with the validation error as
@@ -264,14 +294,17 @@ class ChatClient:
 
         for attempt in range(1, max_attempts + 1):
             try:
-                content = self._completion(payload=payload, model=model, schema_name=schema_name,
-                                           attempt=attempt, recovery=False)
+                content = self._completion(
+                    payload=payload, model=model, schema_name=schema_name, attempt=attempt, recovery=False
+                )
             except UnsupportedNativeSchema as schema_exc:
-                content = self._downgrade_native_schema(schema_exc, payload, messages, model,
-                                                        schema_name, attempt, expected_schema)
+                content = self._downgrade_native_schema(
+                    schema_exc, payload, messages, model, schema_name, attempt, expected_schema
+                )
             except GenerationAnomaly as anomaly:
-                return self._recover_generation(anomaly, payload, messages, model, schema_name,
-                                                attempt, schema_model, validate_result)
+                return self._recover_generation(
+                    anomaly, payload, messages, model, schema_name, attempt, schema_model, validate_result
+                )
             try:
                 validated = self._validate(content, schema_model, validate_result)
                 self.request_trace[-1]["outcome"] = "validated"
@@ -287,12 +320,17 @@ class ChatClient:
                         f"未能返回符合输出 Schema / 原文证据要求的结果（并非 FAIL）：{exc}"
                     ) from exc
                 messages.append({"role": "assistant", "content": content})
-                messages.append({"role": "user", "content": _retry_feedback(schema_name, user, exc,
-                                                                            expected_schema)})
+                messages.append({"role": "user", "content": _retry_feedback(schema_name, user, exc, expected_schema)})
         raise AssertionError("unreachable")
 
-    def _payload(self, model: str, messages: list[dict[str, str]], max_tokens: int | None,
-                 schema_name: str, expected_schema: dict) -> dict[str, Any]:
+    def _payload(
+        self,
+        model: str,
+        messages: list[dict[str, str]],
+        max_tokens: int | None,
+        schema_name: str,
+        expected_schema: dict,
+    ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": model,
             "messages": messages,
@@ -307,26 +345,34 @@ class ChatClient:
             }
         return payload
 
-    def _downgrade_native_schema(self, schema_exc: UnsupportedNativeSchema, payload, messages, model,
-                                 schema_name, attempt, expected_schema) -> str:
+    def _downgrade_native_schema(
+        self, schema_exc: UnsupportedNativeSchema, payload, messages, model, schema_name, attempt, expected_schema
+    ) -> str:
         """LM_SCHEMA_MODE=auto: after an explicit rejection, retry once with the schema in the prompt."""
         if self.settings.schema_mode != "auto" or "response_format" not in payload:
             raise LLMError(f"{schema_exc}; configure LM_SCHEMA_MODE=auto or off") from schema_exc
         self._native_support[(self._role_for(model), model)] = False
         payload.pop("response_format", None)
-        messages.append({"role": "user", "content": (
-            "The API cannot enforce response_format=json_schema. "
-            "Return only a valid JSON object satisfying this schema, with no prose: "
-            + json.dumps(expected_schema, ensure_ascii=False)
-        )})
+        messages.append(
+            {
+                "role": "user",
+                "content": (
+                    "The API cannot enforce response_format=json_schema. "
+                    "Return only a valid JSON object satisfying this schema, with no prose: "
+                    + json.dumps(expected_schema, ensure_ascii=False)
+                ),
+            }
+        )
         try:
-            return self._completion(payload=payload, model=model, schema_name=schema_name,
-                                    attempt=attempt, recovery=False)
+            return self._completion(
+                payload=payload, model=model, schema_name=schema_name, attempt=attempt, recovery=False
+            )
         except UnsupportedNativeSchema as exc:
             raise LLMError(f"Provider rejected prompt-only fallback: {exc}") from exc
 
-    def _recover_generation(self, anomaly: GenerationAnomaly, payload, messages, model, schema_name,
-                            attempt, schema_model, validate_result) -> BaseModel:
+    def _recover_generation(
+        self, anomaly: GenerationAnomaly, payload, messages, model, schema_name, attempt, schema_model, validate_result
+    ) -> BaseModel:
         """One prompt-only recovery request after a truncated or empty generation."""
         if not self.settings.generation_recovery:
             raise LLMError(f"{anomaly}；LM_GENERATION_RECOVERY=false") from anomaly
@@ -338,8 +384,9 @@ class ChatClient:
             recovery_payload["max_tokens"] = max(payload.get("max_tokens") or 0, self.settings.max_tokens)
         recovery_payload["messages"] = [*messages, {"role": "user", "content": _RECOVERY_INSTRUCTION}]
         try:
-            content = self._completion(payload=recovery_payload, model=model, schema_name=schema_name,
-                                       attempt=attempt, recovery=True)
+            content = self._completion(
+                payload=recovery_payload, model=model, schema_name=schema_name, attempt=attempt, recovery=True
+            )
         except LLMError as recovery_exc:
             raise LLMError(f"生成异常恢复失败；original={anomaly}; recovery={recovery_exc}") from recovery_exc
         try:
@@ -351,8 +398,9 @@ class ChatClient:
         return validated
 
     @staticmethod
-    def _validate(content: str, schema_model: type[BaseModel],
-                  validate_result: Callable[[BaseModel], None] | None) -> BaseModel:
+    def _validate(
+        content: str, schema_model: type[BaseModel], validate_result: Callable[[BaseModel], None] | None
+    ) -> BaseModel:
         validated = schema_model.model_validate(parse_json_object(content))
         if validate_result is not None:
             validate_result(validated)
@@ -372,51 +420,51 @@ _FORMAT_HINTS = {
         'Top level MUST be {"links":[{"en_ids":["en_1"],'
         '"zh_ids":["zh_1"],"relation":"equivalent","reason":"..."}]}. '
         'If none match, return {"links":[]}. '
-        'Reconsider the keyword inventories: do NOT group unrelated '
-        'keywords into one link or fabricate missing counterparts.'
+        "Reconsider the keyword inventories: do NOT group unrelated "
+        "keywords into one link or fabricate missing counterparts."
     ),
     "keyword_extraction": (
         'Top level MUST be {"units":[{"kind":"concept",'
         '"claim":"...","evidence":"..."}]}. '
-        'evidence must be ONE exact, contiguous substring of original text. '
+        "evidence must be ONE exact, contiguous substring of original text. "
         'For a list "image, audio, text samples", quote "image", not "image samples".'
     ),
     "atomic_refinement": (
         'Return exactly {"units":[{"kind":"enumerated_item",'
         '"claim":"...","evidence":"..."}]}. '
-        'This is a COMPLETE replacement inventory, not additional missing units. '
-        'Each independently omittable item needs its own unit. '
-        'All evidence must be exact contiguous source substrings (spaces at '
-        'Chinese/ASCII boundaries will be normalized by the caller).'
+        "This is a COMPLETE replacement inventory, not additional missing units. "
+        "Each independently omittable item needs its own unit. "
+        "All evidence must be exact contiguous source substrings (spaces at "
+        "Chinese/ASCII boundaries will be normalized by the caller)."
     ),
     "coverage_audit": (
         'Top level MUST be {"missing_units":[{"kind":"concept",'
         '"claim":"...","evidence":"..."}]}. '
         'Return {"missing_units":[]} if nothing MATERIAL is missing. '
-        'Each evidence MUST be an exact contiguous substring of source. '
-        'Never repeat existing units or invent facts.'
+        "Each evidence MUST be an exact contiguous substring of source. "
+        "Never repeat existing units or invent facts."
     ),
     "alignment_evidence_check": (
         'Return exactly {"status":"supported|unsupported|uncertain",'
         '"en_evidence":"...","zh_evidence":"...","reason":"..."}. '
-        'Supported requires two verbatim ORIGINAL quotes proving the '
-        'SAME disputed fact. If they cannot be found, return unsupported or uncertain.'
+        "Supported requires two verbatim ORIGINAL quotes proving the "
+        "SAME disputed fact. If they cannot be found, return unsupported or uncertain."
     ),
     "paragraph_review": (
         'Return exactly {"verdict":"PASS|FAIL|UNSURE",'
         '"reason":"...","issues":[]}. '
-        'If FAIL, issues must contain objects with kind, reason, '
-        'en_paragraph_ids and zh_paragraph_ids. '
-        'Choose IDs only from english_paragraphs and chinese_paragraphs. '
-        'Do not output literal evidence quotes.'
+        "If FAIL, issues must contain objects with kind, reason, "
+        "en_paragraph_ids and zh_paragraph_ids. "
+        "Choose IDs only from english_paragraphs and chinese_paragraphs. "
+        "Do not output literal evidence quotes."
     ),
     "paragraph_arbitration": (
         'Return exactly {"verdict":"PASS|FAIL|UNSURE",'
         '"issue_kind":"none|missing_in_chinese|missing_in_english|conflict",'
         '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}. '
-        'For FAIL with conflict cite BOTH actual source paragraph IDs; '
-        'for initial FAIL to PASS cite BOTH original language sources. '
-        'Do not output literal evidence quotes.'
+        "For FAIL with conflict cite BOTH actual source paragraph IDs; "
+        "for initial FAIL to PASS cite BOTH original language sources. "
+        "Do not output literal evidence quotes."
     ),
     "paragraph_dispute_recheck": (
         'Return exactly {"issues":[{"issue_index":0,'
@@ -424,31 +472,31 @@ _FORMAT_HINTS = {
         '"basis":"formal_numeric|other",'
         '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}],'
         '"reason":"..."}. '
-        'Assess EVERY reviewer issue index exactly once, using source '
-        'paragraph IDs. A refuted issue must cite BOTH sources. '
-        'Do not return a generic issue list or evidence quotes.'
+        "Assess EVERY reviewer issue index exactly once, using source "
+        "paragraph IDs. A refuted issue must cite BOTH sources. "
+        "Do not return a generic issue list or evidence quotes."
     ),
     "paragraph_alignment_support": (
         'Return exactly {"status":"supported|unsupported|uncertain",'
         '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}. '
-        'Only supported can assert that every disputed fact aligns; '
-        'in that case cite BOTH source paragraph IDs. '
-        'Do not output literal evidence quotes.'
+        "Only supported can assert that every disputed fact aligns; "
+        "in that case cite BOTH source paragraph IDs. "
+        "Do not output literal evidence quotes."
     ),
     "independent_review": (
         'Return exactly {"verdict":"PASS","reason":"...","issues":[]} '
-        'or FAIL with quoted grounded issues. No ID repairs or resolved arrays.'
+        "or FAIL with quoted grounded issues. No ID repairs or resolved arrays."
     ),
     "dispute_arbitration": (
-        'Return exactly a JSON object with verdict, issue_kind, en_evidence, '
-        'zh_evidence and reason; do not invent quotes.'
+        "Return exactly a JSON object with verdict, issue_kind, en_evidence, "
+        "zh_evidence and reason; do not invent quotes."
     ),
 }
 _FORMAT_HINTS["keyword_extraction_fallback"] = _FORMAT_HINTS["keyword_extraction"]
 _DEFAULT_FORMAT_HINT = (
-    'Top level MUST contain ALL THREE ARRAYS: '
+    "Top level MUST contain ALL THREE ARRAYS: "
     '{"issues":[],"resolved_missing":[],"resolved_conflicts":[]}. '
-    'Every nonempty quoted evidence must be an exact substring of original text.'
+    "Every nonempty quoted evidence must be an exact substring of original text."
 )
 
 
@@ -458,23 +506,27 @@ def _format_hint(schema_name: str, user: str) -> str:
             allowed = json.loads(user).get("allowed_paragraph_ids", [])
         except (ValueError, TypeError):
             allowed = []
-        return ('Return exactly one object with "units" (array). '
-                'Each unit must contain only "kind", "claim", and '
-                '"paragraph_ids" (an array of strings). '
-                'Choose paragraph IDs only from the allowed input list: '
-                f'{json.dumps(allowed, ensure_ascii=False)}. '
-                'Never output any evidence string, character offset, '
-                'issues, resolved_missing, or resolved_conflicts. '
-                'Return {"units":[]} only if no meaningful fact exists.')
+        return (
+            'Return exactly one object with "units" (array). '
+            'Each unit must contain only "kind", "claim", and '
+            '"paragraph_ids" (an array of strings). '
+            "Choose paragraph IDs only from the allowed input list: "
+            f"{json.dumps(allowed, ensure_ascii=False)}. "
+            "Never output any evidence string, character offset, "
+            "issues, resolved_missing, or resolved_conflicts. "
+            'Return {"units":[]} only if no meaningful fact exists.'
+        )
     return _FORMAT_HINTS.get(schema_name, _DEFAULT_FORMAT_HINT)
 
 
 def _retry_feedback(schema_name: str, user: str, exc: Exception, expected_schema: dict) -> str:
     """Ask for a full regeneration (not a re-wrapped answer) after a validation failure."""
-    return ("Your previous response FAILED JSON schema or source-reference validation. "
-            "Regenerate the FULL answer, not merely an outer wrapper. "
-            "Respond with ONE JSON object matching the schema EXACTLY; "
-            "no extra top-level fields, no prose, no code fences. "
-            f"{_format_hint(schema_name, user)} "
-            f"Specific validation error: {str(exc)}. "
-            f"Expected JSON schema: {json.dumps(expected_schema, ensure_ascii=False)}")
+    return (
+        "Your previous response FAILED JSON schema or source-reference validation. "
+        "Regenerate the FULL answer, not merely an outer wrapper. "
+        "Respond with ONE JSON object matching the schema EXACTLY; "
+        "no extra top-level fields, no prose, no code fences. "
+        f"{_format_hint(schema_name, user)} "
+        f"Specific validation error: {str(exc)}. "
+        f"Expected JSON schema: {json.dumps(expected_schema, ensure_ascii=False)}"
+    )

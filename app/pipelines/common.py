@@ -1,4 +1,5 @@
 """Steps shared by the two extraction pipelines (paragraph and quote evidence)."""
+
 from __future__ import annotations
 
 import re
@@ -11,18 +12,26 @@ from app.models import KeyUnit, Link
 # patterns are deliberately broader, so only clearly new content is flagged.
 _CLAIM_FORCE = re.compile(
     r"\b(?:must|shall|mandatory|required|compulsory|obligatory|have to|has to)\b|"
-    r"必须|务必|强制|须|应当|应包含|应提交", re.I
+    r"必须|务必|强制|须|应当|应包含|应提交",
+    re.I,
 )
 _SOURCE_FORCE = re.compile(
     r"\b(?:must|shall|mandatory|required|compulsory|obligatory|have to|has to|"
-    r"should|need|needs|necessary)\b|必须|务必|强制|须|应|需|要求|不得|不可", re.I
+    r"should|need|needs|necessary)\b|必须|务必|强制|须|应|需|要求|不得|不可",
+    re.I,
 )
 _CLAIM_EXCLUSIVE = re.compile(r"\b(?:only|solely|exclusively)\b|仅|唯一|只允许")
 _SOURCE_EXCLUSIVE = re.compile(r"\b(?:only|solely|exclusively)\b|仅|只|唯一|独", re.I)
-_CLAIM_NEGATION = re.compile(r"\b(?:not|never|without|cannot|prohibited|forbidden|no)\b|"
-                             r"不得|禁止|没有|未|无需|不", re.I)
-_SOURCE_NEGATION = re.compile(r"\b(?:not|never|without|cannot|prohibited|forbidden|no)\b|"
-                              r"不得|禁止|没有|未|无需|不|无|非", re.I)
+_CLAIM_NEGATION = re.compile(
+    r"\b(?:not|never|without|cannot|prohibited|forbidden|no)\b|"
+    r"不得|禁止|没有|未|无需|不",
+    re.I,
+)
+_SOURCE_NEGATION = re.compile(
+    r"\b(?:not|never|without|cannot|prohibited|forbidden|no)\b|"
+    r"不得|禁止|没有|未|无需|不|无|非",
+    re.I,
+)
 _ARABIC_NUMBER = re.compile(r"(?<![a-zA-Z0-9])\d+(?:\.\d+)?(?![a-zA-Z0-9])")
 
 SHORT_SOURCE_CHARS = 220
@@ -41,9 +50,15 @@ def clean_unsupported_claim(source: str, unit, stage: str, events: list[str]) ->
     numeric = bool(set(_ARABIC_NUMBER.findall(unit.claim)) - set(_ARABIC_NUMBER.findall(source)))
     if not (force or exclusive or negative or numeric):
         return
-    reason = ("unsupported obligation" if force else
-              "unsupported exclusivity" if exclusive else
-              "unsupported negation" if negative else "unsupported numeric detail")
+    reason = (
+        "unsupported obligation"
+        if force
+        else "unsupported exclusivity"
+        if exclusive
+        else "unsupported negation"
+        if negative
+        else "unsupported numeric detail"
+    )
     if len(source) <= SHORT_SOURCE_CHARS:
         unit.claim = source
         events.append(f"{stage}: replaced {reason} in claim with verbatim source")
@@ -77,8 +92,9 @@ def match_coverage(en: list[KeyUnit], zh: list[KeyUnit], links: list[Link]):
     return missing_zh, missing_en, conflicts
 
 
-def dispute_snapshot(missing_zh: list[KeyUnit], missing_en: list[KeyUnit], conflicts: list[Link],
-                     guard_issues: list[str]) -> dict:
+def dispute_snapshot(
+    missing_zh: list[KeyUnit], missing_en: list[KeyUnit], conflicts: list[Link], guard_issues: list[str]
+) -> dict:
     """The preliminary findings shown to the arbitration and support stages."""
     return {
         "missing_in_chinese": [u.model_dump() for u in missing_zh],
@@ -88,14 +104,23 @@ def dispute_snapshot(missing_zh: list[KeyUnit], missing_en: list[KeyUnit], confl
     }
 
 
-def extraction_summary(verdict: str, initial: str, mode: str, verifier: str, review_verdict: str | None,
-                       arbitration_verdict: str | None, missing_count: int, conflict_count: int,
-                       guard_count: int) -> str:
+def extraction_summary(
+    verdict: str,
+    initial: str,
+    mode: str,
+    verifier: str,
+    review_verdict: str | None,
+    arbitration_verdict: str | None,
+    missing_count: int,
+    conflict_count: int,
+    guard_count: int,
+) -> str:
     if mode == "primary":
         review_part = "未启用独立复核。"
     else:
-        arbitration_part = ("已执行争议仲裁，结论 " + arbitration_verdict
-                            if arbitration_verdict else "无需争议仲裁")
+        arbitration_part = "已执行争议仲裁，结论 " + arbitration_verdict if arbitration_verdict else "无需争议仲裁"
         review_part = f"{verifier} 复核 {review_verdict}；{arbitration_part}。"
-    return (f"{verdict}：主模型初判 {initial}；{review_part}"
-            f" 初步缺失 {missing_count} 项、匹配冲突 {conflict_count} 项、确定性约束保护 {guard_count} 项。")
+    return (
+        f"{verdict}：主模型初判 {initial}；{review_part}"
+        f" 初步缺失 {missing_count} 项、匹配冲突 {conflict_count} 项、确定性约束保护 {guard_count} 项。"
+    )

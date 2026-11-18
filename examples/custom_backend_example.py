@@ -12,6 +12,7 @@ Demo service wire contract: POST {base_url}/generate
 For a different real API implement the conversion accordingly. Never alter the
 semantic Pipeline, only this adapter. JSON validation stays in ChatClient.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -38,8 +39,12 @@ class ExampleNonOpenAIBackend:
             res = self.http.post(
                 f"{self.config.base_url}/generate",
                 headers=headers,
-                json={"model": payload["model"], "system": system,
-                      "prompt": prompt, "max_new_tokens": payload["max_tokens"]},
+                json={
+                    "model": payload["model"],
+                    "system": system,
+                    "prompt": prompt,
+                    "max_new_tokens": payload["max_tokens"],
+                },
                 timeout=self.config.timeout_seconds,
             )
             if res.is_error:
@@ -49,8 +54,11 @@ class ExampleNonOpenAIBackend:
             if not isinstance(text, str):
                 raise BackendError("Custom provider must supply string output.text")
             usage = data.get("usage") or {}
-            return BackendResponse(content=text, http_status=res.status_code,
-                                   prompt_tokens=usage.get("input_tokens"),
-                                   completion_tokens=usage.get("output_tokens"))
+            return BackendResponse(
+                content=text,
+                http_status=res.status_code,
+                prompt_tokens=usage.get("input_tokens"),
+                completion_tokens=usage.get("output_tokens"),
+            )
         except (httpx.HTTPError, ValueError, KeyError, TypeError) as exc:
             raise BackendError(f"Custom provider request failed ({type(exc).__name__})") from exc

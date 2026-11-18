@@ -4,6 +4,7 @@ Models retype exact source quotes as evidence; every quote is checked against th
 original text (whitespace at CJK/ASCII boundaries may be normalized). The default
 paragraph mode (pipelines/paragraph.py) avoids retyping altogether.
 """
+
 from __future__ import annotations
 
 import re
@@ -76,8 +77,9 @@ def coverage_audit_reasons(text: str, units: list[KeyUnit]) -> list[str]:
         reasons.append("possible_collapsed_enumeration")
 
     # Train/test/evaluation roles that no unit mentions.
-    role_tokens = re.findall(r"\b(?:train(?:ed|ing)?|test(?:ed|ing)?|evaluat(?:ed|ion|ing)?)\b|训练|测试|评估",
-                             text, re.I)
+    role_tokens = re.findall(
+        r"\b(?:train(?:ed|ing)?|test(?:ed|ing)?|evaluat(?:ed|ion|ing)?)\b|训练|测试|评估", text, re.I
+    )
     unit_claims = " ".join(f"{unit.claim} {unit.evidence}" for unit in units).lower()
     if role_tokens and all(token.lower() not in unit_claims for token in role_tokens):
         reasons.append("possible_missing_action_or_role")
@@ -134,20 +136,31 @@ def filter_review_issues(issues: list[ReviewIssue], english: str, chinese: str):
             grounded_zh = resolve_evidence(chinese, issue.zh_evidence)
             if grounded_zh is not None:
                 issue.zh_evidence = grounded_zh
-        if (issue.en_evidence and issue.en_evidence not in english or
-                issue.zh_evidence and issue.zh_evidence not in chinese or
-                issue.kind == "missing_in_chinese" and not issue.en_evidence or
-                issue.kind == "missing_in_english" and not issue.zh_evidence or
-                issue.kind == "conflict" and not (issue.en_evidence and issue.zh_evidence)):
+        if (
+            issue.en_evidence
+            and issue.en_evidence not in english
+            or issue.zh_evidence
+            and issue.zh_evidence not in chinese
+            or issue.kind == "missing_in_chinese"
+            and not issue.en_evidence
+            or issue.kind == "missing_in_english"
+            and not issue.zh_evidence
+            or issue.kind == "conflict"
+            and not (issue.en_evidence and issue.zh_evidence)
+        ):
             warnings.append(f"忽略无效复核引用：{issue.reason[:100]}")
         else:
             valid.append(issue)
     return valid, warnings
 
 
-def validate_arbitration(answer: ArbitrationDraft, english: str, chinese: str,
-                         initial_verdict: str = "PASS",
-                         allow_missing_pass_evidence: bool = False) -> None:
+def validate_arbitration(
+    answer: ArbitrationDraft,
+    english: str,
+    chinese: str,
+    initial_verdict: str = "PASS",
+    allow_missing_pass_evidence: bool = False,
+) -> None:
     if answer.en_evidence:
         grounded_en = resolve_evidence(english, answer.en_evidence)
         if grounded_en is None:
@@ -169,15 +182,25 @@ def validate_arbitration(answer: ArbitrationDraft, english: str, chinese: str,
             raise LLMError("仲裁冲突需要两侧原文证据")
     elif answer.issue_kind != "none":
         raise LLMError("仲裁 PASS/UNSURE 不能同时声明明确问题")
-    if (not allow_missing_pass_evidence and answer.verdict == "PASS"
-            and initial_verdict == "FAIL" and not (answer.en_evidence and answer.zh_evidence)):
+    if (
+        not allow_missing_pass_evidence
+        and answer.verdict == "PASS"
+        and initial_verdict == "FAIL"
+        and not (answer.en_evidence and answer.zh_evidence)
+    ):
         raise LLMError("仲裁撤销初判 FAIL 时必须分别引用两侧可核对原文")
 
 
-def validate_alignment_evidence(answer: AlignmentEvidenceDraft, english: str, chinese: str,
-                                en: list[KeyUnit], zh: list[KeyUnit],
-                                missing_zh: list[KeyUnit], missing_en: list[KeyUnit],
-                                conflicts: list[Link]) -> None:
+def validate_alignment_evidence(
+    answer: AlignmentEvidenceDraft,
+    english: str,
+    chinese: str,
+    en: list[KeyUnit],
+    zh: list[KeyUnit],
+    missing_zh: list[KeyUnit],
+    missing_en: list[KeyUnit],
+    conflicts: list[Link],
+) -> None:
     """Support for FAIL→PASS: two real quotes that overlap every disputed unit's evidence.
 
     Real quotes are necessary, not sufficient: the support model must also assert
@@ -218,8 +241,15 @@ def _numbered(prefix: str, units) -> list[KeyUnit]:
     return [KeyUnit(id=f"{prefix}_{i}", **u.model_dump()) for i, u in enumerate(units, 1)]
 
 
-def extract(runner: StageRunner, text: str, language: str, prefix: str, model: str,
-            fallback_model: str | None, events: list[str]) -> list[KeyUnit]:
+def extract(
+    runner: StageRunner,
+    text: str,
+    language: str,
+    prefix: str,
+    model: str,
+    fallback_model: str | None,
+    events: list[str],
+) -> list[KeyUnit]:
     """One extraction pass, an omission audit only when triggered, and a fallback for empty output.
 
     LM_EXTRACTION_PROMPT=legacy keeps the original retry behaviour for A/B.
@@ -229,7 +259,9 @@ def extract(runner: StageRunner, text: str, language: str, prefix: str, model: s
 
     def validate(answer: ExtractedDraft) -> None:
         if len(answer.units) > settings.max_keywords:
-            raise LLMError(f"{language} 提取 {len(answer.units)} 项，超过 MAX_KEYWORDS={settings.max_keywords}。请拆分文本。")
+            raise LLMError(
+                f"{language} 提取 {len(answer.units)} 项，超过 MAX_KEYWORDS={settings.max_keywords}。请拆分文本。"
+            )
         for unit in answer.units:
             grounded = resolve_evidence(text, unit.evidence)
             if grounded is None:
@@ -242,10 +274,15 @@ def extract(runner: StageRunner, text: str, language: str, prefix: str, model: s
 
     def request(system: str, target_model: str = model, fallback: bool = False) -> ExtractedDraft:
         return runner.call(
-            stage + ("_fallback" if fallback else ""), events, target_model, system,
-            fallback_extract_user(text, language, settings.max_keywords) if fallback
+            stage + ("_fallback" if fallback else ""),
+            events,
+            target_model,
+            system,
+            fallback_extract_user(text, language, settings.max_keywords)
+            if fallback
             else extract_user(text, language, settings.max_keywords),
-            ExtractedDraft, "keyword_extraction_fallback" if fallback else "keyword_extraction",
+            ExtractedDraft,
+            "keyword_extraction_fallback" if fallback else "keyword_extraction",
             validate=validate,
         )
 
@@ -253,14 +290,15 @@ def extract(runner: StageRunner, text: str, language: str, prefix: str, model: s
         result = request(EXTRACTION_SYSTEM_LEGACY)
         if not result.units and text.strip():
             events.append(f"{stage}: empty first extract; retrying with explicit instructions")
-            result = request(EXTRACTION_SYSTEM_LEGACY + "\nIMPORTANT: The previous extraction was EMPTY. "
-                             "Re-read the original text and extract any real independently "
-                             "testable key facts or obligations; do not invent facts.")
+            result = request(
+                EXTRACTION_SYSTEM_LEGACY + "\nIMPORTANT: The previous extraction was EMPTY. "
+                "Re-read the original text and extract any real independently "
+                "testable key facts or obligations; do not invent facts."
+            )
     else:
         system = EXTRACTION_SYSTEM_COARSE if settings.extraction_prompt == "coarse" else EXTRACTION_SYSTEM
         result = request(system)
-        result, refined = _atomic_refinement(runner, text, language, prefix, model, stage, events,
-                                             result, validate)
+        result, refined = _atomic_refinement(runner, text, language, prefix, model, stage, events, result, validate)
         result = _coverage_audit(runner, text, language, prefix, model, stage, events, result, refined)
 
     if not result.units and text.strip():
@@ -271,8 +309,11 @@ def extract(runner: StageRunner, text: str, language: str, prefix: str, model: s
 def _atomic_refinement(runner, text, language, prefix, model, stage, events, result, validate):
     """Optionally split an umbrella unit into list items (proposition prompt only)."""
     settings = runner.settings
-    if not (settings.extraction_prompt == "proposition" and settings.atomic_refinement
-            and atomic_refinement_needed(text, _numbered(prefix, result.units))):
+    if not (
+        settings.extraction_prompt == "proposition"
+        and settings.atomic_refinement
+        and atomic_refinement_needed(text, _numbered(prefix, result.units))
+    ):
         return result, False
     events.append(f"{stage}: atomic refinement triggered")
 
@@ -283,10 +324,17 @@ def _atomic_refinement(runner, text, language, prefix, model, stage, events, res
 
     try:
         refined: ExtractedDraft = runner.call(
-            stage + "_atomic_refinement", events, model, ATOMIC_REFINEMENT_SYSTEM,
-            atomic_refinement_user(text, language, [u.model_dump() for u in _numbered(prefix, result.units)],
-                                   settings.max_keywords),
-            ExtractedDraft, "atomic_refinement", validate=validate_refinement)
+            stage + "_atomic_refinement",
+            events,
+            model,
+            ATOMIC_REFINEMENT_SYSTEM,
+            atomic_refinement_user(
+                text, language, [u.model_dump() for u in _numbered(prefix, result.units)], settings.max_keywords
+            ),
+            ExtractedDraft,
+            "atomic_refinement",
+            validate=validate_refinement,
+        )
         if len(refined.units) > len(result.units):
             result = refined
             events.append(f"{stage}: atomic refinement replaced umbrella with {len(result.units)} units")
@@ -325,10 +373,14 @@ def _coverage_audit(runner, text, language, prefix, model, stage, events, result
                 extra.evidence = grounded
 
     audit: CoverageAuditDraft = runner.call(
-        stage + "_coverage_audit", events, model, COVERAGE_AUDIT_SYSTEM,
-        coverage_audit_user(text, language, [u.model_dump() for u in primary_units],
-                            reasons, settings.max_keywords),
-        CoverageAuditDraft, "coverage_audit", validate=validate_audit,
+        stage + "_coverage_audit",
+        events,
+        model,
+        COVERAGE_AUDIT_SYSTEM,
+        coverage_audit_user(text, language, [u.model_dump() for u in primary_units], reasons, settings.max_keywords),
+        CoverageAuditDraft,
+        "coverage_audit",
+        validate=validate_audit,
     )
     existing = {(u.kind, u.claim.casefold(), u.evidence) for u in result.units}
     extras = []
@@ -347,20 +399,22 @@ def _fallback_extraction(runner, text, model, fallback_model, stage, events, req
     """A distinct second extraction for a non-empty source that yielded no facts."""
     settings = runner.settings
     target = fallback_model or model
-    events.append(f"{stage}: " +
-                  (f"empty after retry; independent fallback model={target}"
-                   if settings.extraction_prompt == "legacy" else
-                   f"no facts after extraction/audit; fallback model={target}"))
-    prompt = (FALLBACK_EXTRACTION_SYSTEM_COARSE if settings.extraction_prompt == "coarse"
-              else FALLBACK_EXTRACTION_SYSTEM)
+    events.append(
+        f"{stage}: "
+        + (
+            f"empty after retry; independent fallback model={target}"
+            if settings.extraction_prompt == "legacy"
+            else f"no facts after extraction/audit; fallback model={target}"
+        )
+    )
+    prompt = FALLBACK_EXTRACTION_SYSTEM_COARSE if settings.extraction_prompt == "coarse" else FALLBACK_EXTRACTION_SYSTEM
     result = request(prompt, target_model=target, fallback=True)
     if result.units:
         return result
     events.append(f"{stage}: fallback produced no fact units")
     # Last resort for a short coarse source: the exact original sentence as the one
     # inventory item (grounded, not a PASS decision). Long sources fail closed.
-    if (settings.extraction_prompt == "coarse" and 12 <= len(text.strip()) <= 220
-            and re.search(r"[A-Za-z一-鿿]", text)):
+    if settings.extraction_prompt == "coarse" and 12 <= len(text.strip()) <= 220 and re.search(r"[A-Za-z一-鿿]", text):
         events.append(f"{stage}: source-anchored recovery after two empty inventories; original comparison required")
         return ExtractedDraft(units=[{"kind": "concept", "claim": text.strip(), "evidence": text.strip()}])
     return result
@@ -369,8 +423,14 @@ def _fallback_extraction(runner, text, model, fallback_model, stage, events, req
 # --------------------------------------------------------------------------- pipeline
 
 
-def run(runner: StageRunner, english: str, chinese: str, requested_model: str | None = None,
-        requested_verifier: str | None = None, mode: str = "dual") -> CheckResult:
+def run(
+    runner: StageRunner,
+    english: str,
+    chinese: str,
+    requested_model: str | None = None,
+    requested_verifier: str | None = None,
+    mode: str = "dual",
+) -> CheckResult:
     model, verifier = runner.choose_models(mode, requested_model, requested_verifier)
     diagnostics: list[str] = []
     fallback_model = verifier if mode == "dual" else model
@@ -379,14 +439,17 @@ def run(runner: StageRunner, english: str, chinese: str, requested_model: str | 
     if not en and not zh:
         raise PipelineStageError("extract_both", "两侧备用抽取后仍无关键事实，无法可靠判定 PASS。")
     matches: MatchDraft = runner.call(
-        "keyword_matching", diagnostics, model, MATCH_SYSTEM,
+        "keyword_matching",
+        diagnostics,
+        model,
+        MATCH_SYSTEM,
         match_user(english, chinese, [u.model_dump() for u in en], [u.model_dump() for u in zh]),
-        MatchDraft, "keyword_matching",
+        MatchDraft,
+        "keyword_matching",
         validate=lambda answer: match_coverage(en, zh, answer.links),
     )
     missing_zh, missing_en, conflicts = match_coverage(en, zh, matches.links)
-    guard_issues = (clear_numeric_conflicts(en, zh, matches.links)
-                    + clear_inclusion_conflicts(en, zh, matches.links))
+    guard_issues = clear_numeric_conflicts(en, zh, matches.links) + clear_inclusion_conflicts(en, zh, matches.links)
     initial = "FAIL" if (missing_zh or missing_en or conflicts or guard_issues) else "PASS"
 
     verdict = initial
@@ -396,10 +459,20 @@ def run(runner: StageRunner, english: str, chinese: str, requested_model: str | 
     review_warnings: list[str] = []
     if mode == "dual":
         review = runner.call(
-            "independent_review", diagnostics, verifier, REVIEW_SYSTEM,
-            review_user(english, chinese, [u.model_dump() for u in en], [u.model_dump() for u in zh],
-                        [link.model_dump() for link in matches.links], initial),
-            ReviewDraft, "independent_review",
+            "independent_review",
+            diagnostics,
+            verifier,
+            REVIEW_SYSTEM,
+            review_user(
+                english,
+                chinese,
+                [u.model_dump() for u in en],
+                [u.model_dump() for u in zh],
+                [link.model_dump() for link in matches.links],
+                initial,
+            ),
+            ReviewDraft,
+            "independent_review",
         )
         review_issues, review_warnings = filter_review_issues(review.issues, english, chinese)
         if review.verdict == "PASS" and review.issues:
@@ -412,8 +485,22 @@ def run(runner: StageRunner, english: str, chinese: str, requested_model: str | 
         disagreement = review.verdict != initial or initial == "PASS" and bool(review.issues)
         if disagreement and not (guard_issues and initial == "FAIL"):
             snapshot = dispute_snapshot(missing_zh, missing_en, conflicts, guard_issues)
-            arbitration = _arbitrate(runner, english, chinese, model, verifier, initial, snapshot,
-                                     review, en, zh, missing_zh, missing_en, conflicts, diagnostics)
+            arbitration = _arbitrate(
+                runner,
+                english,
+                chinese,
+                model,
+                verifier,
+                initial,
+                snapshot,
+                review,
+                en,
+                zh,
+                missing_zh,
+                missing_en,
+                conflicts,
+                diagnostics,
+            )
             if arbitration.verdict == "UNSURE":
                 if initial == "PASS":
                     raise LLMError("两模型存在实质异议且仲裁不确定，不能自动 PASS。请人工复核。")
@@ -423,55 +510,101 @@ def run(runner: StageRunner, english: str, chinese: str, requested_model: str | 
         if guard_issues:
             verdict = "FAIL"  # a proven quantity mismatch cannot be overruled
 
-    summary = extraction_summary(verdict, initial, mode, verifier, review.verdict if review else None,
-                                 arbitration.verdict if arbitration else None,
-                                 len(missing_zh) + len(missing_en), len(conflicts), len(guard_issues))
+    summary = extraction_summary(
+        verdict,
+        initial,
+        mode,
+        verifier,
+        review.verdict if review else None,
+        arbitration.verdict if arbitration else None,
+        len(missing_zh) + len(missing_en),
+        len(conflicts),
+        len(guard_issues),
+    )
     return CheckResult(
-        verdict=verdict, model=model, verifier_model=verifier, mode=mode,
-        english_keywords=en, chinese_keywords=zh, links=matches.links,
+        verdict=verdict,
+        model=model,
+        verifier_model=verifier,
+        mode=mode,
+        english_keywords=en,
+        chinese_keywords=zh,
+        links=matches.links,
         missing_in_chinese=missing_zh if verdict == "FAIL" else [],
         missing_in_english=missing_en if verdict == "FAIL" else [],
         conflicts=conflicts if verdict == "FAIL" else [],
         preliminary_missing_in_chinese=missing_zh,
-        preliminary_missing_in_english=missing_en, preliminary_conflicts=conflicts,
-        review=review, review_issues=review_issues,
-        arbitration=arbitration, arbitrated=arbitration is not None,
-        review_warnings=review_warnings, deterministic_issues=guard_issues,
-        initial_verdict=initial, summary=summary, diagnostics=diagnostics,
+        preliminary_missing_in_english=missing_en,
+        preliminary_conflicts=conflicts,
+        review=review,
+        review_issues=review_issues,
+        arbitration=arbitration,
+        arbitrated=arbitration is not None,
+        review_warnings=review_warnings,
+        deterministic_issues=guard_issues,
+        initial_verdict=initial,
+        summary=summary,
+        diagnostics=diagnostics,
     )
 
 
-def _arbitrate(runner, english, chinese, model, verifier, initial, snapshot, review,
-               en, zh, missing_zh, missing_en, conflicts, diagnostics) -> ArbitrationDraft:
+def _arbitrate(
+    runner,
+    english,
+    chinese,
+    model,
+    verifier,
+    initial,
+    snapshot,
+    review,
+    en,
+    zh,
+    missing_zh,
+    missing_en,
+    conflicts,
+    diagnostics,
+) -> ArbitrationDraft:
     """Arbitration, plus independent quote support whenever it overturns an initial FAIL."""
     arbitration: ArbitrationDraft = runner.call(
-        "dispute_arbitration", diagnostics, model, ARBITRATION_SYSTEM,
+        "dispute_arbitration",
+        diagnostics,
+        model,
+        ARBITRATION_SYSTEM,
         arbitrate_user(english, chinese, initial, snapshot, review.model_dump()),
-        ArbitrationDraft, "dispute_arbitration",
+        ArbitrationDraft,
+        "dispute_arbitration",
         # Missing PASS quotes are obtained in a separate step below.
-        validate=lambda answer: validate_arbitration(answer, english, chinese, initial,
-                                                     allow_missing_pass_evidence=True),
+        validate=lambda answer: validate_arbitration(
+            answer, english, chinese, initial, allow_missing_pass_evidence=True
+        ),
     )
     if initial != "FAIL" or arbitration.verdict != "PASS":
         return arbitration
     if not (arbitration.en_evidence and arbitration.zh_evidence):
         # The verifier supplies the two quotes; the host only checks them.
         evidence = runner.call(
-            "alignment_evidence_check", diagnostics, verifier, EVIDENCE_SUPPORT_SYSTEM,
+            "alignment_evidence_check",
+            diagnostics,
+            verifier,
+            EVIDENCE_SUPPORT_SYSTEM,
             evidence_support_user(english, chinese, snapshot, review.model_dump(), arbitration.model_dump()),
-            AlignmentEvidenceDraft, "alignment_evidence_check",
+            AlignmentEvidenceDraft,
+            "alignment_evidence_check",
             validate=lambda answer: validate_alignment_evidence(
-                answer, english, chinese, en, zh, missing_zh, missing_en, conflicts),
+                answer, english, chinese, en, zh, missing_zh, missing_en, conflicts
+            ),
         )
         if evidence.status != "supported":
             raise PipelineStageError(
                 "alignment_evidence_check",
-                "双模型无法提供足够证据恢复 PASS（" + evidence.status + "）：" + evidence.reason)
-        arbitration = arbitration.model_copy(update={
-            "en_evidence": evidence.en_evidence,
-            "zh_evidence": evidence.zh_evidence,
-            "reason": (arbitration.reason + " | 独立证据复核：" + evidence.reason)[:600],
-        })
+                "双模型无法提供足够证据恢复 PASS（" + evidence.status + "）：" + evidence.reason,
+            )
+        arbitration = arbitration.model_copy(
+            update={
+                "en_evidence": evidence.en_evidence,
+                "zh_evidence": evidence.zh_evidence,
+                "reason": (arbitration.reason + " | 独立证据复核：" + evidence.reason)[:600],
+            }
+        )
         try:
             validate_arbitration(arbitration, english, chinese, initial)
         except LLMError as exc:
@@ -480,9 +613,20 @@ def _arbitrate(runner, english, chinese, model, verifier, initial, snapshot, rev
     # Also applies when the arbiter supplied both quotes itself.
     try:
         validate_alignment_evidence(
-            AlignmentEvidenceDraft(status="supported", en_evidence=arbitration.en_evidence,
-                                   zh_evidence=arbitration.zh_evidence, reason=arbitration.reason),
-            english, chinese, en, zh, missing_zh, missing_en, conflicts)
+            AlignmentEvidenceDraft(
+                status="supported",
+                en_evidence=arbitration.en_evidence,
+                zh_evidence=arbitration.zh_evidence,
+                reason=arbitration.reason,
+            ),
+            english,
+            chinese,
+            en,
+            zh,
+            missing_zh,
+            missing_en,
+            conflicts,
+        )
     except LLMError as exc:
         raise PipelineStageError("dispute_arbitration", str(exc)) from exc
     return arbitration

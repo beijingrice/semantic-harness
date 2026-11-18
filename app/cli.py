@@ -1,4 +1,5 @@
 """命令行版：bilingual-check --en '...' --zh '...'，亦可读取 UTF-8 文件。"""
+
 import argparse
 import json
 import sys

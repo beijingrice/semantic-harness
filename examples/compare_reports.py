@@ -5,6 +5,7 @@ Usage:
 The intersection is essential: comparing 51-case accuracy against 57-case accuracy
 without controlling for ERROR exclusions is misleading.
 """
+
 import argparse
 import json
 from pathlib import Path
@@ -21,25 +22,39 @@ def parse(path: Path):
 
 def compare(old: dict, new: dict) -> dict:
     same = sorted(set(old) & set(new))
-    both = [key for key in same if old[key].get("predicted") in ("PASS", "FAIL")
-            and new[key].get("predicted") in ("PASS", "FAIL")]
+    both = [
+        key
+        for key in same
+        if old[key].get("predicted") in ("PASS", "FAIL") and new[key].get("predicted") in ("PASS", "FAIL")
+    ]
     for key in both:
         if old[key]["expected"] != new[key]["expected"]:
             raise ValueError(f"Dataset labels changed for {key}; comparison invalid")
     old_group = [old[key] for key in both]
     new_group = [new[key] for key in both]
+
     def brief(items):
-        return {k: v for k, v in summarize(items).items() if k in
-                ("total", "accuracy", "correct", "false_pass", "false_pass_rate",
-                 "false_fail", "false_fail_rate")}
-    changed = [{"id": key, "expected": old[key]["expected"],
-                "old": old[key]["predicted"], "new": new[key]["predicted"]}
-               for key in both if old[key]["predicted"] != new[key]["predicted"]]
-    return {"old_total": len(old), "new_total": len(new),
-            "shared_case_ids": len(same), "both_evaluated": len(both),
-            "old": brief(old_group), "new": brief(new_group),
-            "improvements": [x for x in changed if x["new"] == x["expected"]],
-            "regressions": [x for x in changed if x["old"] == x["expected"]]}
+        return {
+            k: v
+            for k, v in summarize(items).items()
+            if k in ("total", "accuracy", "correct", "false_pass", "false_pass_rate", "false_fail", "false_fail_rate")
+        }
+
+    changed = [
+        {"id": key, "expected": old[key]["expected"], "old": old[key]["predicted"], "new": new[key]["predicted"]}
+        for key in both
+        if old[key]["predicted"] != new[key]["predicted"]
+    ]
+    return {
+        "old_total": len(old),
+        "new_total": len(new),
+        "shared_case_ids": len(same),
+        "both_evaluated": len(both),
+        "old": brief(old_group),
+        "new": brief(new_group),
+        "improvements": [x for x in changed if x["new"] == x["expected"]],
+        "regressions": [x for x in changed if x["old"] == x["expected"]],
+    }
 
 
 def main():

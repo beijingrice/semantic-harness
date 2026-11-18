@@ -4,6 +4,7 @@ Environment variables are read every time ``Settings()`` is constructed (not
 once at import time), so runtime changes and test isolation behave as expected.
 Explicit keyword arguments always override the environment.
 """
+
 import os
 from dataclasses import dataclass, field
 
@@ -47,6 +48,7 @@ def _str(name: str, default: str = "", *, lower: bool = False, rstrip_slash: boo
         if rstrip_slash:
             value = value.rstrip("/")
         return value
+
     return field(default_factory=read)
 
 
@@ -127,7 +129,11 @@ class Settings:
         for name, allowed in CHOICES.items():
             value = getattr(self, name)
             if value not in allowed:
-                hint = "（早期的 direct* 实验模式已在 v0.3.0 移除，可从 git tag v0.2.16 找回）" if name == "pipeline" else ""
+                hint = (
+                    "（早期的 direct* 实验模式已在 v0.3.0 移除，可从 git tag v0.2.16 找回）"
+                    if name == "pipeline"
+                    else ""
+                )
                 raise ConfigError(f"{ENV_NAMES[name]} 只能为 {' / '.join(allowed)}，当前值为 {value!r}{hint}")
         if self.pipeline == "direct_hardened" and self.evidence_mode != "paragraph":
             raise ConfigError("LM_PIPELINE=direct_hardened 要求 LM_EVIDENCE_MODE=paragraph")

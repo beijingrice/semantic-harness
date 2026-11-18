@@ -5,13 +5,13 @@ be omitted/inserted. Never normalize case, punctuation, entity names,
 internal English word spaces, or numbers. The result is always an actual
 continuous substring copied from the source, not a model-edited quotation.
 """
+
 from __future__ import annotations
 
 
 def _cjk(ch: str) -> bool:
     cp = ord(ch)
-    return (0x3400 <= cp <= 0x9FFF or 0xF900 <= cp <= 0xFAFF or
-            0x20000 <= cp <= 0x2FA1F)
+    return 0x3400 <= cp <= 0x9FFF or 0xF900 <= cp <= 0xFAFF or 0x20000 <= cp <= 0x2FA1F
 
 
 def _ascii_word(ch: str) -> bool:

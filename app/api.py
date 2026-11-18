@@ -1,4 +1,5 @@
 """FastAPI 应用：网页界面以及可直接集成的 JSON API。"""
+
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -41,15 +42,22 @@ def status():
             if client.settings.model_discovery == "required":
                 raise
             models, discovery_available = [], False
-        return {"connected": connected, "models": models, "model_discovery_available": discovery_available,
-                "configured_model": client.settings.model, "configured_verifier_model": client.settings.verifier_model,
-                "base_url": client.settings.base_url, "verifier_base_url": client.settings.verifier_base_url or client.settings.base_url,
-                "backend": client.settings.backend, "verifier_backend": client.settings.verifier_backend or client.settings.backend,
-                "schema_mode": client.settings.schema_mode, "json_schema": client.settings.json_schema,
-                "evidence_mode": client.settings.evidence_mode}
+        return {
+            "connected": connected,
+            "models": models,
+            "model_discovery_available": discovery_available,
+            "configured_model": client.settings.model,
+            "configured_verifier_model": client.settings.verifier_model,
+            "base_url": client.settings.base_url,
+            "verifier_base_url": client.settings.verifier_base_url or client.settings.base_url,
+            "backend": client.settings.backend,
+            "verifier_backend": client.settings.verifier_backend or client.settings.backend,
+            "schema_mode": client.settings.schema_mode,
+            "json_schema": client.settings.json_schema,
+            "evidence_mode": client.settings.evidence_mode,
+        }
     except LLMError as exc:
-        return {"connected": False, "models": [], "error": str(exc),
-                "base_url": client.settings.base_url}
+        return {"connected": False, "models": [], "error": str(exc), "base_url": client.settings.base_url}
     finally:
         client.close()
 
@@ -61,7 +69,9 @@ def check(request: CheckRequest):
     except (ConfigError, BackendError) as exc:
         raise HTTPException(status_code=500, detail=f"配置错误：{exc}") from exc
     try:
-        return Checker(client, client.settings).check(request.english, request.chinese, request.model, request.verifier_model, request.mode)
+        return Checker(client, client.settings).check(
+            request.english, request.chinese, request.model, request.verifier_model, request.mode
+        )
     except ConfigError as exc:
         # 服务端配置问题，不是模型故障，也不是业务 FAIL。
         raise HTTPException(status_code=500, detail=f"配置错误：{exc}") from exc

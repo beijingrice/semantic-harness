@@ -8,6 +8,7 @@ Stages: extraction (or a source-only fast path) → matching → deterministic
 numeric guards → independent review → arbitration on disagreement → support
 check (FAIL→PASS) or objection recheck (PASS / review FAIL / arbitration PASS).
 """
+
 from __future__ import annotations
 
 from app.dispute_resolution import narrow_exactness_refutation, numeric_equivalence_certificates
@@ -65,8 +66,15 @@ _OVER_EXTRACTION_UNITS = 9
 # --------------------------------------------------------------------------- extraction
 
 
-def extract(runner: StageRunner, source: str, language: str, prefix: str, model: str,
-            fallback_model: str | None, events: list[str]) -> list[KeyUnit]:
+def extract(
+    runner: StageRunner,
+    source: str,
+    language: str,
+    prefix: str,
+    model: str,
+    fallback_model: str | None,
+    events: list[str],
+) -> list[KeyUnit]:
     settings = runner.settings
     paragraphs = build_paragraphs(source, prefix)
     stage = f"extract_{language.lower()}"
@@ -85,21 +93,29 @@ def extract(runner: StageRunner, source: str, language: str, prefix: str, model:
             except ValueError as exc:
                 raise LLMError(str(exc)) from exc
             cited = paragraph_evidence(unit.paragraph_ids, paragraphs)
-            view = KeyUnit(id="temp", kind=unit.kind, claim=unit.claim,
-                           evidence=cited, paragraph_ids=unit.paragraph_ids)
+            view = KeyUnit(
+                id="temp", kind=unit.kind, claim=unit.claim, evidence=cited, paragraph_ids=unit.paragraph_ids
+            )
             clean_unsupported_claim(cited, view, stage, events)
             unit.claim = view.claim[:220]
 
-    max_tokens = (min(settings.max_tokens, settings.extraction_max_tokens)
-                  if settings.extraction_fast_path and 0 < settings.extraction_max_tokens and short_single
-                  else None)
+    max_tokens = (
+        min(settings.max_tokens, settings.extraction_max_tokens)
+        if settings.extraction_fast_path and 0 < settings.extraction_max_tokens and short_single
+        else None
+    )
 
     def invoke(prompt: str, target_model: str, fallback: bool = False) -> ParagraphExtractedDraft:
         return runner.call(
-            stage + ("_fallback" if fallback else ""), events, target_model, prompt,
+            stage + ("_fallback" if fallback else ""),
+            events,
+            target_model,
+            prompt,
             paragraph_extract_user(source, language, compact_paragraphs(paragraphs), settings.max_keywords),
-            ParagraphExtractedDraft, "paragraph_extraction_fallback" if fallback else "paragraph_extraction",
-            validate=validate, max_tokens=max_tokens,
+            ParagraphExtractedDraft,
+            "paragraph_extraction_fallback" if fallback else "paragraph_extraction",
+            validate=validate,
+            max_tokens=max_tokens,
         )
 
     result = invoke(EXTRACTION_SYSTEM_PARAGRAPH, model)
@@ -131,9 +147,15 @@ def _dedupe(drafts, raw_claims, paragraphs, prefix, stage, events) -> list[KeyUn
             events.append(f"{stage}: discarded exact duplicate claim with identical paragraph IDs")
             continue
         seen.add(key)
-        units.append(KeyUnit(id=f"{prefix}_{len(units) + 1}", kind=unit.kind,
-                             claim=unit.claim, paragraph_ids=unit.paragraph_ids,
-                             evidence=paragraph_evidence(unit.paragraph_ids, paragraphs)))
+        units.append(
+            KeyUnit(
+                id=f"{prefix}_{len(units) + 1}",
+                kind=unit.kind,
+                claim=unit.claim,
+                paragraph_ids=unit.paragraph_ids,
+                evidence=paragraph_evidence(unit.paragraph_ids, paragraphs),
+            )
+        )
     return units
 
 
@@ -151,8 +173,11 @@ def _compact_short_source(units: list[KeyUnit], paragraph, prefix, stage, events
     original = paragraph.text
     if len(units) >= _OVER_EXTRACTION_UNITS:
         events.append(f"{stage}: collapsed {len(units)} over-extracted units to one verbatim source anchor")
-        return [KeyUnit(id=f"{prefix}_1", kind="constraint", claim=original,
-                        paragraph_ids=[paragraph.id], evidence=original)]
+        return [
+            KeyUnit(
+                id=f"{prefix}_1", kind="constraint", claim=original, paragraph_ids=[paragraph.id], evidence=original
+            )
+        ]
     full = _normalized(original)
     if not any(_normalized(u.claim) == full for u in units):
         return units
@@ -171,18 +196,26 @@ def _compact_short_source(units: list[KeyUnit], paragraph, prefix, stage, events
 def _units(runner, english, chinese, en_paragraphs, zh_paragraphs, model, fallback_model, diagnostics):
     """Source-only fast paths for short sources, otherwise model extraction of both sides."""
     settings = runner.settings
-    fast = (settings.extraction_fast_path and settings.extraction_prompt == "coarse"
-            and not settings.coverage_audit and not settings.atomic_refinement)
+    fast = (
+        settings.extraction_fast_path
+        and settings.extraction_prompt == "coarse"
+        and not settings.coverage_audit
+        and not settings.atomic_refinement
+    )
     if fast:
         anchors = source_anchor_pair(en_paragraphs, zh_paragraphs)
         if anchors is not None:
-            diagnostics.append("source_anchor_fast_path: both sources are one cohesive short clause; "
-                               "skipped two extraction requests; Matching, full-source Review and Guards remain")
+            diagnostics.append(
+                "source_anchor_fast_path: both sources are one cohesive short clause; "
+                "skipped two extraction requests; Matching, full-source Review and Guards remain"
+            )
             return anchors
         anchors = bounded_clause_anchor_pair(en_paragraphs, zh_paragraphs)
         if anchors is not None:
-            diagnostics.append("bounded_clause_fast_path: two explicit clauses on each side; "
-                               "verbatim anchors, no extraction requests; original-source review and guards remain")
+            diagnostics.append(
+                "bounded_clause_fast_path: two explicit clauses on each side; "
+                "verbatim anchors, no extraction requests; original-source review and guards remain"
+            )
             return anchors
     en = extract(runner, english, "English", "en", model, fallback_model, diagnostics)
     zh = extract(runner, chinese, "Chinese", "zh", model, fallback_model, diagnostics)
@@ -197,8 +230,9 @@ def _guard_issues(english, chinese, en, zh, links, en_paragraphs, zh_paragraphs)
     """
     numeric_en = [u.model_copy(update={"evidence": u.claim}) for u in en]
     numeric_zh = [u.model_copy(update={"evidence": u.claim}) for u in zh]
-    issues = (clear_numeric_conflicts(numeric_en, numeric_zh, links)
-              + clear_inclusion_conflicts(numeric_en, numeric_zh, links))
+    issues = clear_numeric_conflicts(numeric_en, numeric_zh, links) + clear_inclusion_conflicts(
+        numeric_en, numeric_zh, links
+    )
     if not issues:
         issues += source_isolated_quantity_conflicts(english, chinese, en, zh, links, en_paragraphs, zh_paragraphs)
     return issues
@@ -207,8 +241,14 @@ def _guard_issues(english, chinese, en, zh, links, en_paragraphs, zh_paragraphs)
 # --------------------------------------------------------------------------- pipeline
 
 
-def run(runner: StageRunner, english: str, chinese: str, requested_model: str | None = None,
-        requested_verifier: str | None = None, mode: str = "dual") -> CheckResult:
+def run(
+    runner: StageRunner,
+    english: str,
+    chinese: str,
+    requested_model: str | None = None,
+    requested_verifier: str | None = None,
+    mode: str = "dual",
+) -> CheckResult:
     model, verifier = runner.choose_models(mode, requested_model, requested_verifier)
     en_paragraphs = build_paragraphs(english, "en")
     zh_paragraphs = build_paragraphs(chinese, "zh")
@@ -218,47 +258,103 @@ def run(runner: StageRunner, english: str, chinese: str, requested_model: str | 
     if not en and not zh:
         raise PipelineStageError("extract_both", "双语两侧均未提取到事实，不能自动 PASS")
     matches: MatchDraft = runner.call(
-        "keyword_matching", diagnostics, model, MATCH_SYSTEM,
+        "keyword_matching",
+        diagnostics,
+        model,
+        MATCH_SYSTEM,
         match_user(english, chinese, [u.model_dump() for u in en], [u.model_dump() for u in zh]),
-        MatchDraft, "keyword_matching",
+        MatchDraft,
+        "keyword_matching",
         validate=lambda answer: match_coverage(en, zh, answer.links),
     )
     missing_zh, missing_en, conflicts = match_coverage(en, zh, matches.links)
     guard_issues = _guard_issues(english, chinese, en, zh, matches.links, en_paragraphs, zh_paragraphs)
     initial = "FAIL" if missing_zh or missing_en or conflicts or guard_issues else "PASS"
 
-    dispute = _Dispute(runner, english, chinese, en_paragraphs, zh_paragraphs, model, verifier,
-                       en, zh, matches, missing_zh, missing_en, conflicts, guard_issues, initial, diagnostics)
+    dispute = _Dispute(
+        runner,
+        english,
+        chinese,
+        en_paragraphs,
+        zh_paragraphs,
+        model,
+        verifier,
+        en,
+        zh,
+        matches,
+        missing_zh,
+        missing_en,
+        conflicts,
+        guard_issues,
+        initial,
+        diagnostics,
+    )
     verdict = dispute.resolve() if mode == "dual" else initial
 
-    summary = extraction_summary(verdict, initial, mode, verifier,
-                                 dispute.review.verdict if dispute.review else None,
-                                 dispute.arbitration.verdict if dispute.arbitration else None,
-                                 len(missing_zh) + len(missing_en), len(conflicts), len(guard_issues))
+    summary = extraction_summary(
+        verdict,
+        initial,
+        mode,
+        verifier,
+        dispute.review.verdict if dispute.review else None,
+        dispute.arbitration.verdict if dispute.arbitration else None,
+        len(missing_zh) + len(missing_en),
+        len(conflicts),
+        len(guard_issues),
+    )
     review = dispute.review
     return CheckResult(
-        evidence_mode="paragraph", english_paragraphs=en_paragraphs, chinese_paragraphs=zh_paragraphs,
-        verdict=verdict, model=model, verifier_model=verifier, mode=mode,
-        english_keywords=en, chinese_keywords=zh, links=matches.links,
+        evidence_mode="paragraph",
+        english_paragraphs=en_paragraphs,
+        chinese_paragraphs=zh_paragraphs,
+        verdict=verdict,
+        model=model,
+        verifier_model=verifier,
+        mode=mode,
+        english_keywords=en,
+        chinese_keywords=zh,
+        links=matches.links,
         missing_in_chinese=missing_zh if verdict == "FAIL" else [],
         missing_in_english=missing_en if verdict == "FAIL" else [],
         conflicts=conflicts if verdict == "FAIL" else [],
         preliminary_missing_in_chinese=missing_zh,
         preliminary_missing_in_english=missing_en,
         preliminary_conflicts=conflicts,
-        review=review, review_issues=review.issues if review else [],
-        arbitration=dispute.arbitration, arbitrated=dispute.arbitration is not None,
+        review=review,
+        review_issues=review.issues if review else [],
+        arbitration=dispute.arbitration,
+        arbitrated=dispute.arbitration is not None,
         dispute_recheck=dispute.recheck,
-        review_warnings=[], deterministic_issues=guard_issues,
-        initial_verdict=initial, summary=summary, diagnostics=diagnostics,
+        review_warnings=[],
+        deterministic_issues=guard_issues,
+        initial_verdict=initial,
+        summary=summary,
+        diagnostics=diagnostics,
     )
 
 
 class _Dispute:
     """Dual-mode decision: independent review, then arbitration if review disagrees."""
 
-    def __init__(self, runner, english, chinese, en_paragraphs, zh_paragraphs, model, verifier,
-                 en, zh, matches, missing_zh, missing_en, conflicts, guard_issues, initial, diagnostics):
+    def __init__(
+        self,
+        runner,
+        english,
+        chinese,
+        en_paragraphs,
+        zh_paragraphs,
+        model,
+        verifier,
+        en,
+        zh,
+        matches,
+        missing_zh,
+        missing_en,
+        conflicts,
+        guard_issues,
+        initial,
+        diagnostics,
+    ):
         self.runner = runner
         self.english, self.chinese = english, chinese
         self.en_paragraphs, self.zh_paragraphs = en_paragraphs, zh_paragraphs
@@ -272,14 +368,22 @@ class _Dispute:
         self.recheck: ParagraphDisputeRecheckDraft | None = None
 
     def _paragraph_user(self) -> tuple:
-        return (self.english, self.chinese, compact_paragraphs(self.en_paragraphs),
-                compact_paragraphs(self.zh_paragraphs))
+        return (
+            self.english,
+            self.chinese,
+            compact_paragraphs(self.en_paragraphs),
+            compact_paragraphs(self.zh_paragraphs),
+        )
 
     def resolve(self) -> str:
         review_wire: ParagraphReviewDraft = self.runner.call(
-            "independent_review", self.diagnostics, self.verifier, REVIEW_SYSTEM_PARAGRAPH,
+            "independent_review",
+            self.diagnostics,
+            self.verifier,
+            REVIEW_SYSTEM_PARAGRAPH,
             paragraph_review_user(*self._paragraph_user()),
-            ParagraphReviewDraft, "paragraph_review",
+            ParagraphReviewDraft,
+            "paragraph_review",
             validate=lambda answer: verify_review(answer, self.en_paragraphs, self.zh_paragraphs),
         )
         self.review = review_public(review_wire, self.en_paragraphs, self.zh_paragraphs)
@@ -294,9 +398,13 @@ class _Dispute:
         initial, review = self.initial, self.review
         snapshot = dispute_snapshot(self.missing_zh, self.missing_en, self.conflicts, self.guard_issues)
         arb_wire: ParagraphArbitrationDraft = self.runner.call(
-            "dispute_arbitration", self.diagnostics, self.model, ARBITRATION_SYSTEM_PARAGRAPH,
+            "dispute_arbitration",
+            self.diagnostics,
+            self.model,
+            ARBITRATION_SYSTEM_PARAGRAPH,
             paragraph_arbitrate_user(*self._paragraph_user(), initial, snapshot, review_wire.model_dump()),
-            ParagraphArbitrationDraft, "paragraph_arbitration",
+            ParagraphArbitrationDraft,
+            "paragraph_arbitration",
             validate=lambda answer: verify_arbitration(answer, self.en_paragraphs, self.zh_paragraphs, initial),
         )
         arb = self.arbitration = arbitration_public(arb_wire, self.en_paragraphs, self.zh_paragraphs)
@@ -313,27 +421,44 @@ class _Dispute:
             # The arbiter is the primary model again, so it does not corroborate the
             # primary's own allegation against an independent PASS. Only a
             # deterministic guard can still make this FAIL.
-            self.diagnostics.append("dispute_arbitration: initial FAIL and arbiter FAIL contradict "
-                                    "independent PASS; no verified conflict; manual review required")
+            self.diagnostics.append(
+                "dispute_arbitration: initial FAIL and arbiter FAIL contradict "
+                "independent PASS; no verified conflict; manual review required"
+            )
             return "REVIEW_REQUIRED"
         return arb.verdict
 
     def _confirm_support(self, snapshot, review_wire, arb_wire) -> None:
         """FAIL→PASS needs a separate semantic support verdict; valid IDs alone are not enough."""
         support_input = paragraph_arbitrate_user(
-            *self._paragraph_user(), self.initial, snapshot,
-            {"independent_review": review_wire.model_dump(), "proposed_arbitration": arb_wire.model_dump()})
+            *self._paragraph_user(),
+            self.initial,
+            snapshot,
+            {"independent_review": review_wire.model_dump(), "proposed_arbitration": arb_wire.model_dump()},
+        )
         supported = self.runner.call(
-            "alignment_evidence_check", self.diagnostics, self.verifier,
-            EVIDENCE_SUPPORT_SYSTEM_PARAGRAPH, support_input,
-            ParagraphAlignmentDraft, "paragraph_alignment_support",
+            "alignment_evidence_check",
+            self.diagnostics,
+            self.verifier,
+            EVIDENCE_SUPPORT_SYSTEM_PARAGRAPH,
+            support_input,
+            ParagraphAlignmentDraft,
+            "paragraph_alignment_support",
             validate=lambda answer: verify_support(
-                answer, self.en_paragraphs, self.zh_paragraphs, self.en, self.zh,
-                self.missing_zh, self.missing_en, self.conflicts),
+                answer,
+                self.en_paragraphs,
+                self.zh_paragraphs,
+                self.en,
+                self.zh,
+                self.missing_zh,
+                self.missing_en,
+                self.conflicts,
+            ),
         )
         if supported.status != "supported":
-            raise PipelineStageError("alignment_evidence_check",
-                                     f"无法支持 FAIL→PASS：{supported.status}: {supported.reason}")
+            raise PipelineStageError(
+                "alignment_evidence_check", f"无法支持 FAIL→PASS：{supported.status}: {supported.reason}"
+            )
         self.diagnostics.append("FAIL→PASS: independent semantic support confirmed; ID validity alone is insufficient")
 
     def _recheck_objections(self, review_wire, arb_wire) -> str:
@@ -343,26 +468,38 @@ class _Dispute:
         source-verified numeric certificate for an isolated precision objection.
         """
         certificates = numeric_equivalence_certificates(
-            self.en, self.zh, self.matches.links, self.en_paragraphs, self.zh_paragraphs)
+            self.en, self.zh, self.matches.links, self.en_paragraphs, self.zh_paragraphs
+        )
         self.diagnostics.append(f"dispute: {len(certificates)} source-verified numeric certificate(s)")
         self.recheck = self.runner.call(
-            "review_objection_check", self.diagnostics, self.verifier,
+            "review_objection_check",
+            self.diagnostics,
+            self.verifier,
             REVIEW_OBJECTION_CHECK_SYSTEM_PARAGRAPH,
-            paragraph_recheck_user(*self._paragraph_user(),
-                                   [i.model_dump() for i in review_wire.issues],
-                                   arb_wire.model_dump(), [c.model_dump() for c in certificates]),
-            ParagraphDisputeRecheckDraft, "paragraph_dispute_recheck",
+            paragraph_recheck_user(
+                *self._paragraph_user(),
+                [i.model_dump() for i in review_wire.issues],
+                arb_wire.model_dump(),
+                [c.model_dump() for c in certificates],
+            ),
+            ParagraphDisputeRecheckDraft,
+            "paragraph_dispute_recheck",
             validate=lambda answer: verify_objection_recheck(
-                answer, review_wire.issues, self.en_paragraphs, self.zh_paragraphs),
+                answer, review_wire.issues, self.en_paragraphs, self.zh_paragraphs
+            ),
         )
         refutations = {item.issue_index: item for item in self.recheck.issues}
         proven = bool(certificates) and all(
             refutations[index].status == "refuted"
-            and narrow_exactness_refutation(issue, refutations[index], certificates,
-                                            self.en_paragraphs, self.zh_paragraphs)
-            for index, issue in enumerate(review_wire.issues))
+            and narrow_exactness_refutation(
+                issue, refutations[index], certificates, self.en_paragraphs, self.zh_paragraphs
+            )
+            for index, issue in enumerate(review_wire.issues)
+        )
         if proven:
-            self.diagnostics.append("review_objection_check: all reviewer issues refuted with verified formal certificates")
+            self.diagnostics.append(
+                "review_objection_check: all reviewer issues refuted with verified formal certificates"
+            )
             return "PASS"
         self.diagnostics.append("review_objection_check: unresolved or non-formal disagreement; manual review required")
         return "REVIEW_REQUIRED"

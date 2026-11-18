@@ -5,6 +5,7 @@
 every construction, removing those variables per test restores the documented
 defaults. Tests that need a value pass it explicitly or use ``monkeypatch.setenv``.
 """
+
 import os
 
 import pytest

@@ -23,14 +23,21 @@ def test_invalid_json_fails():
 
 def test_two_models_sent_on_same_compatible_endpoint():
     seen = []
+
     def handler(req):
         data = json.loads(req.content)
         seen.append(data)
         if data["model"] == "qwen":
             return response('{"units":[]}')
         return response('{"verdict":"PASS","reason":"same meaning","issues":[]}')
+
     http = httpx.Client(transport=httpx.MockTransport(handler))
-    llm = ChatClient(Settings(evidence_mode="quote", ), http)
+    llm = ChatClient(
+        Settings(
+            evidence_mode="quote",
+        ),
+        http,
+    )
     llm.structured("qwen", "", "", ExtractedDraft, "keyword_extraction")
     llm.structured("ministral", "", "", ReviewDraft, "independent_review")
     assert [x["model"] for x in seen] == ["qwen", "ministral"]
@@ -43,20 +50,34 @@ def test_json_schema_support_on_both_models():
         data = json.loads(req.content)
         assert data["response_format"]["type"] == "json_schema"
         return response('{"verdict":"PASS","reason":"same meaning","issues":[]}')
+
     http = httpx.Client(transport=httpx.MockTransport(handler))
-    ChatClient(Settings(evidence_mode="quote", json_schema=True), http).structured("ministral", "", "", ReviewDraft, "independent_review")
+    ChatClient(Settings(evidence_mode="quote", json_schema=True), http).structured(
+        "ministral", "", "", ReviewDraft, "independent_review"
+    )
     http.close()
 
 
 def test_evidence_validation_failure_retries_with_feedback():
-    outputs = iter(['{"units":[{"kind":"concept","claim":"x","evidence":"image samples"}]}',
-                    '{"units":[{"kind":"concept","claim":"image","evidence":"image"}]}'])
+    outputs = iter(
+        [
+            '{"units":[{"kind":"concept","claim":"x","evidence":"image samples"}]}',
+            '{"units":[{"kind":"concept","claim":"image","evidence":"image"}]}',
+        ]
+    )
     http = httpx.Client(transport=httpx.MockTransport(lambda req: response(next(outputs))))
-    llm = ChatClient(Settings(evidence_mode="quote", ), http)
+    llm = ChatClient(
+        Settings(
+            evidence_mode="quote",
+        ),
+        http,
+    )
+
     def validate(ans):
         for u in ans.units:
             if u.evidence not in "image, audio, text samples":
                 raise LLMError("noncontiguous evidence")
+
     result = llm.structured("qwen", "", "", ExtractedDraft, "keyword_extraction", validate_result=validate)
     assert result.units[0].evidence == "image"
     http.close()
@@ -65,12 +86,19 @@ def test_evidence_validation_failure_retries_with_feedback():
 def test_persistent_flat_match_response_errors_after_retry():
     http = httpx.Client(transport=httpx.MockTransport(lambda req: response('{"en_ids":["en_1"]}')))
     with pytest.raises(LLMError, match="连续三次"):
-        ChatClient(Settings(evidence_mode="quote", ), http).structured("qwen", "", "", MatchDraft, "keyword_matching")
+        ChatClient(
+            Settings(
+                evidence_mode="quote",
+            ),
+            http,
+        ).structured("qwen", "", "", MatchDraft, "keyword_matching")
     http.close()
 
 
 def test_truncated_completion_error():
     http = httpx.Client(transport=httpx.MockTransport(lambda req: response('{"units":[]}', "length")))
     with pytest.raises(LLMError, match="截断"):
-        ChatClient(Settings(evidence_mode="quote", generation_recovery=False), http).structured("qwen", "", "", ExtractedDraft, "keyword_extraction")
+        ChatClient(Settings(evidence_mode="quote", generation_recovery=False), http).structured(
+            "qwen", "", "", ExtractedDraft, "keyword_extraction"
+        )
     http.close()

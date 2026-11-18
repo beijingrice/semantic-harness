@@ -4,6 +4,7 @@ A valid paragraph ID proves only that the cited paragraph exists, not that it
 supports the model's claim. These checks reject impossible answers (unknown IDs,
 a FAIL without a cited issue, a refutation that cites nothing) before use.
 """
+
 from __future__ import annotations
 
 from app.llm import LLMError
@@ -23,8 +24,9 @@ from app.models import (
 from app.paragraphs import paragraph_evidence, verify_ids
 
 
-def _verify_cited(en_ids: list[str], zh_ids: list[str],
-                  en_paragraphs: list[SourceParagraph], zh_paragraphs: list[SourceParagraph]) -> None:
+def _verify_cited(
+    en_ids: list[str], zh_ids: list[str], en_paragraphs: list[SourceParagraph], zh_paragraphs: list[SourceParagraph]
+) -> None:
     try:
         verify_ids(en_ids, en_paragraphs, allow_empty=True)
         verify_ids(zh_ids, zh_paragraphs, allow_empty=True)
@@ -48,16 +50,24 @@ def verify_review(answer: ParagraphReviewDraft, en_paragraphs, zh_paragraphs) ->
 
 
 def review_public(review: ParagraphReviewDraft, en_paragraphs, zh_paragraphs) -> ReviewDraft:
-    return ReviewDraft(verdict=review.verdict, reason=review.reason,
-                       issues=[ReviewIssue(kind=i.kind, reason=i.reason,
-                                           en_evidence=paragraph_evidence(i.en_paragraph_ids, en_paragraphs),
-                                           zh_evidence=paragraph_evidence(i.zh_paragraph_ids, zh_paragraphs),
-                                           en_paragraph_ids=i.en_paragraph_ids,
-                                           zh_paragraph_ids=i.zh_paragraph_ids) for i in review.issues])
+    return ReviewDraft(
+        verdict=review.verdict,
+        reason=review.reason,
+        issues=[
+            ReviewIssue(
+                kind=i.kind,
+                reason=i.reason,
+                en_evidence=paragraph_evidence(i.en_paragraph_ids, en_paragraphs),
+                zh_evidence=paragraph_evidence(i.zh_paragraph_ids, zh_paragraphs),
+                en_paragraph_ids=i.en_paragraph_ids,
+                zh_paragraph_ids=i.zh_paragraph_ids,
+            )
+            for i in review.issues
+        ],
+    )
 
 
-def verify_arbitration(answer: ParagraphArbitrationDraft, en_paragraphs, zh_paragraphs,
-                       initial: str) -> None:
+def verify_arbitration(answer: ParagraphArbitrationDraft, en_paragraphs, zh_paragraphs, initial: str) -> None:
     _verify_cited(answer.en_paragraph_ids, answer.zh_paragraph_ids, en_paragraphs, zh_paragraphs)
     if answer.verdict == "FAIL":
         if answer.issue_kind == "none":
@@ -68,23 +78,32 @@ def verify_arbitration(answer: ParagraphArbitrationDraft, en_paragraphs, zh_para
             raise LLMError("中文缺失必须引用英文来源段落")
         if answer.issue_kind == "missing_in_english" and not answer.zh_paragraph_ids:
             raise LLMError("英文缺失必须引用中文来源段落")
-    if answer.verdict == "PASS" and initial == "FAIL" and not (
-            answer.en_paragraph_ids and answer.zh_paragraph_ids):
+    if answer.verdict == "PASS" and initial == "FAIL" and not (answer.en_paragraph_ids and answer.zh_paragraph_ids):
         raise LLMError("FAIL→PASS 必须分别引用双语原文段落")
 
 
 def arbitration_public(answer: ParagraphArbitrationDraft, en_paragraphs, zh_paragraphs) -> ArbitrationDraft:
-    return ArbitrationDraft(verdict=answer.verdict, issue_kind=answer.issue_kind,
-                            en_evidence=paragraph_evidence(answer.en_paragraph_ids, en_paragraphs),
-                            zh_evidence=paragraph_evidence(answer.zh_paragraph_ids, zh_paragraphs),
-                            en_paragraph_ids=answer.en_paragraph_ids,
-                            zh_paragraph_ids=answer.zh_paragraph_ids,
-                            reason=answer.reason)
+    return ArbitrationDraft(
+        verdict=answer.verdict,
+        issue_kind=answer.issue_kind,
+        en_evidence=paragraph_evidence(answer.en_paragraph_ids, en_paragraphs),
+        zh_evidence=paragraph_evidence(answer.zh_paragraph_ids, zh_paragraphs),
+        en_paragraph_ids=answer.en_paragraph_ids,
+        zh_paragraph_ids=answer.zh_paragraph_ids,
+        reason=answer.reason,
+    )
 
 
-def verify_support(answer: ParagraphAlignmentDraft, en_paragraphs, zh_paragraphs,
-                   en: list[KeyUnit], zh: list[KeyUnit], missing_zh: list[KeyUnit],
-                   missing_en: list[KeyUnit], conflicts: list[Link]) -> None:
+def verify_support(
+    answer: ParagraphAlignmentDraft,
+    en_paragraphs,
+    zh_paragraphs,
+    en: list[KeyUnit],
+    zh: list[KeyUnit],
+    missing_zh: list[KeyUnit],
+    missing_en: list[KeyUnit],
+    conflicts: list[Link],
+) -> None:
     """A FAIL→PASS support answer must cite the source paragraph of every disputed unit.
 
     This is a structural check only; the support model itself must affirm the alignment.
@@ -109,9 +128,9 @@ def verify_support(answer: ParagraphAlignmentDraft, en_paragraphs, zh_paragraphs
             raise LLMError(f"独立证据未引用中文争议单元 {uid} 的来源段落")
 
 
-def verify_objection_recheck(answer: ParagraphDisputeRecheckDraft,
-                             review_issues: list[ParagraphReviewIssue],
-                             en_paragraphs, zh_paragraphs) -> None:
+def verify_objection_recheck(
+    answer: ParagraphDisputeRecheckDraft, review_issues: list[ParagraphReviewIssue], en_paragraphs, zh_paragraphs
+) -> None:
     """Exactly one assessment per reviewer issue; a refutation must cite that issue's paragraphs."""
     if len(answer.issues) != len(review_issues):
         raise LLMError("定向复核必须逐项回应每条原复核异议")

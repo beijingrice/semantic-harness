@@ -1,4 +1,5 @@
 """Compare matched extraction-only reports without pretending count changes prove recall."""
+
 import argparse
 import json
 from pathlib import Path

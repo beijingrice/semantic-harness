@@ -31,6 +31,9 @@ jobs:
       - name: Lint
         run: ruff check .
 
+      - name: Format
+        run: ruff format --check .
+
       # Offline only: tests use mocked HTTP and never call a real model.
       # tests/conftest.py strips LM_* variables, so no .env is needed.
       - name: Test

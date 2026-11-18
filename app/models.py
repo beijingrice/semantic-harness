@@ -3,6 +3,7 @@
 Every model-produced quote or paragraph ID is checked against the ORIGINAL source text by the pipelines.
 Schema validity is not evidence of semantic correctness.
 """
+
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -31,6 +32,7 @@ class ExtractedDraft(StrictModel):
 
 class CoverageAuditDraft(StrictModel):
     """Additional source-only facts; NEVER a judgment of bilingual equivalence."""
+
     missing_units: list[UnitDraft]
 
 
@@ -84,9 +86,9 @@ class ParagraphAlignmentDraft(StrictModel):
     reason: str = Field(min_length=1, max_length=600)
 
 
-
 class NumericEquivalenceCertificate(StrictModel):
     """Python-checked equality of a single normalized quantity in *original* passages."""
+
     en_unit_id: str
     zh_unit_id: str
     en_paragraph_ids: list[str]
@@ -140,6 +142,7 @@ class ReviewIssue(StrictModel):
 
 class ReviewDraft(StrictModel):
     """Second model gives one overall opinion, not commands to mutate the first result."""
+
     verdict: Literal["PASS", "FAIL", "UNSURE"]
     reason: str = Field(min_length=1, max_length=600)
     issues: list[ReviewIssue] = Field(default_factory=list)
@@ -162,6 +165,7 @@ class AlignmentEvidenceDraft(StrictModel):
     Exact quotes are necessary but not sufficient for truth; this is still an LLM
     semantic judgement and will be evaluated on held-out cases.
     """
+
     status: Literal["supported", "unsupported", "uncertain"]
     en_evidence: str = Field(default="", max_length=6000)
     zh_evidence: str = Field(default="", max_length=6000)
@@ -174,6 +178,7 @@ class GroundedEvidenceDraft(StrictModel):
     The audit is a semantic hypothesis; verbatim quotes are source-grounding,
     not formal evidence that the proposed interpretation is correct.
     """
+
     status: Literal["CONFLICT", "EQUIVALENT", "UNCERTAIN"]
     en_quote: str = Field(default="", max_length=600)
     zh_quote: str = Field(default="", max_length=600)
@@ -187,11 +192,18 @@ class FocusedVerificationDraft(StrictModel):
     Only the host chooses the actual quote text; these model fields are NOT a
     proof that the selected evidence entails the stated difference.
     """
+
     status: Literal["CONFLICT", "EQUIVALENT", "UNCERTAIN"]
     difference_type: Literal[
-        "numeric_boundary", "inclusion_exclusion", "exception_scope",
-        "direction_reversal", "extra_requirement", "equivalent_restatement",
-        "other", "undetermined"]
+        "numeric_boundary",
+        "inclusion_exclusion",
+        "exception_scope",
+        "direction_reversal",
+        "extra_requirement",
+        "equivalent_restatement",
+        "other",
+        "undetermined",
+    ]
     same_subject: Literal["yes", "no", "unknown"]
     en_evidence_id: str = Field(min_length=1, max_length=32)
     zh_evidence_id: str = Field(min_length=1, max_length=32)
@@ -219,9 +231,16 @@ class RelationVerificationDraft(StrictModel):
     Extracted actor/entity fields are suggestions checked against immutable source
     spans; cannot independently prove translation or imply a label.
     """
+
     task_id: str = Field(min_length=1, max_length=60)
-    question_type: Literal["numeric_boundary", "inclusion_exclusion", "exception_scope",
-                           "direction_reversal", "scalar_equivalence", "undetermined"]
+    question_type: Literal[
+        "numeric_boundary",
+        "inclusion_exclusion",
+        "exception_scope",
+        "direction_reversal",
+        "scalar_equivalence",
+        "undetermined",
+    ]
     same_event: Literal["yes", "no", "unknown"]
     en_evidence_id: str = Field(min_length=1, max_length=30)
     zh_evidence_id: str = Field(min_length=1, max_length=30)

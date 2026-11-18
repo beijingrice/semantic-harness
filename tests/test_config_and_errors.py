@@ -1,4 +1,5 @@
 """Regression tests for configuration loading and error mapping."""
+
 import sys
 
 import httpx
@@ -13,6 +14,7 @@ from app.llm import ChatClient, LLMError
 from app.models import ReviewDraft
 
 # --- Settings reads the environment at construction time -------------------
+
 
 def test_settings_reads_env_at_construction(monkeypatch):
     assert Settings().json_schema is False
@@ -39,11 +41,17 @@ def test_conftest_isolates_local_dotenv_defaults():
 
 # --- Invalid values give a named ConfigError, not a bare crash -------------
 
-@pytest.mark.parametrize("name,value", [
-    ("LM_MAX_TOKENS", "abc"), ("LM_MAX_TOKENS", "0"),
-    ("LM_TIMEOUT_SECONDS", "soon"), ("MAX_KEYWORDS", "-1"),
-    ("LM_EXTRACTION_MAX_TOKENS", "1.5"),
-])
+
+@pytest.mark.parametrize(
+    "name,value",
+    [
+        ("LM_MAX_TOKENS", "abc"),
+        ("LM_MAX_TOKENS", "0"),
+        ("LM_TIMEOUT_SECONDS", "soon"),
+        ("MAX_KEYWORDS", "-1"),
+        ("LM_EXTRACTION_MAX_TOKENS", "1.5"),
+    ],
+)
 def test_invalid_numeric_env_raises_named_config_error(monkeypatch, name, value):
     monkeypatch.setenv(name, value)
     with pytest.raises(ConfigError, match=name):
@@ -62,8 +70,9 @@ def test_api_check_bad_pipeline_is_config_error_not_crash(monkeypatch):
     assert "LM_PIPELINE" in result.json()["detail"]
 
 
-@pytest.mark.parametrize("name,value", [("LM_MAX_TOKENS", "abc"), ("LM_SCHEMA_MODE", "bogus"),
-                                        ("LM_BACKEND", "not-a-backend")])
+@pytest.mark.parametrize(
+    "name,value", [("LM_MAX_TOKENS", "abc"), ("LM_SCHEMA_MODE", "bogus"), ("LM_BACKEND", "not-a-backend")]
+)
 def test_api_check_invalid_settings_is_config_error(monkeypatch, name, value):
     monkeypatch.setenv(name, value)
     result = TestClient(app).post("/api/check", json={"english": "x", "chinese": "y"})
@@ -91,6 +100,7 @@ def test_cli_config_error_exits_2(monkeypatch, capsys):
 
 # --- Malformed provider responses become BackendError / LLMError -----------
 
+
 def _backend(body):
     http = httpx.Client(transport=httpx.MockTransport(lambda req: httpx.Response(200, json=body)))
     return OpenAIChatBackend(BackendConfig("http://x/v1", "k", 5), http)
@@ -99,15 +109,18 @@ def _backend(body):
 GOOD_CHOICE = {"message": {"content": "{}"}, "finish_reason": "stop"}
 
 
-@pytest.mark.parametrize("body", [
-    {"choices": [GOOD_CHOICE], "usage": [1]},
-    {"choices": [GOOD_CHOICE], "usage": {"completion_tokens_details": [1]}},
-    {"choices": [{"message": "text", "finish_reason": "stop"}]},
-    {"choices": ["oops"]},
-    {"choices": []},
-    {"choices": {"0": GOOD_CHOICE}},
-    {"nochoices": True},
-])
+@pytest.mark.parametrize(
+    "body",
+    [
+        {"choices": [GOOD_CHOICE], "usage": [1]},
+        {"choices": [GOOD_CHOICE], "usage": {"completion_tokens_details": [1]}},
+        {"choices": [{"message": "text", "finish_reason": "stop"}]},
+        {"choices": ["oops"]},
+        {"choices": []},
+        {"choices": {"0": GOOD_CHOICE}},
+        {"nochoices": True},
+    ],
+)
 def test_malformed_response_is_backend_error(body):
     with pytest.raises(BackendError):
         _backend(body).complete({"model": "m"})
@@ -118,6 +131,7 @@ def test_malformed_response_surfaces_as_llm_error():
         if req.url.path.endswith("/models"):
             return httpx.Response(200, json={"data": [{"id": "m"}]})
         return httpx.Response(200, json={"choices": [GOOD_CHOICE], "usage": [1]})
+
     http = httpx.Client(transport=httpx.MockTransport(handler))
     client = ChatClient(Settings(), http)
     with pytest.raises(LLMError, match="BackendError"):
