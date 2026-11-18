@@ -6,7 +6,7 @@
 
 **移除与精简**
 - `LM_PIPELINE` 只保留 `extraction`（默认）和 `direct_hardened`。删除 `direct`、`direct_grounded`、`direct_verified`、`direct_questions`、`direct_relations` 五种早期实验模式，以及对应的模块、测试和参考报告。
-- `direct_hardened` 的入口改为 `app.relation_direct.check_hardened`，并且始终启用 hardened 检查；`source_spans` 和 `_source_quantitative_issue_only` 移到 `app/source_risks.py`。
+- `direct_hardened` 始终启用 hardened 检查；`source_spans` 和 `source_quantitative_issue_only` 移到 `app/source_risks.py`。
 - 根目录的 19 个版本 README 合并：`README.md` 只介绍当前版本，后端接入说明移到 `docs/backends.md`，历史文档移到 `docs/history/`。
 
 **修复**
@@ -26,6 +26,15 @@
 - 新增 `docs/labeling_guidelines.md`（草稿）：整理现有标注实际遵循的规则，并标出 should、描述句与规范句、充分与必要条件、近义词宽严四处待定问题。
 - 新增 `validation_v030_numeric_phrasing_22.json`：数值边界多种说法的 11 组最小差异对。
 - 修正 120 条集及其子集中 15 条 `why`："与上一条构成最小差异对"改为写明配对样例的 ID（文件顺序已打乱，"上一条"指向错误）。只改了 `why`，其他字段未动。
+
+**代码结构（行为不变）**
+- 新增 `app/pipelines/` 包：每条 Pipeline 都是 `run(runner, english, chinese, model, verifier, mode)`。`Checker`（移到 `app/checker.py`）只负责选择 Pipeline；各 Pipeline 通过 `StageRunner` 调用模型，不再把整个 Checker 传进去、调用它的私有方法。
+- 原来的 `pipeline.py`、`paragraph_pipeline.py`、`direct_pipeline.py`、`relation_direct.py` 拆成 `pipelines/` 下的 `paragraph`、`quote`、`direct`、`hardened`、`hardened_rules`、`paragraph_checks`、`common`；模块之间不再导入私有函数，也不再有循环导入。
+- 拆分超长函数（`ChatClient.structured`、抽取与争议处理阶段）；枚举类配置统一在 `Settings` 创建时校验。
+- direct_hardened 中按具体样例写的规则在 `hardened_rules.py` 中标注为 CASE-SPECIFIC（规则本身未改，见 [docs/project_analysis.md](docs/project_analysis.md) 4.1 节）。
+- 测试按被测行为重新命名，共用的 Fake 与样例回答移到 `tests/helpers.py`。
+- 全项目使用 `ruff format`，CI 增加格式检查。
+- 验证方法：用脚本化假模型在 296 条数据集样例 × 7 种配置上运行（10,952 次），重构前后的判决、调用顺序、提示词与诊断信息逐字节一致。
 
 **工程**
 - 加入 git 版本管理、ruff lint 配置和 GitHub Actions CI。

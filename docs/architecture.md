@@ -167,9 +167,9 @@ flowchart TB
     CFG["配置<br/>config.py: Settings"]
 
     subgraph 检查层
-        CHK["Checker<br/>pipeline.py：校验配置、分发"]
-        EXT["extraction 流程<br/>paragraph_pipeline.py"]
-        DIR["direct_hardened 流程<br/>relation_direct.py"]
+        CHK["Checker<br/>checker.py：选择 Pipeline"]
+        EXT["extraction 流程<br/>pipelines/paragraph.py"]
+        DIR["direct_hardened 流程<br/>pipelines/hardened.py"]
     end
 
     subgraph 程序校验层["程序校验层（不调用模型）"]
@@ -377,7 +377,7 @@ flowchart TD
 模型返回后，程序在接受结果前会做几件事：
 
 1. **校验 ID**：每条事实引用的段落 ID 必须存在、不重复，否则视为不合格输出并要求模型重试。
-2. **回滚可疑改写**（`Checker.clean_unsupported_claim`）：如果 `claim` 里出现了原文中没有的强制语气（must、必须）、排他词（only、仅）、否定词或数字，说明模型可能"添油加醋"了。引用的原文不超过 220 字符时，直接用原文替换这条 `claim`；更长时只在诊断信息里记一笔。
+2. **回滚可疑改写**（`pipelines/common.py` 的 `clean_unsupported_claim`）：如果 `claim` 里出现了原文中没有的强制语气（must、必须）、排他词（only、仅）、否定词或数字，说明模型可能"添油加醋"了。引用的原文不超过 220 字符时，直接用原文替换这条 `claim`；更长时只在诊断信息里记一笔。
 3. **精确去重**：`claim` 和引用段落完全相同的重复项会被丢弃。只做精确去重，不做"看起来意思差不多"的模糊合并，以免把两条不同的要求误合成一条。
 4. **防止提取膨胀**：单段短句被提取出 9 条以上事实时，直接退回成一条原文整句。另外，如果已经有一条事实就是原文整句，那些只是从这句话里截出来的名词片段会被去掉。
 
@@ -404,7 +404,7 @@ flowchart TD
 
 ### 5.7 ⑥ 覆盖计算（程序）
 
-`Checker.coverage` 根据配对结果算出三张清单：
+`pipelines/common.py` 的 `match_coverage` 根据配对结果算出三张清单：
 
 - **中文缺失**：没有被 `equivalent` / `plausible` 配上、也不在冲突里的英文事实；
 - **英文缺失**：反过来；
@@ -528,7 +528,7 @@ flowchart TD
     PROVE --> FINAL["汇总：任一项证实冲突 → FAIL<br/>全部证实一致 → PASS<br/>否则 → REVIEW_REQUIRED"]
 ```
 
-### 6.3 第一步：两个独立判断（`direct_pipeline.check_direct`）
+### 6.3 第一步：两个独立判断（`pipelines/direct.py` 的 `run_direct`）
 
 两个模型拿到完全相同的输入（两段原文和段落列表），各自给出 PASS / FAIL / UNSURE 和问题清单。合成规则很简单：
 
@@ -537,7 +537,7 @@ flowchart TD
 - 两者一致 → 采用；
 - 两者不一致 → REVIEW_REQUIRED（**不引入第三个模型投票**，因为第三票往往和其中一方的错误相关）。
 
-### 6.4 第二步：程序选题（`relation_direct.choose_questions`）
+### 6.4 第二步：程序选题（`pipelines/hardened_rules.py` 的 `choose_questions`）
 
 程序扫描原文（`source_risks.py`），并结合两个模型是否有分歧，决定要不要追问、问什么：
 
@@ -692,14 +692,20 @@ app/
 ├── api.py                  FastAPI：/、/api/status、/api/check；错误到 HTTP 状态码的映射
 ├── cli.py                  命令行入口 bilingual-check；判决到退出码的映射
 ├── config.py               Settings：每次创建时读取环境变量；ConfigError
-├── pipeline.py             Checker：配置校验、Pipeline 分发、覆盖计算、提取后清洗；
-│                           还保留了历史 quote 证据模式的代码（LM_EVIDENCE_MODE=quote）
-├── paragraph_pipeline.py   extraction 流程主体：提取、配对、复核、仲裁、判决合成
+├── checker.py              Checker：按配置选择 Pipeline 并运行（对外入口）
+├── pipelines/              调用模型的编排部分；每条 Pipeline 都是
+│   │                       run(runner, english, chinese, model, verifier, mode) -> CheckResult
+│   ├── base.py             StageRunner：按阶段调用模型、选择模型；PipelineStageError
+│   ├── common.py           两种 extraction 共用：可疑改写回滚、配对覆盖计算、判决摘要
+│   ├── paragraph.py        extraction 默认流程：提取或捷径、配对、守卫、复核、仲裁、判决合成
+│   ├── paragraph_checks.py 段落 ID 回答的结构校验，以及转换成带原文的公开格式
+│   ├── quote.py            extraction 的 quote 证据模式（LM_EVIDENCE_MODE=quote，A/B 用）
+│   ├── direct.py           direct 第一步：两个模型独立比较完整段落
+│   ├── hardened.py         direct_hardened：逐题追问与汇总
+│   └── hardened_rules.py   direct_hardened 的纯原文规则：选题与证明（含标注为 CASE-SPECIFIC 的样例特化词表）
 ├── extraction_fast_path.py 跳过提取的两条保守捷径
 ├── validators.py           数值解析（单位、比较符、区间）和计入/排除守卫
 ├── dispute_resolution.py   数值等价证书；判断一条异议能否被形式化证据反驳
-├── direct_pipeline.py      direct 第一步：两个模型独立比较完整段落
-├── relation_direct.py      direct_hardened：选题、结构化追问、程序核对
 ├── source_risks.py         原文风险扫描；原文片段切分；单一数值等价判断
 ├── paragraphs.py           段落切分、ID 校验、根据 ID 取回原文
 ├── llm.py                  ChatClient：结构化生成、三层校验、重试、恢复、遥测

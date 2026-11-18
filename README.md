@@ -116,11 +116,15 @@ app/
   config.py               配置（环境变量 → Settings）
   backends.py, llm.py     后端 Adapter；结构化生成、校验与重试
   models.py, prompts.py   Pydantic 输出协议；模型无关的 Prompt
+  checker.py              Checker：按配置选择 Pipeline 并运行
+  pipelines/              各条 Pipeline 的编排（调用模型的部分）
+    base.py               StageRunner（按阶段调用模型）、PipelineStageError
+    paragraph.py          extraction 默认链路（段落 ID 证据）
+    quote.py              extraction 的 quote 证据模式（A/B 用）
+    direct.py, hardened.py, hardened_rules.py   direct_hardened 链路
   paragraphs.py           原文段落与不可变 ID / offset
-  pipeline.py             Checker 入口与 Pipeline 分发
-  paragraph_pipeline.py   extraction 默认链路
-  extraction_fast_path.py, dispute_resolution.py, validators.py
-  direct_pipeline.py, relation_direct.py, source_risks.py   direct_hardened 链路
+  validators.py, source_risks.py, extraction_fast_path.py, dispute_resolution.py
+                          只看原文的确定性规则（不调用模型）
   static/                 Web UI
 examples/                 评测脚本与数据集
 tests/                    离线测试（Mock HTTP，不调用真实模型）
@@ -132,6 +136,7 @@ docs/                     后端接入说明与历史版本文档
 ```bash
 python -m pytest -q        # 离线测试
 ruff check .               # Lint
+ruff format .              # 格式化（CI 用 ruff format --check 检查）
 ```
 
 CI（GitHub Actions）会在 Python 3.10 和 3.14 上跑 ruff 和 pytest，配置在 [.github/workflows/ci.yml](.github/workflows/ci.yml)。测试通过 `tests/conftest.py` 与本地 `.env` 隔离。

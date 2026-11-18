@@ -2,6 +2,8 @@
 
 本文根据仓库当前代码、测试、数据集和本轮真实模型评测结果，评估项目的实际状态。项目早期由 Codex 开发，第 5 节专门讨论那一阶段留下的问题。
 
+> **后续更新（同日，代码重构之后）**：4.4（架构耦合）、4.7 中的函数过长与风格不统一、4.8 中的测试命名与互相导入已经解决，见 [CHANGELOG](../CHANGELOG.md) 的"代码结构"一节。文中提到的 `pipeline.py`、`paragraph_pipeline.py`、`direct_pipeline.py`、`relation_direct.py` 已拆分到 `app/checker.py` 和 `app/pipelines/`；4.1 表中的规则现在位于 `app/pipelines/hardened_rules.py`，已标注 CASE-SPECIFIC，但**规则本身没有改动**。P0 问题（4.1、4.2）和 4.3、4.5、4.6、4.9 仍然存在。
+
 ---
 
 ## 1. 结论
