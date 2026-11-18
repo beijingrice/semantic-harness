@@ -308,6 +308,13 @@ class ChatClient:
                     raise LLMError(f"{initial_exc}；LM_GENERATION_RECOVERY=false") from initial_exc
                 recovery_payload = dict(payload)
                 recovery_payload.pop("response_format", None)
+                if initial_exc.category == "truncated":
+                    # When reasoning consumed a reduced per-stage budget (e.g.
+                    # LM_EXTRACTION_MAX_TOKENS or the 1536 verify cap), retrying
+                    # with the SAME cap almost always truncates again. The single
+                    # recovery call gets the global LM_MAX_TOKENS budget instead.
+                    recovery_payload["max_tokens"] = max(
+                        payload.get("max_tokens") or 0, self.settings.max_tokens)
                 recovery_payload["messages"] = [*messages, {
                     "role": "user",
                     "content": (

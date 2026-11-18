@@ -579,7 +579,7 @@ direct_hardened 在 11 条回归集上表现最好（9 条正确、2 条转人�
 flowchart TD
     REQ["组装请求<br/>temperature=0，按配置决定是否带 JSON Schema"] --> SEND["发送到 Backend"]
     SEND --> RESP{"响应状态"}
-    RESP -- "被截断 / 内容为空" --> REC["恢复请求（最多 1 次）<br/>去掉 Schema，要求直接给出完整 JSON"]
+    RESP -- "被截断 / 内容为空" --> REC["恢复请求（最多 1 次）<br/>去掉 Schema，要求直接给出完整 JSON<br/>被截断时改用 LM_MAX_TOKENS 预算"]
     RESP -- "明确不支持 JSON Schema<br/>且 LM_SCHEMA_MODE=auto" --> DOWN["降级为纯 Prompt 模式（只降 1 次）<br/>记住该模型不支持"]
     RESP -- 正常 --> PARSE["提取 JSON → Pydantic 校验 → 调用方校验函数"]
     DOWN --> PARSE
@@ -596,7 +596,7 @@ flowchart TD
 
 - **三层校验**：能解析成 JSON → 符合 Pydantic Schema（字段、类型、取值、长度）→ 通过调用方的业务校验（ID 存在、FAIL 必须带证据等）。
 - **修正重试最多 3 次**：每次都把具体的错误原因发回给模型，并按不同步骤附上对应的格式提示。
-- **截断恢复最多 1 次**：输出被 `max_tokens` 截断或内容为空时，换一种问法再要一次，结果同样要通过全部校验。
+- **截断恢复最多 1 次**：输出被 `max_tokens` 截断或内容为空时，换一种问法再要一次，结果同样要通过全部校验。如果是**被截断**，这次恢复请求的上限会提高到 `LM_MAX_TOKENS`：提取（`LM_EXTRACTION_MAX_TOKENS`）和 direct_hardened 追问（1536）用的是更小的预算，推理型模型可能把它全部花在推理上，用同样的上限重试几乎必然再次截断。
 - **网络或 HTTP 错误不自动重试**，直接报错。
 - **JSON 提取比较宽容**：允许外面包着代码块、`<think>` 标签或少量说明文字，但不会去修补模型写坏的 JSON。
 - **LM Studio 兼容**：部分模型在 Schema 模式下把完整 JSON 放进 `reasoning_content`、`content` 却是空的。只有当 `reasoning_content` 本身恰好是一个完整 JSON 对象时，才会取用它。

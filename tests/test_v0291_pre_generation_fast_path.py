@@ -189,7 +189,9 @@ def test_short_nonfast_recovery_preserves_budget_and_original_validation():
     out=Checker(client,cfg).check(en,zh,mode='dual')
     assert out.verdict=='PASS'
     assert len(payloads)==5
-    assert [x['max_tokens'] for x in payloads]==[1536,1536,1536,4096,4096]
+    # The truncation-recovery request (3rd) gets the global LM_MAX_TOKENS budget:
+    # retrying with the same 1536 cap usually truncates again (seen live).
+    assert [x['max_tokens'] for x in payloads]==[1536,1536,4096,4096,4096]
     assert 'response_format' in payloads[1] and 'response_format' not in payloads[2]
     assert [r['outcome'] for r in client.trace_snapshot()]==[
         'validated','truncated','recovered_validated','validated','validated']

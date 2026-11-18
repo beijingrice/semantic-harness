@@ -7,7 +7,7 @@ import pytest
 
 from app.config import Settings
 from app.llm import ChatClient, LLMError
-from app.models import ParagraphExtractedDraft
+from app.models import ExtractedDraft, ParagraphExtractedDraft
 from app.telemetry import evidence_integrity, percentile, reliability_summary
 from examples.evaluate import load_cases
 
@@ -228,3 +228,40 @@ def test_full_paragraph_dual_pipeline_recovers_one_chinese_truncation():
         'keyword_matching','independent_review']
     assert client.trace_snapshot()[2]['outcome']=='recovered_validated'
     http.close()
+
+
+def _recovery_budgets(first_reply, stage_max_tokens, global_max_tokens=4096):
+    """Return the max_tokens of (initial, recovery) requests for one structured call."""
+    seen = []
+    def handler(request):
+        seen.append(json.loads(request.content))
+        if len(seen) == 1:
+            return httpx.Response(200, json=first_reply)
+        return httpx.Response(200, json={'choices': [{'message': {'content': '{"units":[]}'},
+                                                      'finish_reason': 'stop'}]})
+    http = httpx.Client(transport=httpx.MockTransport(handler))
+    client = ChatClient(Settings(json_schema=True, max_tokens=global_max_tokens,
+                                 generation_recovery=True), http)
+    client.structured('qwen', 'sys', 'user', ExtractedDraft, 'keyword_extraction',
+                      max_tokens=stage_max_tokens)
+    http.close()
+    return [x['max_tokens'] for x in seen]
+
+
+TRUNCATED = {'choices': [{'message': {'content': '', 'reasoning_content': 'thinking...'},
+                          'finish_reason': 'length'}],
+             'usage': {'completion_tokens': 1536, 'completion_tokens_details': {'reasoning_tokens': 1536}}}
+EMPTY_STOP = {'choices': [{'message': {'content': ''}, 'finish_reason': 'stop'}]}
+
+
+def test_truncation_recovery_gets_global_budget():
+    # Live failure: reasoning used the whole reduced cap twice in a row.
+    assert _recovery_budgets(TRUNCATED, stage_max_tokens=1536) == [1536, 4096]
+
+
+def test_empty_but_not_truncated_recovery_keeps_stage_budget():
+    assert _recovery_budgets(EMPTY_STOP, stage_max_tokens=1536) == [1536, 1536]
+
+
+def test_truncation_recovery_never_lowers_a_larger_budget():
+    assert _recovery_budgets(TRUNCATED, stage_max_tokens=8000, global_max_tokens=4096) == [8000, 8000]
