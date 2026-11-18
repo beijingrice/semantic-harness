@@ -16,6 +16,14 @@
 - 离线测试通过 `tests/conftest.py` 与本地 `.env` 隔离。
 - 数值守卫：修复几种等价写法被误读成"恰好等于"、进而被一票否决判成 FAIL 的问题。单位后的"以上/or more/or fewer"（如"10 页以上"）、exceed、above 现在能正确识别；within、内、以内只对时间单位按上限处理；"not exceeding" 不再被误读成 `>`。
 
+- 数值守卫："18周岁"不再被误读成 18 周。
+
+**数据集**
+- 新增 `examples/DATASETS.md`：每个数据集的用途、状态、子集关系和已知构造偏差；标明 v0.2.8 holdout 中的 H28-02/03/04/13 后来被用于调试。
+- 新增 `docs/labeling_guidelines.md`（草稿）：整理现有标注实际遵循的规则，并标出 should、描述句与规范句、充分与必要条件、近义词宽严四处待定问题。
+- 新增 `validation_v030_numeric_phrasing_22.json`：数值边界多种说法的 11 组最小差异对。
+- 修正 120 条集及其子集中 15 条 `why`："与上一条构成最小差异对"改为写明配对样例的 ID（文件顺序已打乱，"上一条"指向错误）。只改了 `why`，其他字段未动。
+
 **工程**
 - 加入 git 版本管理、ruff lint 配置和 GitHub Actions CI。
 

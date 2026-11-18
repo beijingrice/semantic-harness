@@ -159,7 +159,7 @@
     "expected": "FAIL",
     "en": "The main text is limited to 8,000 words, excluding the bibliography. Footnotes count toward this ceiling.",
     "zh": "正文最多8000词，参考文献列表和脚注均不计入字数上限。",
-    "why": "与上一条构成最小差异对：脚注是否计入字数不同。"
+    "why": "与 V2-NUM-05（PASS）构成最小差异对：脚注是否计入字数不同。"
   },
   {
     "id": "V2-MIX-06",

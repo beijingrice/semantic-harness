@@ -15,7 +15,7 @@
     "expected": "FAIL",
     "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
     "zh": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。",
-    "why": "与上一条构成最小差异对：封面由计入30页改为不计入。"
+    "why": "与 V2-NUM-14（PASS）构成最小差异对：封面由计入30页改为不计入。"
   },
   {
     "id": "V2-NUM-13",
@@ -24,7 +24,7 @@
     "expected": "FAIL",
     "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
     "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例达到10%或以上，该答卷无效。计算缺失率时只考虑必填字段。",
-    "why": "与上一条构成最小差异对：大于10%与大于等于10%边界相异。"
+    "why": "与 V2-NUM-12（PASS）构成最小差异对：大于10%与大于等于10%边界相异。"
   },
   {
     "id": "V2-EXC-03",
@@ -33,7 +33,7 @@
     "expected": "FAIL",
     "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
     "zh": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
-    "why": "与上一条构成最小差异对：学位项目可强制中文摘要的例外被移除。"
+    "why": "与 V2-EXC-02（PASS）构成最小差异对：学位项目可强制中文摘要的例外被移除。"
   },
   {
     "id": "V2-NUM-03",
@@ -51,7 +51,7 @@
     "expected": "FAIL",
     "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
     "zh": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
-    "why": "与上一条构成最小差异对：关键词位置要求反转。"
+    "why": "与 V2-ENU-11（PASS）构成最小差异对：关键词位置要求反转。"
   },
   {
     "id": "V2-ENU-13",
@@ -87,7 +87,7 @@
     "expected": "FAIL",
     "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
     "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
-    "why": "与上一条构成最小差异对：第二组数据胜负反转。"
+    "why": "与 V2-ROL-06（PASS）构成最小差异对：第二组数据胜负反转。"
   },
   {
     "id": "V2-MIX-03",

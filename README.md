@@ -99,13 +99,14 @@ python -m examples.evaluate --cases examples/v2_regression_11.json \
 | 数据集 | 条数 | 用途 |
 |---|---:|---|
 | `v2_regression_11.json` | 11 | 已知薄弱案例回归，**每次改动后先跑这个** |
-| `validation_v028_holdout_36.json` | 36 | v0.2.8 冻结的泛化验证集（附 sha256） |
+| `validation_v028_holdout_36.json` | 36 | v0.2.8 冻结的泛化集（附 sha256）。**其中 4 条后来被用于调试**，v0.2.9 起只有 32 条算干净 |
 | `validation_v2_120.json` | 120 | 主要复杂回归集，覆盖 8 类语言与条款结构 |
 | `validation_v027_paragraph_16.json` | 16 | 段落切分、跨段落、弯引号等结构问题 |
 | `validation_v2_pilot_20.json` | 20 | 120 条集的快速预检 |
 | `v2_false_pass_4.json` | 4 | 专门观察关键差异被错误放行的情况 |
+| `validation_v030_numeric_phrasing_22.json` | 22 | 数值边界的多种说法（以上 / or more / exceed / within 等） |
 
-注意：11 条回归集和 60 条旧开发集都被反复用于调试，不是盲测集。
+注意：目前没有完全干净的盲测集。11 条回归集和 60 条旧开发集都被反复用于调试；holdout 也有 4 条被污染。每个数据集的状态、相互关系和已知偏差见 **[examples/DATASETS.md](examples/DATASETS.md)**，标注时依据的规则见 [docs/labeling_guidelines.md](docs/labeling_guidelines.md)（草稿）。
 
 ## 项目结构
 

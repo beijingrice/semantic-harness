@@ -159,7 +159,7 @@
     "expected": "FAIL",
     "en": "The main text is limited to 8,000 words, excluding the bibliography. Footnotes count toward this ceiling.",
     "zh": "正文最多8000词，参考文献列表和脚注均不计入字数上限。",
-    "why": "与上一条构成最小差异对：脚注是否计入字数不同。"
+    "why": "与 V2-NUM-05（PASS）构成最小差异对：脚注是否计入字数不同。"
   },
   {
     "id": "V2-MIX-06",
@@ -267,7 +267,7 @@
     "expected": "FAIL",
     "en": "The appendix may be up to 6 pages long and is outside the 30-page limit for the main report. However, any figure moved to the appendix must still be referenced in the main report. The cover page is included within the main-report limit, whereas the reference list is not.",
     "zh": "附录最多6页，不占正文报告30页的额度。附录中的图仍须正文引用。封面不计入30页限制，参考文献列表也不计入。",
-    "why": "与上一条构成最小差异对：封面由计入30页改为不计入。"
+    "why": "与 V2-NUM-14（PASS）构成最小差异对：封面由计入30页改为不计入。"
   },
   {
     "id": "V2-NUM-11",
@@ -330,7 +330,7 @@
     "expected": "FAIL",
     "en": "Every case report records the date of onset, the intervention, and the observed outcome. A separate field captures adverse events.",
     "zh": "每份病例报告均记录发病时间、干预措施及观察结果，不良事件不作单独登记。",
-    "why": "与上一条构成最小差异对：独立不良事件字段缺失。"
+    "why": "与 V2-ENU-07（PASS）构成最小差异对：独立不良事件字段缺失。"
   },
   {
     "id": "V2-NUM-13",
@@ -339,7 +339,7 @@
     "expected": "FAIL",
     "en": "The study must obtain no fewer than 120 valid responses. If more than 10% of a respondent’s mandatory fields are blank, that response is invalid. Calculate the missingness percentage using only mandatory fields; optional demographic items must not appear in the denominator.",
     "zh": "研究须获得至少120份有效答卷。若某份答卷的必填字段缺失比例达到10%或以上，该答卷无效。计算缺失率时只考虑必填字段。",
-    "why": "与上一条构成最小差异对：大于10%与大于等于10%边界相异。"
+    "why": "与 V2-NUM-12（PASS）构成最小差异对：大于10%与大于等于10%边界相异。"
   },
   {
     "id": "V2-NUM-02",
@@ -357,7 +357,7 @@
     "expected": "FAIL",
     "en": "The methods section identifies the population, recruitment process, and sampling strategy. It also states how missing observations were handled.",
     "zh": "方法部分介绍研究总体、招募流程及抽样方案，但不说明缺失观测值的处理方式。",
-    "why": "与上一条构成最小差异对：否定缺失值处理说明。"
+    "why": "与 V2-ENU-05（PASS）构成最小差异对：否定缺失值处理说明。"
   },
   {
     "id": "V2-ROL-04",
@@ -384,7 +384,7 @@
     "expected": "FAIL",
     "en": "For papers written in English, an English abstract is mandatory. An additional Chinese abstract is optional unless the degree program requires it.",
     "zh": "英文撰写的论文必须附英文摘要；无论项目是否另有规定，中文摘要都只能作为可选材料。",
-    "why": "与上一条构成最小差异对：学位项目可强制中文摘要的例外被移除。"
+    "why": "与 V2-EXC-02（PASS）构成最小差异对：学位项目可强制中文摘要的例外被移除。"
   },
   {
     "id": "V2-EXC-06",
@@ -438,7 +438,7 @@
     "expected": "FAIL",
     "en": "The results chapter must give participant counts, exclusions, primary outcomes, and uncertainty intervals. Descriptive statistics belong in tables, while interpretation belongs in the discussion. Supplementary plots may be moved to the appendix if they are cited in the results.",
     "zh": "结果章节须交代样本人数、排除情况、主要结局以及不确定性区间。描述性统计用表格呈现，解释置于讨论部分；补充图即便未在结果中引用，也可移至附录。",
-    "why": "与上一条构成最小差异对：删除附录补充图必须被正文引用的条件。"
+    "why": "与 V2-ENU-17（PASS）构成最小差异对：删除附录补充图必须被正文引用的条件。"
   },
   {
     "id": "V2-ROL-05",
@@ -483,7 +483,7 @@
     "expected": "FAIL",
     "en": "The committee may invite an external reviewer, but doing so is not required. The reviewer must declare any conflict of interest if invited.",
     "zh": "委员会必须邀请外部评审；若邀请，则该评审必须申报利益冲突。",
-    "why": "与上一条构成最小差异对：可选邀请升级为必须邀请。"
+    "why": "与 V2-MOD-04（PASS）构成最小差异对：可选邀请升级为必须邀请。"
   },
   {
     "id": "V2-ROL-06",
@@ -510,7 +510,7 @@
     "expected": "FAIL",
     "en": "The abstract must be 180–250 words and should explain the question, method, and principal finding. List three to five keywords on a separate line; they do not count toward the abstract limit.",
     "zh": "摘要须为180至250词，并说明研究问题、方法及主要发现。另起一行列出3到5个关键词；关键词计入摘要字数。",
-    "why": "与上一条构成最小差异对：关键词是否计入摘要上限不同。"
+    "why": "与 V2-MIX-01（PASS）构成最小差异对：关键词是否计入摘要上限不同。"
   },
   {
     "id": "V2-EXC-04",
@@ -537,7 +537,7 @@
     "expected": "FAIL",
     "en": "The abstract lists the motivation, method, key result, and contribution. Keywords appear immediately below it, not inside the abstract.",
     "zh": "摘要覆盖研究动机、方法、核心结果与贡献，关键词写入摘要正文而非放在其下方。",
-    "why": "与上一条构成最小差异对：关键词位置要求反转。"
+    "why": "与 V2-ENU-11（PASS）构成最小差异对：关键词位置要求反转。"
   },
   {
     "id": "V2-ENU-13",
@@ -591,7 +591,7 @@
     "expected": "FAIL",
     "en": "An archive record shall identify the project, principal investigator, collection period, and license. For restricted data, it must also state the access approver and the retention deadline. The repository does not require a public download link for restricted files.",
     "zh": "归档记录须说明项目、项目负责人、采集期间与许可协议。限制访问的数据需注明访问审批人及保留期限，并且必须提供公开下载链接。",
-    "why": "与上一条构成最小差异对：限制文件公开下载要求被反转。"
+    "why": "与 V2-ENU-19（PASS）构成最小差异对：限制文件公开下载要求被反转。"
   },
   {
     "id": "V2-MOD-14",
@@ -618,7 +618,7 @@
     "expected": "FAIL",
     "en": "Report confidence intervals at the 95% level. Round point estimates to two decimal places unless an established disciplinary convention requires otherwise.",
     "zh": "置信区间采用90%水平，点估计保留两位小数；如学科惯例另有规定，可按其惯例处理。",
-    "why": "与上一条构成最小差异对：置信水平95%被改为90%。"
+    "why": "与 V2-NUM-07（PASS）构成最小差异对：置信水平95%被改为90%。"
   },
   {
     "id": "V2-EXC-05",
@@ -627,7 +627,7 @@
     "expected": "FAIL",
     "en": "Figures may be placed in supplementary files if they are cited in the main text. Tables containing primary outcomes must remain in the manuscript.",
     "zh": "正文已引用的图可放入补充材料；载有主要结局指标的表格也可全部移入补充文件。",
-    "why": "与上一条构成最小差异对：主要结局表不得移走被改为允许移走。"
+    "why": "与 V2-EXC-04（PASS）构成最小差异对：主要结局表不得移走被改为允许移走。"
   },
   {
     "id": "V2-ROL-08",
@@ -915,7 +915,7 @@
     "expected": "FAIL",
     "en": "On the first dataset, the baseline outperformed the proposed system. On the second dataset, the proposed system achieved the higher score.",
     "zh": "在第一组数据上，基线方法比新系统表现更好；在第二组数据上，仍然是基线方法得分更高。",
-    "why": "与上一条构成最小差异对：第二组数据胜负反转。"
+    "why": "与 V2-ROL-06（PASS）构成最小差异对：第二组数据胜负反转。"
   },
   {
     "id": "V2-EXC-14",
@@ -978,7 +978,7 @@
     "expected": "FAIL",
     "en": "A complete ethics submission includes the study protocol, recruitment message, consent materials, and a plan for storing personal data. If interviews are recorded, attach the recording script and deletion schedule as well. Documents that are not applicable should be marked accordingly, rather than silently omitted.",
     "zh": "伦理审查材料须包含研究方案、招募信息、知情同意材料及个人数据存储计划。如访谈需录音，还须附录音说明，但无需说明录音资料的删除时间；不适用项目须明确标注。",
-    "why": "与上一条构成最小差异对：录音删除计划被省去。"
+    "why": "与 V2-ENU-15（PASS）构成最小差异对：录音删除计划被省去。"
   },
   {
     "id": "V2-EXC-13",

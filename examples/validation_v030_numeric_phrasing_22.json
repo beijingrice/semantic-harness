@@ -1,0 +1,200 @@
+[
+  {
+    "id": "NUM30-01P",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The thesis must be at least 40 pages long.",
+    "zh": "论文篇幅须在40页以上。",
+    "why": "“以上”按惯例含本数，与 at least 40 一致。"
+  },
+  {
+    "id": "NUM30-01F",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The thesis must be at least 40 pages long.",
+    "zh": "论文篇幅须超过40页。",
+    "why": "at least 40（≥）与超过40页（>）边界不同。"
+  },
+  {
+    "id": "NUM30-02P",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Each focus group must include 6 participants or more.",
+    "zh": "每个焦点小组至少须有6名参与者。",
+    "why": "6 or more 与至少6名均为 ≥6。"
+  },
+  {
+    "id": "NUM30-02F",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Each focus group must include 6 participants or more.",
+    "zh": "每个焦点小组最多6名参与者。",
+    "why": "≥6 被改为 ≤6，上下界方向相反。"
+  },
+  {
+    "id": "NUM30-03P",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The statement of purpose must be 2 pages or fewer.",
+    "zh": "目的陈述不得超过2页。",
+    "why": "2 pages or fewer 与不得超过2页均为 ≤2。"
+  },
+  {
+    "id": "NUM30-03F",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The statement of purpose must be 2 pages or fewer.",
+    "zh": "目的陈述不得少于2页。",
+    "why": "≤2 被改为 ≥2，上下界方向相反。"
+  },
+  {
+    "id": "NUM30-04P",
+    "category": "exceed_above",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The response rate must exceed 60%.",
+    "zh": "回复率须高于60%。",
+    "why": "exceed 与高于均为严格大于。"
+  },
+  {
+    "id": "NUM30-04F",
+    "category": "exceed_above",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The response rate must exceed 60%.",
+    "zh": "回复率须不低于60%。",
+    "why": "严格大于（>）与不低于（≥）边界不同。"
+  },
+  {
+    "id": "NUM30-05P",
+    "category": "exceed_above",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Similarity scores above 15% trigger a manual review.",
+    "zh": "相似度超过15%即触发人工复核。",
+    "why": "above 与超过均为严格大于。"
+  },
+  {
+    "id": "NUM30-05F",
+    "category": "exceed_above",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Similarity scores above 15% trigger a manual review.",
+    "zh": "相似度达到15%即触发人工复核。",
+    "why": "严格大于（>）与达到（≥）边界不同。"
+  },
+  {
+    "id": "NUM30-06P",
+    "category": "exceed_above",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Grants in excess of 50% of the budget require committee approval.",
+    "zh": "资助额超过预算的50%时须经委员会批准。",
+    "why": "in excess of 与超过均为严格大于。"
+  },
+  {
+    "id": "NUM30-06F",
+    "category": "exceed_above",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Grants in excess of 50% of the budget require committee approval.",
+    "zh": "资助额达到预算的50%或以上时须经委员会批准。",
+    "why": "严格大于（>）与达到或以上（≥）边界不同。"
+  },
+  {
+    "id": "NUM30-07P",
+    "category": "time_within",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Revisions must be submitted within 14 days of receiving the reviews.",
+    "zh": "须在收到评审意见后两周内提交修改稿。",
+    "why": "两周等于14天，within 与“内”均为上限。"
+  },
+  {
+    "id": "NUM30-07F",
+    "category": "time_within",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Revisions must be submitted within 14 days of receiving the reviews.",
+    "zh": "须在收到评审意见后三周内提交修改稿。",
+    "why": "期限14天被改为21天。"
+  },
+  {
+    "id": "NUM30-08P",
+    "category": "time_within",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Raw data must be deleted no later than 30 days after the study ends.",
+    "zh": "原始数据须在研究结束后30天以内删除。",
+    "why": "no later than 与“以内”均为 ≤30 天。"
+  },
+  {
+    "id": "NUM30-08F",
+    "category": "time_within",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Raw data must be deleted no later than 30 days after the study ends.",
+    "zh": "原始数据须在研究结束满30天后才能删除。",
+    "why": "删除期限上限被改为最早删除时间，方向相反。"
+  },
+  {
+    "id": "NUM30-09P",
+    "category": "non_time_within",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "The cover page is counted within the 25-page limit.",
+    "zh": "封面计入25页的篇幅限制。",
+    "why": "within 此处表示计入限额，不是页数上限；计入关系一致。"
+  },
+  {
+    "id": "NUM30-09F",
+    "category": "non_time_within",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "The cover page is counted within the 25-page limit.",
+    "zh": "封面不计入25页的篇幅限制。",
+    "why": "封面由计入改为不计入。"
+  },
+  {
+    "id": "NUM30-10P",
+    "category": "negated_exceed",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Each slide deck, not exceeding 20 pages, must be uploaded as a PDF.",
+    "zh": "每份幻灯片不超过20页，须以PDF格式上传。",
+    "why": "not exceeding 与不超过均为 ≤20。"
+  },
+  {
+    "id": "NUM30-10F",
+    "category": "negated_exceed",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Each slide deck, not exceeding 20 pages, must be uploaded as a PDF.",
+    "zh": "每份幻灯片不少于20页，须以PDF格式上传。",
+    "why": "≤20 被改为 ≥20，上下界方向相反。"
+  },
+  {
+    "id": "NUM30-11P",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "PASS",
+    "en": "Participants who are 18 years or older may enroll without parental consent.",
+    "zh": "年满18周岁的参与者无需家长同意即可报名。",
+    "why": "18 years or older 与年满18周岁均为 ≥18。"
+  },
+  {
+    "id": "NUM30-11F",
+    "category": "unit_suffix_bound",
+    "difficulty": "medium",
+    "expected": "FAIL",
+    "en": "Participants who are 18 years or older may enroll without parental consent.",
+    "zh": "17周岁以上的参与者无需家长同意即可报名。",
+    "why": "年龄下限18被改为17。"
+  }
+]
