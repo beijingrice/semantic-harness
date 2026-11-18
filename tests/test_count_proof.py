@@ -1,4 +1,4 @@
-"""direct_hardened counted-entity proof (_count_proof).
+"""direct_hardened counted-entity proof (count_proof).
 
 The proof used to require the literal wording of one dev case ("main report
 limit", "N页限制"), so any other phrasing of the same conflict fell back to
@@ -8,11 +8,11 @@ to a different limit.
 """
 import pytest
 
-from app.relation_direct import _count_proof
+from app.pipelines.hardened_rules import count_proof
 
 
 def prove(english, chinese, en_text=None, zh_text=None, en_subject="cover page", zh_subject="封面"):
-    return _count_proof(en_text or english, zh_text or chinese, english, chinese, en_subject, zh_subject)
+    return count_proof(en_text or english, zh_text or chinese, english, chinese, en_subject, zh_subject)
 
 
 @pytest.mark.parametrize("english,chinese,en_text,zh_text,subjects", [
@@ -73,16 +73,16 @@ def test_model_naming_a_different_known_entity_still_abstains():
 def test_undetermined_dispute_skips_the_model_call():
     """Disagreement with no source-checkable risk -> Q_DISPUTED_CLAIM.
 
-    _prove can only return REVIEW_REQUIRED for it, so no third model call is
+    prove can only return REVIEW_REQUIRED for it, so no third model call is
     made (live, that call spent ~3 minutes truncating) and the verdict is the same.
     """
     import json
 
     import httpx
 
+    from app.checker import Checker
     from app.config import Settings
     from app.llm import ChatClient
-    from app.pipeline import Checker
 
     replies = [
         {"verdict": "PASS", "reason": "same duty", "issues": []},

@@ -11,11 +11,11 @@ import httpx
 import pytest
 from test_v027_paragraph_grounding import Fake, config, match, review
 
+from app.checker import Checker
 from app.config import Settings
 from app.extraction_fast_path import source_anchor_pair
 from app.llm import ChatClient
 from app.paragraphs import build_paragraphs
-from app.pipeline import Checker
 
 CONDITIONAL_EN = 'When consent is withdrawn, the recording must be deleted unless the law requires retention.'
 CONDITIONAL_ZH = '撤回同意后应删除录音，但法律要求留存的除外。'

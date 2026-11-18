@@ -8,10 +8,10 @@ import httpx
 import pytest
 
 from app.config import Settings
-from app.direct_pipeline import check_direct, direct_numeric_conflicts
 from app.llm import ChatClient
 from app.paragraphs import build_paragraphs
-from app.pipeline import Checker
+from app.pipelines.base import StageRunner
+from app.pipelines.direct import direct_numeric_conflicts, run_direct
 
 EN = ('The review addresses data quality, annotation consistency, and evaluation '
       'reproducibility. These topics may be discussed in any order.')
@@ -36,7 +36,7 @@ def run_http(en, zh, responses, mode='dual'):
     client = ChatClient(cfg, http)
     client.start_trace()
     try:
-        result = check_direct(Checker(client, cfg), en, zh, mode=mode)
+        result = run_direct(StageRunner(client, cfg), en, zh, mode=mode)
         return result, calls, client.trace_snapshot()
     finally:
         client.close()

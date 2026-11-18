@@ -11,6 +11,7 @@ import httpx
 import pytest
 from test_v027_paragraph_grounding import Fake, config
 
+from app.checker import Checker
 from app.config import Settings
 from app.dispute_resolution import narrow_exactness_refutation, numeric_equivalence_certificates
 from app.llm import ChatClient, LLMError
@@ -26,7 +27,6 @@ from app.models import (
     ParagraphReviewIssue,
 )
 from app.paragraphs import build_paragraphs
-from app.pipeline import Checker
 from app.validators import parse_quantity
 
 FIXTURES = json.loads((Path(__file__).parent / 'fixtures/v0274_dispute_replay.json').read_text())

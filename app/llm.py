@@ -15,7 +15,7 @@ from app.backends import (
     UnsupportedNativeSchema,
     build_backend,
 )
-from app.config import ConfigError, Settings
+from app.config import Settings
 
 
 class LLMError(RuntimeError):
@@ -57,11 +57,7 @@ class GenerationAnomaly(LLMError):
 class ChatClient:
     def __init__(self, settings: Settings, http_client: httpx.Client | None = None,
                  verifier_http_client: httpx.Client | None = None):
-        self.settings = settings
-        if settings.schema_mode not in ("legacy", "on", "off", "auto"):
-            raise ConfigError("LM_SCHEMA_MODE must be legacy/on/off/auto")
-        if settings.model_discovery not in ("required", "optional", "off"):
-            raise ConfigError("LM_MODEL_DISCOVERY must be required/optional/off")
+        self.settings = settings  # enum values are validated by Settings itself
         self.http = http_client or httpx.Client(timeout=settings.timeout_seconds)
         self.owns_http = http_client is None
         separate = bool(settings.verifier_base_url or settings.verifier_api_key or settings.verifier_backend)
@@ -82,6 +78,9 @@ class ChatClient:
         self._native_support: dict[tuple[str, str], bool] = {}
         # Request telemetry scoped per case. No raw prompt/response is persisted.
         self.request_trace: list[dict[str, Any]] = []
+        # Pipeline stage of the next request (e.g. "extract_english"), set by StageRunner;
+        # telemetry falls back to the schema name.
+        self.stage_label: str | None = None
 
     def start_trace(self) -> None:
         self.request_trace.clear()
@@ -112,7 +111,7 @@ class ChatClient:
         """One API operation; backend normalizes response before semantic parsing."""
         began = time.monotonic()
         record: dict[str, Any] = {
-            "stage": getattr(self, "_current_stage", schema_name), "schema": schema_name,
+            "stage": self.stage_label or schema_name, "schema": schema_name,
             "model": model, "attempt": attempt, "recovery": recovery,
             "backend_role": self._role_for(model),
             "schema_mode": "json_schema" if "response_format" in payload else "prompt_only",
@@ -185,10 +184,6 @@ class ChatClient:
         if self.owns_http:
             self.http.close()
 
-    def _headers(self) -> dict[str, str]:
-        # Legacy compatibility; adapter owns actual credentials.
-        return {"Authorization": f"Bearer {self.settings.api_key}"} if self.settings.api_key else {}
-
     def models(self) -> list[str]:
         try:
             values = self.primary_backend.models()
@@ -251,10 +246,12 @@ class ChatClient:
     def structured(self, model: str, system: str, user: str, schema_model: type[BaseModel],
                    schema_name: str, validate_result: Callable[[BaseModel], None] | None = None,
                    max_tokens: int | None = None, max_attempts: int = 3) -> BaseModel:
-        """要求模型输出符合 schema 的 JSON；格式错误时至多进行两次修正重试。
+        """Ask for JSON matching ``schema_model`` and pass it through ``validate_result``.
 
-        仅修复格式问题；绝不把一条裸 link 自动包装后直接认定 PASS。
-        对长度截断或空回答可选一次备用生成，仍严格验证 Schema 和来源。
+        Up to ``max_attempts`` attempts, each retry with the validation error as
+        feedback. A truncated or empty generation instead gets exactly one recovery
+        request (when LM_GENERATION_RECOVERY is on), which is validated the same way
+        and never retried. Nothing here repairs a model answer into a PASS.
         """
         if max_attempts not in (1, 2, 3):
             raise ValueError("max_attempts must be 1, 2, or 3")
@@ -262,6 +259,40 @@ class ChatClient:
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ]
+        expected_schema = schema_model.model_json_schema()
+        payload = self._payload(model, messages, max_tokens, schema_name, expected_schema)
+
+        for attempt in range(1, max_attempts + 1):
+            try:
+                content = self._completion(payload=payload, model=model, schema_name=schema_name,
+                                           attempt=attempt, recovery=False)
+            except UnsupportedNativeSchema as schema_exc:
+                content = self._downgrade_native_schema(schema_exc, payload, messages, model,
+                                                        schema_name, attempt, expected_schema)
+            except GenerationAnomaly as anomaly:
+                return self._recover_generation(anomaly, payload, messages, model, schema_name,
+                                                attempt, schema_model, validate_result)
+            try:
+                validated = self._validate(content, schema_model, validate_result)
+                self.request_trace[-1]["outcome"] = "validated"
+                return validated
+            except (LLMError, ValidationError) as exc:
+                if self.request_trace:
+                    self.request_trace[-1]["outcome"] = "schema_or_grounding_invalid"
+                    self.request_trace[-1]["validation_error_type"] = type(exc).__name__
+                if attempt == max_attempts:
+                    raise LLMError(
+                        f"stage={schema_name} model={model} attempts={max_attempts}；"
+                        f"模型{'连续三次' if max_attempts == 3 else f'在 {max_attempts} 次尝试中'}"
+                        f"未能返回符合输出 Schema / 原文证据要求的结果（并非 FAIL）：{exc}"
+                    ) from exc
+                messages.append({"role": "assistant", "content": content})
+                messages.append({"role": "user", "content": _retry_feedback(schema_name, user, exc,
+                                                                            expected_schema)})
+        raise AssertionError("unreachable")
+
+    def _payload(self, model: str, messages: list[dict[str, str]], max_tokens: int | None,
+                 schema_name: str, expected_schema: dict) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": model,
             "messages": messages,
@@ -269,220 +300,181 @@ class ChatClient:
             "max_tokens": max_tokens if max_tokens is not None else self.settings.max_tokens,
             "stream": False,
         }
-        expected_schema = schema_model.model_json_schema()
         if self._native_enabled(model):
             payload["response_format"] = {
                 "type": "json_schema",
-                "json_schema": {
-                    "name": schema_name,
-                    "strict": True,
-                    "schema": expected_schema,
-                },
+                "json_schema": {"name": schema_name, "strict": True, "schema": expected_schema},
             }
+        return payload
 
-        # Original schema/source feedback policy is unchanged (max 3 attempts).
-        # Generation anomalies are a different failure class: perform at most
-        # ONE targeted, separately validated recovery call, never identical replay.
-        for attempt in range(max_attempts):
-            try:
-                content = self._completion(payload=payload, model=model,
-                    schema_name=schema_name, attempt=attempt + 1, recovery=False)
-            except UnsupportedNativeSchema as schema_exc:
-                if self.settings.schema_mode != "auto" or "response_format" not in payload:
-                    raise LLMError(f"{schema_exc}; configure LM_SCHEMA_MODE=auto or off") from schema_exc
-                # Exactly ONE downgrade, only after explicit HTTP schema rejection.
-                self._native_support[(self._role_for(model), model)] = False
-                payload.pop("response_format", None)
-                messages.append({"role": "user", "content": (
-                    "The API cannot enforce response_format=json_schema. "
-                    "Return only a valid JSON object satisfying this schema, with no prose: "
-                    + json.dumps(expected_schema, ensure_ascii=False)
-                )})
-                try:
-                    content = self._completion(payload=payload, model=model,
-                        schema_name=schema_name, attempt=attempt + 1, recovery=False)
-                except UnsupportedNativeSchema as exc:
-                    raise LLMError(f"Provider rejected prompt-only fallback: {exc}") from exc
-            except GenerationAnomaly as initial_exc:
-                if not self.settings.generation_recovery:
-                    raise LLMError(f"{initial_exc}；LM_GENERATION_RECOVERY=false") from initial_exc
-                recovery_payload = dict(payload)
-                recovery_payload.pop("response_format", None)
-                if initial_exc.category == "truncated":
-                    # When reasoning consumed a reduced per-stage budget (e.g.
-                    # LM_EXTRACTION_MAX_TOKENS or the 1536 verify cap), retrying
-                    # with the SAME cap almost always truncates again. The single
-                    # recovery call gets the global LM_MAX_TOKENS budget instead.
-                    recovery_payload["max_tokens"] = max(
-                        payload.get("max_tokens") or 0, self.settings.max_tokens)
-                recovery_payload["messages"] = [*messages, {
-                    "role": "user",
-                    "content": (
-                        "The previous generation ended without a complete final JSON answer. "
-                        "Return the COMPLETE requested JSON object now, directly and concisely, "
-                        "without a reasoning preamble, code fence, or explanatory prose. "
-                        "Preserve all required fields and source paragraph IDs."
-                    ),
-                }]
-                try:
-                    content = self._completion(payload=recovery_payload, model=model,
-                        schema_name=schema_name, attempt=attempt + 1, recovery=True)
-                except LLMError as recovery_exc:
-                    raise LLMError(
-                        f"生成异常恢复失败；original={initial_exc}; recovery={recovery_exc}"
-                    ) from recovery_exc
-                # One recovery call may not trigger another corrective retry.
-                # The normal schema and validate_result checks below still apply.
-                try:
-                    validated = schema_model.model_validate(parse_json_object(content))
-                    if validate_result is not None:
-                        validate_result(validated)
-                    self.request_trace[-1]["outcome"] = "recovered_validated"
-                    return validated
-                except (LLMError, ValidationError) as validation_exc:
-                    self.request_trace[-1]["outcome"] = "recovery_validation_failed"
-                    raise LLMError(
-                        f"生成恢复产物未通过原 Schema / 证据校验：{validation_exc}"
-                    ) from validation_exc
+    def _downgrade_native_schema(self, schema_exc: UnsupportedNativeSchema, payload, messages, model,
+                                 schema_name, attempt, expected_schema) -> str:
+        """LM_SCHEMA_MODE=auto: after an explicit rejection, retry once with the schema in the prompt."""
+        if self.settings.schema_mode != "auto" or "response_format" not in payload:
+            raise LLMError(f"{schema_exc}; configure LM_SCHEMA_MODE=auto or off") from schema_exc
+        self._native_support[(self._role_for(model), model)] = False
+        payload.pop("response_format", None)
+        messages.append({"role": "user", "content": (
+            "The API cannot enforce response_format=json_schema. "
+            "Return only a valid JSON object satisfying this schema, with no prose: "
+            + json.dumps(expected_schema, ensure_ascii=False)
+        )})
+        try:
+            return self._completion(payload=payload, model=model, schema_name=schema_name,
+                                    attempt=attempt, recovery=False)
+        except UnsupportedNativeSchema as exc:
+            raise LLMError(f"Provider rejected prompt-only fallback: {exc}") from exc
 
-            try:
-                validated = schema_model.model_validate(parse_json_object(content))
-                if validate_result is not None:
-                    validate_result(validated)
-                self.request_trace[-1]["outcome"] = "validated"
-                return validated
-            except (LLMError, ValidationError) as exc:
-                if self.request_trace:
-                    self.request_trace[-1]["outcome"] = "schema_or_grounding_invalid"
-                    self.request_trace[-1]["validation_error_type"] = type(exc).__name__
-                if attempt == max_attempts - 1:
-                    raise LLMError(
-                        f"stage={schema_name} model={model} attempts={max_attempts}；"
-                        f"模型{'连续三次' if max_attempts == 3 else f'在 {max_attempts} 次尝试中'}未能返回符合输出 Schema / 原文证据要求的结果（并非 FAIL）："
-                        f"{exc}"
-                    ) from exc
-                # 不能仅仅把 {en_ids, zh_ids, ...} 包装为 {links:[...]}，
-                # 因为原始配对本身可能是错的：要求模型重新核对对应关系。
-                messages.append({"role": "assistant", "content": content})
-                if schema_name == "keyword_matching":
-                    format_hint = (
-                        'Top level MUST be {"links":[{"en_ids":["en_1"],'
-                        '"zh_ids":["zh_1"],"relation":"equivalent","reason":"..."}]}. '
-                        'If none match, return {"links":[]}. '
-                        'Reconsider the keyword inventories: do NOT group unrelated '
-                        'keywords into one link or fabricate missing counterparts.'
-                    )
-                elif schema_name in ("keyword_extraction", "keyword_extraction_fallback"):
-                    format_hint = (
-                        'Top level MUST be {"units":[{"kind":"concept",'
-                        '"claim":"...","evidence":"..."}]}. '
-                        'evidence must be ONE exact, contiguous substring of original text. '
-                        'For a list "image, audio, text samples", quote "image", not "image samples".'
-                    )
-                elif schema_name == "atomic_refinement":
-                    format_hint = (
-                        'Return exactly {"units":[{"kind":"enumerated_item",'
-                        '"claim":"...","evidence":"..."}]}. '
-                        'This is a COMPLETE replacement inventory, not additional missing units. '
-                        'Each independently omittable item needs its own unit. '
-                        'All evidence must be exact contiguous source substrings (spaces at '
-                        'Chinese/ASCII boundaries will be normalized by the caller).'
-                    )
-                elif schema_name == "coverage_audit":
-                    format_hint = (
-                        'Top level MUST be {"missing_units":[{"kind":"concept",'
-                        '"claim":"...","evidence":"..."}]}. '
-                        'Return {"missing_units":[]} if nothing MATERIAL is missing. '
-                        'Each evidence MUST be an exact contiguous substring of source. '
-                        'Never repeat existing units or invent facts.'
-                    )
-                elif schema_name == "alignment_evidence_check":
-                    format_hint = (
-                        'Return exactly {"status":"supported|unsupported|uncertain",'
-                        '"en_evidence":"...","zh_evidence":"...","reason":"..."}. '
-                        'Supported requires two verbatim ORIGINAL quotes proving the '
-                        'SAME disputed fact. If they cannot be found, return unsupported or uncertain.'
-                    )
-                elif schema_name in ("paragraph_extraction", "paragraph_extraction_fallback"):
-                    # Correct the *actual* paragraph wire format. Never send
-                    # legacy quote / issue-array instructions to this stage.
-                    try:
-                        allowed = json.loads(user).get("allowed_paragraph_ids", [])
-                    except (ValueError, TypeError):
-                        allowed = []
-                    format_hint = (
-                        'Return exactly one object with "units" (array). '
-                        'Each unit must contain only "kind", "claim", and '
-                        '"paragraph_ids" (an array of strings). '
-                        'Choose paragraph IDs only from the allowed input list: '
-                        f'{json.dumps(allowed, ensure_ascii=False)}. '
-                        'Never output any evidence string, character offset, '
-                        'issues, resolved_missing, or resolved_conflicts. '
-                        'Return {"units":[]} only if no meaningful fact exists.'
-                    )
-                elif schema_name == "paragraph_review":
-                    format_hint = (
-                        'Return exactly {"verdict":"PASS|FAIL|UNSURE",'
-                        '"reason":"...","issues":[]}. '
-                        'If FAIL, issues must contain objects with kind, reason, '
-                        'en_paragraph_ids and zh_paragraph_ids. '
-                        'Choose IDs only from english_paragraphs and chinese_paragraphs. '
-                        'Do not output literal evidence quotes.'
-                    )
-                elif schema_name == "paragraph_arbitration":
-                    format_hint = (
-                        'Return exactly {"verdict":"PASS|FAIL|UNSURE",'
-                        '"issue_kind":"none|missing_in_chinese|missing_in_english|conflict",'
-                        '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}. '
-                        'For FAIL with conflict cite BOTH actual source paragraph IDs; '
-                        'for initial FAIL to PASS cite BOTH original language sources. '
-                        'Do not output literal evidence quotes.'
-                    )
-                elif schema_name == "paragraph_dispute_recheck":
-                    format_hint = (
-                        'Return exactly {"issues":[{"issue_index":0,'
-                        '"status":"refuted|sustained|uncertain",'
-                        '"basis":"formal_numeric|other",'
-                        '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}],'
-                        '"reason":"..."}. '
-                        'Assess EVERY reviewer issue index exactly once, using source '
-                        'paragraph IDs. A refuted issue must cite BOTH sources. '
-                        'Do not return a generic issue list or evidence quotes.'
-                    )
-                elif schema_name == "paragraph_alignment_support":
-                    format_hint = (
-                        'Return exactly {"status":"supported|unsupported|uncertain",'
-                        '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}. '
-                        'Only supported can assert that every disputed fact aligns; '
-                        'in that case cite BOTH source paragraph IDs. '
-                        'Do not output literal evidence quotes.'
-                    )
-                elif schema_name == "independent_review":
-                    format_hint = (
-                        'Return exactly {"verdict":"PASS","reason":"...","issues":[]} '
-                        'or FAIL with quoted grounded issues. No ID repairs or resolved arrays.'
-                    )
-                elif schema_name == "dispute_arbitration":
-                    format_hint = (
-                        'Return exactly a JSON object with verdict, issue_kind, en_evidence, '
-                        'zh_evidence and reason; do not invent quotes.'
-                    )
-                else:
-                    format_hint = (
-                        'Top level MUST contain ALL THREE ARRAYS: '
-                        '{"issues":[],"resolved_missing":[],"resolved_conflicts":[]}. '
-                        'Every nonempty quoted evidence must be an exact substring of original text.'
-                    )
-                messages.append({
-                    "role": "user",
-                    "content": (
-                        "Your previous response FAILED JSON schema or source-reference validation. "
-                        "Regenerate the FULL answer, not merely an outer wrapper. "
-                        "Respond with ONE JSON object matching the schema EXACTLY; "
-                        "no extra top-level fields, no prose, no code fences. "
-                        f"{format_hint} "
-                        f"Specific validation error: {str(exc)}. "
-                        f"Expected JSON schema: {json.dumps(expected_schema, ensure_ascii=False)}"
-                    ),
-                })
-        raise AssertionError("unreachable")
+    def _recover_generation(self, anomaly: GenerationAnomaly, payload, messages, model, schema_name,
+                            attempt, schema_model, validate_result) -> BaseModel:
+        """One prompt-only recovery request after a truncated or empty generation."""
+        if not self.settings.generation_recovery:
+            raise LLMError(f"{anomaly}；LM_GENERATION_RECOVERY=false") from anomaly
+        recovery_payload = dict(payload)
+        recovery_payload.pop("response_format", None)
+        if anomaly.category == "truncated":
+            # Reasoning that used up a reduced per-stage budget would hit the same cap
+            # again, so the recovery request gets the global LM_MAX_TOKENS budget.
+            recovery_payload["max_tokens"] = max(payload.get("max_tokens") or 0, self.settings.max_tokens)
+        recovery_payload["messages"] = [*messages, {"role": "user", "content": _RECOVERY_INSTRUCTION}]
+        try:
+            content = self._completion(payload=recovery_payload, model=model, schema_name=schema_name,
+                                       attempt=attempt, recovery=True)
+        except LLMError as recovery_exc:
+            raise LLMError(f"生成异常恢复失败；original={anomaly}; recovery={recovery_exc}") from recovery_exc
+        try:
+            validated = self._validate(content, schema_model, validate_result)
+        except (LLMError, ValidationError) as validation_exc:
+            self.request_trace[-1]["outcome"] = "recovery_validation_failed"
+            raise LLMError(f"生成恢复产物未通过原 Schema / 证据校验：{validation_exc}") from validation_exc
+        self.request_trace[-1]["outcome"] = "recovered_validated"
+        return validated
+
+    @staticmethod
+    def _validate(content: str, schema_model: type[BaseModel],
+                  validate_result: Callable[[BaseModel], None] | None) -> BaseModel:
+        validated = schema_model.model_validate(parse_json_object(content))
+        if validate_result is not None:
+            validate_result(validated)
+        return validated
+
+
+_RECOVERY_INSTRUCTION = (
+    "The previous generation ended without a complete final JSON answer. "
+    "Return the COMPLETE requested JSON object now, directly and concisely, "
+    "without a reasoning preamble, code fence, or explanatory prose. "
+    "Preserve all required fields and source paragraph IDs."
+)
+
+# Shape reminder added to the retry message, per wire schema.
+_FORMAT_HINTS = {
+    "keyword_matching": (
+        'Top level MUST be {"links":[{"en_ids":["en_1"],'
+        '"zh_ids":["zh_1"],"relation":"equivalent","reason":"..."}]}. '
+        'If none match, return {"links":[]}. '
+        'Reconsider the keyword inventories: do NOT group unrelated '
+        'keywords into one link or fabricate missing counterparts.'
+    ),
+    "keyword_extraction": (
+        'Top level MUST be {"units":[{"kind":"concept",'
+        '"claim":"...","evidence":"..."}]}. '
+        'evidence must be ONE exact, contiguous substring of original text. '
+        'For a list "image, audio, text samples", quote "image", not "image samples".'
+    ),
+    "atomic_refinement": (
+        'Return exactly {"units":[{"kind":"enumerated_item",'
+        '"claim":"...","evidence":"..."}]}. '
+        'This is a COMPLETE replacement inventory, not additional missing units. '
+        'Each independently omittable item needs its own unit. '
+        'All evidence must be exact contiguous source substrings (spaces at '
+        'Chinese/ASCII boundaries will be normalized by the caller).'
+    ),
+    "coverage_audit": (
+        'Top level MUST be {"missing_units":[{"kind":"concept",'
+        '"claim":"...","evidence":"..."}]}. '
+        'Return {"missing_units":[]} if nothing MATERIAL is missing. '
+        'Each evidence MUST be an exact contiguous substring of source. '
+        'Never repeat existing units or invent facts.'
+    ),
+    "alignment_evidence_check": (
+        'Return exactly {"status":"supported|unsupported|uncertain",'
+        '"en_evidence":"...","zh_evidence":"...","reason":"..."}. '
+        'Supported requires two verbatim ORIGINAL quotes proving the '
+        'SAME disputed fact. If they cannot be found, return unsupported or uncertain.'
+    ),
+    "paragraph_review": (
+        'Return exactly {"verdict":"PASS|FAIL|UNSURE",'
+        '"reason":"...","issues":[]}. '
+        'If FAIL, issues must contain objects with kind, reason, '
+        'en_paragraph_ids and zh_paragraph_ids. '
+        'Choose IDs only from english_paragraphs and chinese_paragraphs. '
+        'Do not output literal evidence quotes.'
+    ),
+    "paragraph_arbitration": (
+        'Return exactly {"verdict":"PASS|FAIL|UNSURE",'
+        '"issue_kind":"none|missing_in_chinese|missing_in_english|conflict",'
+        '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}. '
+        'For FAIL with conflict cite BOTH actual source paragraph IDs; '
+        'for initial FAIL to PASS cite BOTH original language sources. '
+        'Do not output literal evidence quotes.'
+    ),
+    "paragraph_dispute_recheck": (
+        'Return exactly {"issues":[{"issue_index":0,'
+        '"status":"refuted|sustained|uncertain",'
+        '"basis":"formal_numeric|other",'
+        '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}],'
+        '"reason":"..."}. '
+        'Assess EVERY reviewer issue index exactly once, using source '
+        'paragraph IDs. A refuted issue must cite BOTH sources. '
+        'Do not return a generic issue list or evidence quotes.'
+    ),
+    "paragraph_alignment_support": (
+        'Return exactly {"status":"supported|unsupported|uncertain",'
+        '"en_paragraph_ids":[],"zh_paragraph_ids":[],"reason":"..."}. '
+        'Only supported can assert that every disputed fact aligns; '
+        'in that case cite BOTH source paragraph IDs. '
+        'Do not output literal evidence quotes.'
+    ),
+    "independent_review": (
+        'Return exactly {"verdict":"PASS","reason":"...","issues":[]} '
+        'or FAIL with quoted grounded issues. No ID repairs or resolved arrays.'
+    ),
+    "dispute_arbitration": (
+        'Return exactly a JSON object with verdict, issue_kind, en_evidence, '
+        'zh_evidence and reason; do not invent quotes.'
+    ),
+}
+_FORMAT_HINTS["keyword_extraction_fallback"] = _FORMAT_HINTS["keyword_extraction"]
+_DEFAULT_FORMAT_HINT = (
+    'Top level MUST contain ALL THREE ARRAYS: '
+    '{"issues":[],"resolved_missing":[],"resolved_conflicts":[]}. '
+    'Every nonempty quoted evidence must be an exact substring of original text.'
+)
+
+
+def _format_hint(schema_name: str, user: str) -> str:
+    if schema_name in ("paragraph_extraction", "paragraph_extraction_fallback"):
+        try:
+            allowed = json.loads(user).get("allowed_paragraph_ids", [])
+        except (ValueError, TypeError):
+            allowed = []
+        return ('Return exactly one object with "units" (array). '
+                'Each unit must contain only "kind", "claim", and '
+                '"paragraph_ids" (an array of strings). '
+                'Choose paragraph IDs only from the allowed input list: '
+                f'{json.dumps(allowed, ensure_ascii=False)}. '
+                'Never output any evidence string, character offset, '
+                'issues, resolved_missing, or resolved_conflicts. '
+                'Return {"units":[]} only if no meaningful fact exists.')
+    return _FORMAT_HINTS.get(schema_name, _DEFAULT_FORMAT_HINT)
+
+
+def _retry_feedback(schema_name: str, user: str, exc: Exception, expected_schema: dict) -> str:
+    """Ask for a full regeneration (not a re-wrapped answer) after a validation failure."""
+    return ("Your previous response FAILED JSON schema or source-reference validation. "
+            "Regenerate the FULL answer, not merely an outer wrapper. "
+            "Respond with ONE JSON object matching the schema EXACTLY; "
+            "no extra top-level fields, no prose, no code fences. "
+            f"{_format_hint(schema_name, user)} "
+            f"Specific validation error: {str(exc)}. "
+            f"Expected JSON schema: {json.dumps(expected_schema, ensure_ascii=False)}")

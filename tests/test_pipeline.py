@@ -1,10 +1,10 @@
 """Synthetic model outputs test branching and failure safety, not real semantic accuracy."""
 import pytest
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import LLMError
 from app.models import AlignmentEvidenceDraft, ArbitrationDraft, ExtractedDraft, MatchDraft, ReviewDraft
-from app.pipeline import Checker
 
 
 def unit(claim, evidence, kind="concept"):

@@ -19,9 +19,9 @@ from typing import Any
 
 import httpx
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import ChatClient, LLMError, parse_json_object
-from app.pipeline import Checker
 from examples.evaluate import load_cases
 
 STAGE_MARKERS = (

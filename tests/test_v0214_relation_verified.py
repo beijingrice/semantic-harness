@@ -11,11 +11,11 @@ from pathlib import Path
 import httpx
 import pytest
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import ChatClient
 from app.models import RelationVerificationDraft
-from app.pipeline import Checker
-from app.relation_direct import _prove, _scalar_source_scope, choose_questions
+from app.pipelines.hardened_rules import choose_questions, prove, scalar_source_scope
 from app.source_risks import source_spans
 
 REPORT = json.loads(Path('tests/fixtures/replay_v0213_questions_11.json').read_text())
@@ -107,7 +107,7 @@ def local_prove(key,draft,en_id=None,zh_id=None,en_source=None,zh_source=None):
     ens={x.id:x.text for x in source_spans(en,'en')}
     zhs={x.id:x.text for x in source_spans(zh,'zh')}
     ei=en_id or draft.en_evidence_id;zi=zh_id or draft.zh_evidence_id
-    return _prove(q,draft,ens[ei],zhs[zi],en,zh,en,zh)
+    return prove(q,draft,ens[ei],zhs[zi],en,zh,en,zh)
 
 
 def test_event_no_is_not_a_synonym_for_difference_in_outcome():
@@ -162,7 +162,7 @@ def test_wrong_winner_operand_must_abstain():
 def test_scalar_equivalent_only_for_single_same_activity_no_new_duty():
     a=verdict_direct('Q_SCALAR_EQUIVALENCE')
     assert local_prove('V2-NUM-03',a)=='PASS'
-    assert _scalar_source_scope('The survey ran for exactly six weeks.',
+    assert scalar_source_scope('The survey ran for exactly six weeks.',
                   '问卷调查持续了42天，既未延长也未缩短。')
     for en,zh in (
         ('The survey ran for approximately six weeks.', '问卷调查持续了42天。'),
@@ -170,7 +170,7 @@ def test_scalar_equivalent_only_for_single_same_activity_no_new_duty():
         ('The study ran for exactly six weeks.', '问卷调查持续了42天。'),
         ('The survey ran for exactly six weeks.', '问卷调查持续了42天，后来又收集了新资料。'),
     ):
-        assert not _scalar_source_scope(en,zh)
+        assert not scalar_source_scope(en,zh)
 
 
 def test_false_model_equivalence_does_not_erase_source_proven_mismatch():

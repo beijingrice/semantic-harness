@@ -4,6 +4,7 @@ from dataclasses import replace
 
 import pytest
 
+from app.checker import Checker, PipelineStageError
 from app.config import Settings
 from app.models import (
     MatchDraft,
@@ -14,7 +15,6 @@ from app.models import (
     ParagraphReviewDraft,
 )
 from app.paragraphs import build_paragraphs, paragraph_evidence, verify_ids
-from app.pipeline import Checker, PipelineStageError
 
 
 def config(**kw):

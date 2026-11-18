@@ -1,6 +1,6 @@
 """The language-model wire format and the public API data contract.
 
-All model-produced quotes must be checked against the ORIGINAL source text by pipeline.py.
+Every model-produced quote or paragraph ID is checked against the ORIGINAL source text by the pipelines.
 Schema validity is not evidence of semantic correctness.
 """
 from typing import Literal
@@ -181,6 +181,7 @@ class GroundedEvidenceDraft(StrictModel):
 
 
 class FocusedVerificationDraft(StrictModel):
+    # Produced only by pipelines removed in v0.3.0; CheckResult.focused_verification is always null.
     """A structured hypothesis about one dispute, with source-backed option IDs.
 
     Only the host chooses the actual quote text; these model fields are NOT a
@@ -213,7 +214,7 @@ class CheckRequest(StrictModel):
 
 
 class RelationVerificationDraft(StrictModel):
-    """v0.2.14: same_event is scope identity, NOT whether two rules agree.
+    """direct_hardened answer. same_event is scope identity, NOT whether two rules agree.
 
     Extracted actor/entity fields are suggestions checked against immutable source
     spans; cannot independently prove translation or imply a label.

@@ -9,9 +9,9 @@ import json
 import httpx
 import pytest
 
+from app.checker import Checker, PipelineStageError
 from app.config import Settings
 from app.llm import ChatClient
-from app.pipeline import Checker, PipelineStageError
 
 
 def unit(claim, evidence, kind="concept"):

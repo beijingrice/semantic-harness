@@ -5,8 +5,8 @@ from dataclasses import replace
 
 import pytest
 
+from app.checker import Checker, PipelineStageError
 from app.config import Settings
-from app.pipeline import Checker, PipelineStageError
 from app.prompts import EXTRACTION_SYSTEM_COARSE, FALLBACK_EXTRACTION_SYSTEM_COARSE
 
 

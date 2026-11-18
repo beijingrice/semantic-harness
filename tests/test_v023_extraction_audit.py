@@ -6,10 +6,11 @@ import json
 import httpx
 import pytest
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import ChatClient
 from app.models import KeyUnit
-from app.pipeline import Checker, PipelineStageError
+from app.pipelines.quote import PipelineStageError, coverage_audit_reasons
 from app.prompts import COVERAGE_AUDIT_SYSTEM, EXTRACTION_SYSTEM, EXTRACTION_SYSTEM_LEGACY
 
 
@@ -106,7 +107,7 @@ def test_grounded_single_fact_skips_audit_entirely():
 
 
 def test_source_only_audit_catches_uncovered_roles():
-    reason = Checker.coverage_audit_reasons(
+    reason = coverage_audit_reasons(
         "The model was trained on Dataset A and tested on Dataset B.",
         [KeyUnit(id="en_1", **unit("Dataset A", "Dataset A", "entity")),
          KeyUnit(id="en_2", **unit("Dataset B", "Dataset B", "entity"))])

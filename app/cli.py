@@ -5,9 +5,9 @@ import sys
 from pathlib import Path
 
 from app.backends import BackendError
+from app.checker import Checker
 from app.config import ConfigError, Settings
 from app.llm import ChatClient, LLMError
-from app.pipeline import Checker
 
 
 def main() -> None:

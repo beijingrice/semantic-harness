@@ -6,13 +6,13 @@ from pathlib import Path
 import httpx
 import pytest
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import ChatClient
-from app.pipeline import Checker
-from app.relation_direct import (
-    _focus_exception_evidence,
-    _host_anchor_direction,
-    _numeric_symbol_unicode,
+from app.pipelines.hardened_rules import (
+    focus_exception_evidence,
+    host_anchor_direction,
+    numeric_symbol_unicode,
 )
 from app.source_risks import source_spans
 
@@ -84,11 +84,11 @@ def test_real_prior_output_replayed_through_hardened_host(case_id,expected):
 
 def test_unicode_operators_are_normalized_without_changing_strictness():
     from decimal import Decimal
-    assert _numeric_symbol_unicode('≥１０％')==('>=',Decimal('10'),'%')
-    assert _numeric_symbol_unicode('≤ 3.5mm')==('<=',Decimal('3.5'),'mm')
-    assert _numeric_symbol_unicode('≧ 10%')==('>=',Decimal('10'),'%')
+    assert numeric_symbol_unicode('≥１０％')==('>=',Decimal('10'),'%')
+    assert numeric_symbol_unicode('≤ 3.5mm')==('<=',Decimal('3.5'),'mm')
+    assert numeric_symbol_unicode('≧ 10%')==('>=',Decimal('10'),'%')
     for invalid in ('>10% or <12%', 'roughly ≥10%', '>=10-20%', '>= 10%%'):
-        assert _numeric_symbol_unicode(invalid) is None
+        assert numeric_symbol_unicode(invalid) is None
 
 
 def test_wrong_model_comparator_cannot_override_source():
@@ -111,12 +111,12 @@ def test_exception_no_unique_source_target_abstains():
     source=CASES['V2-EXC-03']
     en={s.id:s.text for s in source_spans(source['en'],'en')}
     zh={s.id:s.text for s in source_spans(source['zh'],'zh')}
-    assert _focus_exception_evidence(en,zh,'en_all','zh_all','Chinese abstract','中文摘要')
+    assert focus_exception_evidence(en,zh,'en_all','zh_all','Chinese abstract','中文摘要')
     # Two independent exceptions about the same Chinese abstract: do not guess.
     en_twice=source['en']+' An additional Chinese abstract is optional unless another degree program requires it.'
     en={s.id:s.text for s in source_spans(en_twice,'en')}
-    assert _focus_exception_evidence(en,zh,'en_all','zh_all','Chinese abstract','中文摘要') is None
-    assert _focus_exception_evidence(en,zh,'en_all','zh_all','English abstract','英文摘要') is None
+    assert focus_exception_evidence(en,zh,'en_all','zh_all','Chinese abstract','中文摘要') is None
+    assert focus_exception_evidence(en,zh,'en_all','zh_all','English abstract','英文摘要') is None
 
 
 def test_invalid_citation_has_single_call_host_recovery_only_for_unique_direction():
@@ -134,20 +134,20 @@ def test_ambiguous_direction_scopes_never_auto_recover():
     c=CASES['V2-ROL-07']
     en={s.id:s.text for s in source_spans(c['en'],'en')}
     zh={s.id:s.text for s in source_spans(c['zh'],'zh')}
-    assert _host_anchor_direction(en,zh) is not None
+    assert host_anchor_direction(en,zh) is not None
     # Several contrary datasets => not a unique conflict.
     et=c['en']+' On the third dataset, the proposed system achieved the higher score.'
     zt=c['zh']+' 在第三组数据上，基线方法得分更高。'
     en={s.id:s.text for s in source_spans(et,'en')}
     zh={s.id:s.text for s in source_spans(zt,'zh')}
-    assert _host_anchor_direction(en,zh) is None
+    assert host_anchor_direction(en,zh) is None
     # Missing label / duplicate label also abstains.
     en={s.id:s.text for s in source_spans(c['en']+' On the second dataset, baseline scored higher.','en')}
     zh={s.id:s.text for s in source_spans(c['zh'],'zh')}
-    assert _host_anchor_direction(en,zh) is None
+    assert host_anchor_direction(en,zh) is None
     en={s.id:s.text for s in source_spans(c['en'],'en')}
     zh={s.id:s.text for s in source_spans(c['zh'].replace('第二组数据','第三组数据'),'zh')}
-    assert _host_anchor_direction(en,zh) is None
+    assert host_anchor_direction(en,zh) is None
 
 
 def test_ambiguous_or_unknown_evidence_cannot_force_other_conflict():

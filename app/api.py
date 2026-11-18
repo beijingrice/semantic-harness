@@ -6,10 +6,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.backends import BackendError
+from app.checker import Checker
 from app.config import ConfigError, Settings
 from app.llm import ChatClient, LLMError
 from app.models import CheckRequest, CheckResult
-from app.pipeline import Checker
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 app = FastAPI(title="Bilingual Keyword Checker", version="0.3.0")

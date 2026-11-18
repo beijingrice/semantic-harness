@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 from test_v027_paragraph_grounding import Fake, arb, config, extract
 
+from app.checker import Checker
 from app.dispute_resolution import narrow_exactness_refutation, numeric_equivalence_certificates
 from app.models import (
     KeyUnit,
@@ -18,9 +19,7 @@ from app.models import (
     ParagraphExtractedDraft,
     ParagraphReviewDraft,
 )
-from app.paragraph_pipeline import extract_paragraph
 from app.paragraphs import build_paragraphs
-from app.pipeline import Checker
 from app.validators import clear_numeric_conflicts, parse_range, source_isolated_quantity_conflicts
 
 SAMPLES = json.loads((Path(__file__).parent / 'fixtures/v028_failures_v029.json').read_text())
@@ -105,7 +104,7 @@ def test_real_v028_04_extraction_bloat_compressed_to_original_verbatim():
     assert len(draft.units)==27
     fake=Fake(draft)
     events=[]
-    units=extract_paragraph(Checker(fake,config()),sample['zh'],'Chinese','zh','primary',None,events)
+    units=Checker(fake, config()).extract(sample['zh'],'Chinese','zh','primary',None,events)
     assert len(units)==1
     assert units[0].claim==sample['zh'] and units[0].evidence==sample['zh']
     assert 'collapsed 22' in ' '.join(events)
@@ -121,7 +120,7 @@ def test_short_source_nonindependent_noun_fragments_removed_but_real_constraints
     ]})
     fake=Fake(draft)
     events=[]
-    units=extract_paragraph(Checker(fake,config()),source,'Chinese','zh','primary',None,events)
+    units=Checker(fake, config()).extract(source,'Chinese','zh','primary',None,events)
     assert len(units)==2
     assert [u.id for u in units]==['zh_1','zh_2']
     assert all(u.kind=='constraint' for u in units)
@@ -131,7 +130,7 @@ def test_short_source_nonindependent_noun_fragments_removed_but_real_constraints
 def test_short_source_output_budget_signaled_to_model_without_weaker_schema():
     src='表格字体大小须在9至12磅之间（包含两端）。'
     fake=Fake(extract(src,'zh_p1'))
-    extract_paragraph(Checker(fake,config()),src,'Chinese','zh','primary',None,[])
+    Checker(fake, config()).extract(src,'Chinese','zh','primary',None,[])
     assert fake.calls[0]['user']['target_units_for_short_source']==1
     assert fake.calls[0]['user']['maximum_units']==30
 
@@ -143,7 +142,7 @@ def test_never_compact_multi_paragraph_evidence_or_split_independent_requirement
         {'kind':'constraint','claim':'Delete only derived caches.','paragraph_ids':['en_p2']},
     ]})
     fake=Fake(draft)
-    units=extract_paragraph(Checker(fake,config()),source,'English','en','primary',None,[])
+    units=Checker(fake, config()).extract(source,'English','en','primary',None,[])
     assert len(units)==2
 
 

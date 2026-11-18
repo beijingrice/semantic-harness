@@ -1,4 +1,4 @@
-"""v0.2.6 extraction-only A/B baseline: unit counts and source evidence, NOT accuracy.
+"""Extraction-only A/B comparison: unit counts and source evidence, NOT accuracy.
 
 Examples:
     python -m examples.evaluate_extraction --cases examples/errors_5.json --prompt legacy --out extraction_legacy.json
@@ -12,9 +12,9 @@ import time
 from dataclasses import replace
 from pathlib import Path
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import ChatClient, LLMError
-from app.pipeline import Checker
 from examples.evaluate import load_cases
 
 

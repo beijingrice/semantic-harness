@@ -66,37 +66,68 @@ def _float(name: str, default: str):
     return field(default_factory=lambda: env_float(name, default))
 
 
+# Allowed values of the enumerated settings. Validated once, when Settings is built.
+CHOICES = {
+    "pipeline": ("extraction", "direct_hardened"),
+    "evidence_mode": ("paragraph", "quote"),
+    "extraction_prompt": ("coarse", "proposition", "legacy"),
+    "schema_mode": ("legacy", "on", "off", "auto"),
+    "model_discovery": ("required", "optional", "off"),
+}
+ENV_NAMES = {
+    "pipeline": "LM_PIPELINE",
+    "evidence_mode": "LM_EVIDENCE_MODE",
+    "extraction_prompt": "LM_EXTRACTION_PROMPT",
+    "schema_mode": "LM_SCHEMA_MODE",
+    "model_discovery": "LM_MODEL_DISCOVERY",
+}
+
+
 @dataclass(frozen=True)
 class Settings:
+    # --- Backend connection
     base_url: str = _str("LM_BASE_URL", "http://127.0.0.1:1234/v1", rstrip_slash=True)
     model: str = _str("LM_MODEL")
     verifier_model: str = _str("LM_VERIFIER_MODEL")
     api_key: str = _raw("LM_API_KEY", "lm-studio")
     timeout_seconds: float = _float("LM_TIMEOUT_SECONDS", "180")
     max_tokens: int = _int("LM_MAX_TOKENS", "3072")
-    # v0.2.16 provider abstraction. The legacy LM_BASE_URL/API_KEY continue to work.
     backend: str = _str("LM_BACKEND", "openai")
+    # Optional separate verifier endpoint; empty values fall back to the primary.
     verifier_backend: str = _str("LM_VERIFIER_BACKEND")
     verifier_base_url: str = _str("LM_VERIFIER_BASE_URL", rstrip_slash=True)
     verifier_api_key: str = _raw("LM_VERIFIER_API_KEY")
-    # legacy: honor LM_JSON_SCHEMA; on: require native; off: prompt-only;
-    # auto: attempt native once, fall back ONLY on explicit schema rejection.
+    # legacy: follow LM_JSON_SCHEMA; on: always native JSON Schema; off: prompt-only;
+    # auto: try native, fall back once only when the provider explicitly rejects it.
     schema_mode: str = _str("LM_SCHEMA_MODE", "legacy", lower=True)
-    # required: must enumerate models; optional: verify when list supported;
-    # off: do not call /models. Useful for managed deployments.
+    # required: the model list must be readable; optional: check it when available;
+    # off: never call /models (managed APIs).
     model_discovery: str = _str("LM_MODEL_DISCOVERY", "required", lower=True)
+    # One bounded recovery request after a truncated or empty generation.
     generation_recovery: bool = _bool("LM_GENERATION_RECOVERY", True)
-    # extraction (default) or direct_hardened (experimental paragraph-direct).
-    pipeline: str = _str("LM_PIPELINE", "extraction", lower=True)
-    # v0.2.9.2: source-only fast paths for a cohesive short clause or safe two-clause pairs.
-    extraction_fast_path: bool = _bool("LM_EXTRACTION_FAST_PATH", True)
-    # Independent bounded generation for non-fast-path short single paragraphs.
-    # Long/multi-paragraph sources retain LM_MAX_TOKENS.
-    extraction_max_tokens: int = _int("LM_EXTRACTION_MAX_TOKENS", "1536")
     json_schema: bool = _bool("LM_JSON_SCHEMA", False)
-    max_keywords: int = _int("MAX_KEYWORDS", "30")
-    # coarse is the v0.2.5+ default; proposition retains v0.2.4 for A/B.
-    extraction_prompt: str = _str("LM_EXTRACTION_PROMPT", "coarse", lower=True)
+
+    # --- Pipeline selection
+    pipeline: str = _str("LM_PIPELINE", "extraction", lower=True)
+    # paragraph: models cite paragraph IDs; quote: models retype exact quotes (A/B only).
     evidence_mode: str = _str("LM_EVIDENCE_MODE", "paragraph", lower=True)
+
+    # --- Extraction pipeline options
+    # Skip model extraction for short sources whose clauses can be anchored verbatim.
+    extraction_fast_path: bool = _bool("LM_EXTRACTION_FAST_PATH", True)
+    # Token cap for extracting a short single paragraph; longer sources use LM_MAX_TOKENS.
+    extraction_max_tokens: int = _int("LM_EXTRACTION_MAX_TOKENS", "1536")
+    max_keywords: int = _int("MAX_KEYWORDS", "30")
+    # coarse is the default; proposition and legacy are kept for A/B comparison.
+    extraction_prompt: str = _str("LM_EXTRACTION_PROMPT", "coarse", lower=True)
     coverage_audit: bool = _bool("LM_COVERAGE_AUDIT", False)
     atomic_refinement: bool = _bool("LM_ATOMIC_REFINEMENT", False)
+
+    def __post_init__(self):
+        for name, allowed in CHOICES.items():
+            value = getattr(self, name)
+            if value not in allowed:
+                hint = "（早期的 direct* 实验模式已在 v0.3.0 移除，可从 git tag v0.2.16 找回）" if name == "pipeline" else ""
+                raise ConfigError(f"{ENV_NAMES[name]} 只能为 {' / '.join(allowed)}，当前值为 {value!r}{hint}")
+        if self.pipeline == "direct_hardened" and self.evidence_mode != "paragraph":
+            raise ConfigError("LM_PIPELINE=direct_hardened 要求 LM_EVIDENCE_MODE=paragraph")

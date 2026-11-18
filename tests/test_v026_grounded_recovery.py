@@ -4,8 +4,8 @@ from dataclasses import replace
 
 import pytest
 
+from app.checker import Checker
 from app.config import Settings
-from app.pipeline import Checker
 from app.prompts import ARBITRATION_SYSTEM, EXTRACTION_SYSTEM_COARSE, MATCH_SYSTEM
 
 

@@ -194,7 +194,7 @@ def test_evaluate_reports_trace_even_on_failure_and_exports_audit(monkeypatch,tm
 
 
 def test_full_paragraph_dual_pipeline_recovers_one_chinese_truncation():
-    from app.pipeline import Checker
+    from app.checker import Checker
     en='The protocol requires a signed receipt.'
     zh='该方案要求签署收据。'
     seen=[]

@@ -18,9 +18,9 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+from app.checker import Checker
 from app.config import Settings
 from app.llm import ChatClient, LLMError
-from app.pipeline import Checker
 from app.telemetry import evidence_integrity, reliability_summary
 
 

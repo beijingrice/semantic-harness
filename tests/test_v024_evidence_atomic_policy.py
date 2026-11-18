@@ -9,11 +9,17 @@ import json
 import httpx
 import pytest
 
+from app.checker import Checker
 from app.config import Settings
 from app.evidence import resolve_evidence
 from app.llm import ChatClient, LLMError
 from app.models import AlignmentEvidenceDraft, ArbitrationDraft, ExtractedDraft, ReviewIssue
-from app.pipeline import Checker
+from app.pipelines.quote import (
+    atomic_refinement_needed,
+    filter_review_issues,
+    validate_alignment_evidence,
+    validate_arbitration,
+)
 from app.prompts import ARBITRATION_SYSTEM, ATOMIC_REFINEMENT_SYSTEM, MATCH_SYSTEM, REVIEW_SYSTEM
 
 
@@ -88,7 +94,7 @@ def test_arbitration_evidence_normalized_but_never_semantically_changed():
     answer = ArbitrationDraft(verdict="FAIL", issue_kind="conflict",
                               en_evidence="trained on Dataset A",
                               zh_evidence="数据集 B 训练", reason="swapped")
-    Checker.validate_arbitration(answer,
+    validate_arbitration(answer,
                                  "The model was trained on Dataset A.",
                                  "模型使用数据集B训练。")
     assert answer.zh_evidence == "数据集B训练"
@@ -96,18 +102,18 @@ def test_arbitration_evidence_normalized_but_never_semantically_changed():
                              en_evidence="trained on Dataset A", zh_evidence="数据集 A 训练",
                              reason="changed data")
     with pytest.raises(LLMError, match="仲裁中文证据"):
-        Checker.validate_arbitration(other, "The model was trained on Dataset A.",
+        validate_arbitration(other, "The model was trained on Dataset A.",
                                      "模型使用数据集B训练。")
 
 
 def test_review_and_alignment_quotes_receive_only_safe_rewrite():
     issue = ReviewIssue(kind="conflict", en_evidence="Dataset A",
                         zh_evidence="数据集 B 训练", reason="role")
-    valid, warnings = Checker.filter_review_issues([issue], "Dataset A", "数据集B训练")
+    valid, warnings = filter_review_issues([issue], "Dataset A", "数据集B训练")
     assert valid[0].zh_evidence == "数据集B训练" and not warnings
     supported = AlignmentEvidenceDraft(status="supported", en_evidence="Dataset A",
                                        zh_evidence="数据集 B 训练", reason="claimed equivalent")
-    Checker.validate_alignment_evidence(supported, "Dataset A", "数据集B训练", [], [], [], [], [])
+    validate_alignment_evidence(supported, "Dataset A", "数据集B训练", [], [], [], [], [])
     assert supported.zh_evidence == "数据集B训练"
 
 
@@ -154,9 +160,9 @@ def test_atomic_refinement_preserves_initial_if_no_meaningful_split():
 def test_numerical_bounds_and_comparisons_are_not_split():
     from app.models import KeyUnit
     u = [KeyUnit(id="en_1", **unit("range", "10% and 15%"))]
-    assert not Checker.atomic_refinement_needed("The limit is between 10% and 15%.", u)
-    assert not Checker.atomic_refinement_needed("Model A is higher than Model B.", u)
-    assert Checker.atomic_refinement_needed("Abstract includes purpose, methods, and results.", u)
+    assert not atomic_refinement_needed("The limit is between 10% and 15%.", u)
+    assert not atomic_refinement_needed("Model A is higher than Model B.", u)
+    assert atomic_refinement_needed("Abstract includes purpose, methods, and results.", u)
 
 
 def test_atomic_fallback_does_not_mask_bad_quote_from_primary():
@@ -224,11 +230,11 @@ def test_substantive_optional_vs_required_still_fails_end_to_end_mock():
 def test_atomic_refinement_triggers_on_zh_conjoined_roles_and_four_item_list():
     from app.models import KeyUnit
     claim = [KeyUnit(id="zh_1", **unit("数据集角色", "模型使用数据集B训练，并在数据集A上测试。"))]
-    assert Checker.atomic_refinement_needed("模型使用数据集B训练，并在数据集A上测试。", claim)
+    assert atomic_refinement_needed("模型使用数据集B训练，并在数据集A上测试。", claim)
     en = "The abstract includes purpose, methods, results, and conclusions."
     units = [KeyUnit(id=f"en_{i}", **unit(x, x))
              for i, x in enumerate(("purpose", "methods", "results"), 1)]
-    assert Checker.atomic_refinement_needed(en, units)
+    assert atomic_refinement_needed(en, units)
 
 
 def test_invalid_optional_refinement_keeps_valid_extraction_with_warning():

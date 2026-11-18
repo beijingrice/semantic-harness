@@ -88,7 +88,7 @@ def source_risks(english: str, chinese: str) -> list[SourceRisk]:
     return risks
 
 
-# --- Shared by the direct_hardened pipeline (moved from removed v0.2.11/v0.2.12 modes) ---
+# --- Citation spans and the narrow scalar scope used by direct_hardened ---
 
 @dataclass(frozen=True)
 class Span:
@@ -124,7 +124,7 @@ def source_spans(text: str, prefix: str) -> list[Span]:
     return options
 
 
-def _source_quantitative_issue_only(english: str, chinese: str):
+def source_quantitative_issue_only(english: str, chinese: str):
     """Very narrow proof scope: one unambiguous reported quantity each side.
 
     Existence of a certificate does NOT prove entire passage equivalence.

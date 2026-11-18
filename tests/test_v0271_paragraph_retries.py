@@ -83,7 +83,7 @@ def test_invalid_chinese_id_retry_reports_valid_ids_in_full_pipeline():
     A wrong but otherwise correctly structured response must not cause
     downstream silent remapping or an irrelevant old-schema repair hint.
     """
-    from app.pipeline import Checker
+    from app.checker import Checker
 
     posted = []
     stages = iter([

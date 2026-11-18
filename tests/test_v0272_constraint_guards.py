@@ -6,8 +6,8 @@ flow with mocked semantic outputs; they don't claim a live-model accuracy rate.
 import pytest
 from test_v027_paragraph_grounding import Fake, config, extract, match, review
 
+from app.checker import Checker
 from app.models import KeyUnit, Link
-from app.pipeline import Checker
 from app.validators import (
     clear_inclusion_conflicts,
     clear_numeric_conflicts,
@@ -103,7 +103,6 @@ def test_paragraph_pipeline_numeric_and_inclusion_guard(en, zh, should_fail):
 
 def test_duplicate_paragraph_units_are_dropped_without_fuzzy_semantic_merges():
     from app.models import ParagraphExtractedDraft
-    from app.paragraph_pipeline import extract_paragraph
 
     def many(*claims):
         return ParagraphExtractedDraft.model_validate({"units": [
@@ -114,7 +113,7 @@ def test_duplicate_paragraph_units_are_dropped_without_fuzzy_semantic_merges():
     text = "报告最多30页。"
     fake = Fake(many("报告最多30页。", "报告最多30页。", "报告的页数上限为30页。"))
     events = []
-    result = extract_paragraph(Checker(fake, config()), text, "Chinese", "zh", "primary", None, events)
+    result = Checker(fake, config()).extract(text, "Chinese", "zh", "primary", None, events)
     assert len(result) == 2
     assert [u.id for u in result] == ["zh_1", "zh_2"]
     assert any("duplicate" in event for event in events)

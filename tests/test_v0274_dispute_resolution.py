@@ -2,6 +2,7 @@
 import pytest
 from test_v027_paragraph_grounding import Fake, arb, config, extract, match, review
 
+from app.checker import Checker
 from app.dispute_resolution import numeric_equivalence_certificates
 from app.llm import LLMError
 from app.models import (
@@ -10,9 +11,8 @@ from app.models import (
     ParagraphDisputeRecheckDraft,
     ParagraphReviewIssue,
 )
-from app.paragraph_pipeline import _verify_objection_recheck
 from app.paragraphs import build_paragraphs
-from app.pipeline import Checker
+from app.pipelines.paragraph_checks import verify_objection_recheck
 from examples.evaluate import summarize
 
 
@@ -103,12 +103,12 @@ def test_certificate_does_not_infer_equivalence_from_different_bounds():
 def test_refutation_must_cover_both_sides_and_assessment_indexes_exact():
     issues = [ParagraphReviewIssue.model_validate(issue())]
     good = recheck('refuted')
-    _verify_objection_recheck(good, issues, build_paragraphs(EN, 'en'), build_paragraphs(ZH, 'zh'))
+    verify_objection_recheck(good, issues, build_paragraphs(EN, 'en'), build_paragraphs(ZH, 'zh'))
     with pytest.raises(LLMError, match='双语'):
-        _verify_objection_recheck(recheck('refuted', zh=[]), issues,
+        verify_objection_recheck(recheck('refuted', zh=[]), issues,
                                   build_paragraphs(EN, 'en'), build_paragraphs(ZH, 'zh'))
     with pytest.raises(LLMError, match='索引'):
-        _verify_objection_recheck(ParagraphDisputeRecheckDraft.model_validate({
+        verify_objection_recheck(ParagraphDisputeRecheckDraft.model_validate({
             'issues': [{'issue_index': 1, 'status': 'sustained', 'basis':'other', 'reason': 'invalid'}],
             'reason': 'wrong index'}), issues,
             build_paragraphs(EN, 'en'), build_paragraphs(ZH, 'zh'))
