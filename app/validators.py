@@ -114,7 +114,7 @@ _UNIT_PATTERNS: tuple[tuple[re.Pattern, str, Decimal], ...] = tuple(
     (re.compile(pattern, re.I), dimension, Decimal(factor))
     for pattern, dimension, factor in (
         (r"^(?:\s*%|\s*percent\b|\s*percentage\b|\s*百分比)", "percent", "1"),
-        (r"^\s*(?:weeks?\b|周|星期)", "duration_days", "7"),
+        (r"^\s*(?:weeks?\b|周(?!岁)|星期)", "duration_days", "7"),
         (r"^\s*(?:days?\b|天|日)", "duration_days", "1"),
         (r"^\s*(?:hours?\b|hrs?\b|小时|小時|个小时|小時)", "duration_days", "0.04166666666666666666666666667"),
         (r"^\s*(?:minutes?\b|mins?\b|分钟|分鐘)", "duration_days", "0.0006944444444444444444444444444"),

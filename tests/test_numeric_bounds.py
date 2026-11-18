@@ -44,6 +44,12 @@ def test_existing_phrasings_unchanged(text, comparator):
     assert parse_quantity(text).comparator == comparator
 
 
+def test_age_in_years_is_not_weeks():
+    # "周岁" is age in years; it must not match the 周 (week) unit.
+    assert parse_quantity("年满18周岁的参与者") is None
+    assert parse_quantity("6 周内").value == 42
+
+
 def test_approximate_quantities_still_abstain():
     assert parse_quantity("about 6 weeks") is None
     assert parse_quantity("6 周左右") is None
