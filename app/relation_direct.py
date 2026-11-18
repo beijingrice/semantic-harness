@@ -172,12 +172,20 @@ def _included(text: str, subject: str, language: str) -> str | None:
         # The subject must govern the inclusion relation directly; using an
         # unrelated 'excluded' elsewhere in the paragraph is not enough.
         p = re.escape(subject)
-        m = re.search(r'\b'+p+r'\s+(?:is|are|was|were)\s+(not\s+)?included\b', text, re.I)
-        return ('excluded' if m[1] else 'included') if m else None
-    m = re.search(re.escape(subject)+r'\s*(不计入|未计入|无需计入|无须计入|计入|算入)', text)
+        m = re.search(r'\b'+p+r'\s+(?:is|are|was|were)\s+(not\s+)?(?:included|counted)\b(?!\s+separately)', text, re.I)
+        if m:
+            return 'excluded' if m[1] else 'included'
+        if re.search(r'\b'+p+r'\s+(?:is|are|was|were)\s+excluded\b', text, re.I):
+            return 'excluded'
+        if re.search(r'\b'+p+r'\s+(?:does|do|did)\s+not\s+count\b', text, re.I):
+            return 'excluded'
+        if re.search(r'\b'+p+r'\s+counts?\s+(?:toward|towards|against|in)\b', text, re.I):
+            return 'included'
+        return None
+    m = re.search(re.escape(subject)+r'\s*(不计入|未计入|无需计入|无须计入|不算入|未算入|计入|算入)', text)
     if not m:
         return None
-    return 'excluded' if m[1] in ('不计入','未计入','无需计入','无须计入') else 'included'
+    return 'excluded' if m[1] in ('不计入','未计入','无需计入','无须计入','不算入','未算入') else 'included'
 
 
 def _winner(text: str, subject: str, language: str) -> bool:
@@ -235,33 +243,86 @@ def _entity_candidates(en_text: str, zh_text: str) -> list[tuple[str, str]]:
     return out
 
 
-def _single_count_context(english: str, chinese: str) -> bool:
-    """Conservative shared page-limit scope; reject multiple page-limit numbers.
+# Page/word-limit vocabulary. A limit is identified by its numeric value.
+_EN_LIMIT_VALUE = re.compile(r"\b(\d+)\s*[-– ]?\s*(page|word)s?\s+(?:limit|ceiling|cap|quota)\b", re.I)
+_EN_LIMITED_TO = re.compile(r"\blimited\s+to\s+(\d+)\s+(page|word)s?\b", re.I)
+_ZH_LIMIT_VALUE = re.compile(r"(\d+)\s*(页|字)(?:的)?(?:篇幅|页数|字数)?(?:限制|额度|上限)")
+_EN_DEICTIC_LIMIT = re.compile(r"\b(?:this|that|the|its)\s+(?:page\s+|word\s+)?limit\b", re.I)
+# The word (or hyphenated compound, e.g. "main-report") right before "limit".
+_EN_SCOPED_LIMIT = re.compile(r"\b([a-z]+(?:[-–][a-z]+)*)[-–\s]+limit\b", re.I)
+_ZH_DEICTIC_LIMIT = re.compile(r"(?:该|此|上述|这一|这个)?(?:篇幅|页数|字数)(?:限制|额度|上限)|(?:该|此|上述|这一)(?:限制|额度|上限)")
+_NOT_A_SCOPE = {"this", "that", "the", "its", "page", "word", "a", "an", "same"}
 
-    No English/Chinese sentence position assumptions. New unfamiliar scope
-    vocabulary abstains, it is never inferred from mere presence of `included`.
+
+def _limit_values_en(text: str) -> set[tuple[str, str]]:
+    return {(v, u.lower()) for v, u in _EN_LIMIT_VALUE.findall(text) + _EN_LIMITED_TO.findall(text)}
+
+
+def _limit_values_zh(text: str) -> set[tuple[str, str]]:
+    return {(v, 'page' if u == '页' else 'word') for v, u in _ZH_LIMIT_VALUE.findall(text)}
+
+
+def _single_count_context(english: str, chinese: str) -> tuple[str, str] | None:
+    """The ONE page/word limit both full sources talk about, else None.
+
+    Each side must state exactly one limit value, and the values must match.
+    Several different limits on a side -> abstain (an entity could belong to
+    either). No English/Chinese sentence-position assumptions.
     """
-    en_limits = re.findall(r"\b(\d+)\s*[-– ]?\s*page\s+limit\b", english, re.I)
-    zh_limits = re.findall(r"(\d+)\s*页(?:的)?(?:限制|额度)", chinese)
-    if not en_limits or not zh_limits or len(set(en_limits)) != 1 or len(set(zh_limits)) != 1 or en_limits[0] != zh_limits[0]:
-        return False
-    return bool(re.search(r"\bmain\s*[-– ]?\s*report\b", english, re.I)
-                and ('正文报告' in chinese or '正文' in chinese))
+    en, zh = _limit_values_en(english), _limit_values_zh(chinese)
+    if len(en) != 1 or en != zh:
+        return None
+    return next(iter(en))
+
+
+def _scope_tied_to_limit(scope: str, english: str, value: str, unit: str) -> bool:
+    """Does the full English attach this named scope to THE limit value?"""
+    sc = re.sub(r"[-– ]+", r"[-– ]+", re.escape(scope.lower()).replace(r"\-", "-").replace(r"\ ", " "))
+    lim = rf"{value}\s*[-– ]?\s*{unit}s?\s+(?:limit|ceiling|cap|quota)"
+    # Allow one modifier before the scope: "for the main report" ties "report".
+    scope = rf"(?:[a-z]+[-– ]+)?{sc}"
+    return bool(re.search(rf"\b{lim}\s+(?:for|of|on)\s+(?:the\s+)?{scope}\b", english, re.I)
+                or re.search(rf"\b{scope}\s+(?:has|is\s+subject\s+to|carries)\s+an?\s+{lim}", english, re.I)
+                or re.search(rf"\b{scope}\s+is\s+limited\s+to\s+{value}\s+{unit}s?\b", english, re.I))
+
+
+def _cited_refers_to_limit(en_text: str, zh_text: str, english: str,
+                           value: str, unit: str) -> bool:
+    """The CITED rules must point at that same limit, not merely at 'a limit'.
+
+    English: the numeric limit itself; or a scope name ('main-report limit')
+    that the full English ties to that number; or 'this/the limit' when the
+    full English names no other scoped limit. An 'appendix limit' that the
+    source never ties to the number abstains. Chinese: the numeric limit, or a
+    deictic 篇幅/页数限制 (the full Chinese states only that one limit value).
+    """
+    en_vals = _limit_values_en(en_text)
+    if en_vals:
+        en_ok = en_vals == {(value, unit)}
+    else:
+        scopes = [x.lower() for x in _EN_SCOPED_LIMIT.findall(en_text)]
+        scopes = [x for x in scopes if x not in _NOT_A_SCOPE]
+        if scopes:
+            en_ok = all(_scope_tied_to_limit(x, english, value, unit) for x in scopes)
+        elif _EN_DEICTIC_LIMIT.search(en_text):
+            other = [x.lower() for x in _EN_SCOPED_LIMIT.findall(english)]
+            other = [x for x in other if x not in _NOT_A_SCOPE and not re.fullmatch(r"\d+[-– ]?(?:page|word)s?", x)]
+            en_ok = all(_scope_tied_to_limit(x, english, value, unit) for x in other)
+        else:
+            en_ok = False
+    zh_vals = _limit_values_zh(zh_text)
+    zh_ok = zh_vals == {(value, unit)} if zh_vals else bool(_ZH_DEICTIC_LIMIT.search(zh_text))
+    return en_ok and zh_ok
 
 
 def _count_proof(en_text: str, zh_text: str, english: str, chinese: str,
                  model_en: str, model_zh: str) -> str:
-    if not _single_count_context(english, chinese):
+    context = _single_count_context(english, chinese)
+    if context is None:
         return 'REVIEW_REQUIRED'
-    # The selected EN rule must actually govern the main-report limit, while
-    # the selected ZH rule must explicitly refer to that same page-limit value.
-    # A correct entity attached to an appendix rule must NOT be promoted to FAIL.
-    if (not re.search(r'\bmain\s*[-– ]?\s*report\s+limit\b',en_text,re.I)
-            or not re.search(r'\d+\s*页(?:的)?(?:限制|额度)',zh_text)):
-        return 'REVIEW_REQUIRED'
-    # Make sure cited ZH count limit is the one matched across full sources.
-    limit = re.findall(r"\b(\d+)\s*[-– ]?\s*page\s+limit\b",english,re.I)[0]
-    if any(value!=limit for value in re.findall(r'(\d+)\s*页(?:的)?(?:限制|额度)',zh_text)):
+    # Both CITED rules must govern that same limit. A correct entity attached
+    # to a different (e.g. appendix) limit must NOT be promoted to FAIL.
+    if not _cited_refers_to_limit(en_text, zh_text, english, *context):
         return 'REVIEW_REQUIRED'
     possible=[]
     for e,z in _entity_candidates(en_text, zh_text):

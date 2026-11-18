@@ -17,6 +17,7 @@
 - 数值守卫：修复几种等价写法被误读成"恰好等于"、进而被一票否决判成 FAIL 的问题。单位后的"以上/or more/or fewer"（如"10 页以上"）、exceed、above 现在能正确识别；within、内、以内只对时间单位按上限处理；"not exceeding" 不再被误读成 `>`。
 
 - 数值守卫："18周岁"不再被误读成 18 周。
+- direct_hardened 计入核验：不再要求原文字面出现开发样例的措辞（"main report limit"、"N页限制"）。现在只要两边被引用的规则指向同一个已识别的限额即可，例如写出数值、用原文绑定到该数值的范围名，或用"this limit / 该限制"；并能识别 is counted within、counts toward、does not count、不算入 等说法。指向其他限额（如 appendix limit）、一边有多个限额数值、counted separately 时仍然放弃判断。在全部 290 条数据集样例上逐一检验，没有任何 PASS 样例因此变成 FAIL。
 - 截断恢复：输出被截断时，唯一一次恢复请求改用 `LM_MAX_TOKENS` 作为上限，不再沿用提取（1536）或 direct_hardened 追问（1536）的较小预算。真实模型测试中，推理把 1536 个 token 全部用完后，用同样上限的恢复请求会在同一位置再次被截断。
 
 **数据集**
