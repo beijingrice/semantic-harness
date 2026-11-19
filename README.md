@@ -63,7 +63,7 @@ bilingual-check --en 'The abstract must include purpose, methods, and results.' 
 
 **泛化评测**（v0.3.0，[协议与完整记录](docs/eval_protocol/README.md)）：用 gpt-6-luna 运行 `extraction`，在隔离生成、标签经独立复核的 99 条盲测集上，基线 99/99，最终代码 98/99（1 条转人工），两次都没有误判；60 条同分布开发集 60/60；Claude 编写的 32 条跨模型挑战集 32/32。`direct_hardened` 在开发集上 57/60，没有误判，但转人工更多，仍然是实验功能，推荐使用 `extraction`。
 
-本地小模型（Qwen3.5-9B + Gemma 4 12B）的结果只有开发集上的：历史回归 11/11、数值措辞集 21/22，这两组都不是盲测。盲测集是 GPT 系列编写的，存在同家族偏差的可能；局限见协议文档。
+本地小模型（Qwen3.5-9B + Gemma 4 12B，最终代码）：开发集 55/60（1 条误判 PASS，0 条误判 FAIL）、挑战集 29/32（没有误判）、回归集 11/11、数值措辞集 22/22。小模型漏掉的细微差异，gpt-6-luna 能判对。盲测集是 GPT 系列编写的，存在同家族偏差的可能；局限见协议文档。
 
 `direct`、`direct_grounded`、`direct_verified`、`direct_questions`、`direct_relations` 这五种早期实验模式已在 v0.3.0 移除，需要时可以从 git tag `v0.2.16` 找回。
 
