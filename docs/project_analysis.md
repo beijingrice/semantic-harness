@@ -4,6 +4,8 @@
 
 > **后续更新（同日，代码重构之后）**：4.4（架构耦合）、4.7 中的函数过长与风格不统一、4.8 中的测试命名与互相导入已经解决，见 [CHANGELOG](../CHANGELOG.md) 的"代码结构"一节。文中提到的 `pipeline.py`、`paragraph_pipeline.py`、`direct_pipeline.py`、`relation_direct.py` 已拆分到 `app/checker.py` 和 `app/pipelines/`；4.1 表中的规则现在位于 `app/pipelines/hardened_rules.py`，已标注 CASE-SPECIFIC，但**规则本身没有改动**。P0 问题（4.1、4.2）和 4.3、4.5、4.6、4.9 仍然存在。
 
+> **再次更新（同日，泛化评测之后）**：4.2 已有可信测量：新建了隔离生成、标签经独立复核的盲测集，gpt-6-luna 运行 extraction 的结果是 98～99/99，没有误判（见 [eval_protocol](eval_protocol/README.md)）。4.3 已修正：主指标改成端到端正确率。4.9 部分解决：Web/API 改成后台任务，加上了并发上限。4.1 仍然存在，但只影响实验性的 direct_hardened；推荐使用 extraction。跨模型挑战集还暴露并修复了数值守卫的否定比较词 bug（"不小于"等），这个 bug 曾在旧数据集的两条 PASS 样例上造成误报。
+
 ---
 
 ## 1. 结论
