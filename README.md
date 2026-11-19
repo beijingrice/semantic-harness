@@ -61,7 +61,9 @@ bilingual-check --en 'The abstract must include purpose, methods, and results.' 
 - **`extraction`（默认）**：程序按空行把原文切成段落并分配不可变 ID → 模型分别从中、英文中提取事实（`claim` + 段落 ID，不生成证据文本）→ 匹配 → 独立模型只看原文复核 → 有分歧时仲裁。数值换算（如 `6 weeks = 42 days`）由程序做形式化校验。短句满足严格条件时会走 Fast Path，跳过生成式提取。
 - **`direct_hardened`（实验）**：两个模型分别直接比较完整段落，不做提取；程序检测到数值边界、包含/排除、例外范围、比较方向等风险时，再提出固定问题，由模型选择原文片段，程序自己核对。
 
-v0.2.8 用 `extraction` 在真实模型上跑过：历史回归 11/11，36 条 holdout 34/36。v0.2.16 用 `direct_hardened` 跑 11 条回归：9 条正确、2 条 REVIEW_REQUIRED、0 误判（[结果文件](examples/reference_v0216_direct_hardened_11.json)）。这些都是开发集上的结果，不代表在未知样本上的准确率。
+**泛化评测**（v0.3.0，[协议与完整记录](docs/eval_protocol/README.md)）：用 gpt-6-luna 运行 `extraction`，在隔离生成、标签经独立复核的 99 条盲测集上 99/99 判对，没有转人工，没有误判；60 条同分布开发集 60/60。`direct_hardened` 在开发集上 57/60，没有误判，但转人工更多，仍然是实验功能，推荐使用 `extraction`。
+
+本地小模型（Qwen3.5-9B + Gemma 4 12B）的结果只有开发集上的：历史回归 11/11、数值措辞集 21/22，这两组都不是盲测。盲测集是 GPT 系列编写的，存在同家族偏差的可能；局限见协议文档。
 
 `direct`、`direct_grounded`、`direct_verified`、`direct_questions`、`direct_relations` 这五种早期实验模式已在 v0.3.0 移除，需要时可以从 git tag `v0.2.16` 找回。
 

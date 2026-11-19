@@ -52,7 +52,8 @@
 
 | 文件 | 作用 | 最常看的函数或类 |
 |---|---|---|
-| `api.py` | FastAPI：`/`、`/api/status`、`/api/check`；把异常映射成 HTTP 状态码 | `check`, `status` |
+| `api.py` | FastAPI：`/`、`/api/status`、`/api/check`（同步）、`/api/jobs`（后台任务）；把异常映射成 HTTP 状态码 | `check`, `submit_job`, `get_job` |
+| `jobs.py` | 进程内任务队列：并发上限 `LM_MAX_CONCURRENT_CHECKS`，最多 50 个未完成任务，结果保留 1 小时 | `JobManager`, `get_manager` |
 | `cli.py` | 命令行 `bilingual-check`；PASS 退出码 0，FAIL 1，ERROR/配置错误 2，REVIEW_REQUIRED 3 | `main` |
 | `config.py` | `Settings`：每次创建时读取环境变量；枚举类配置在 `__post_init__` 里统一校验 | `Settings`, `ConfigError`, `CHOICES` |
 | `checker.py` | **对外入口**。`Checker(client, settings).check(...)`；还有只跑抽取的 `extract(...)` | `Checker` |
@@ -94,7 +95,8 @@ run(runner: StageRunner, english, chinese, requested_model, requested_verifier, 
 | 位置 | 内容 |
 |---|---|
 | `tests/` | 405 个离线测试（mock 模型），`helpers.py` 放共用的 Fake 和样例回答；见第 9 节 |
-| `examples/` | 评测脚本（`evaluate.py` 最常用）和全部数据集；数据集索引见 [examples/DATASETS.md](../examples/DATASETS.md) |
+| `examples/` | 评测脚本（`evaluate.py` 最常用，支持 `--workers` 并行）、`codex_backend.py`（通过本机 Codex CLI 调用 GPT 模型，仅用于评测）和全部数据集；数据集索引见 [examples/DATASETS.md](../examples/DATASETS.md) |
+| `docs/eval_protocol/` | 泛化评测协议、盲测集使用规则、数据生成说明和运行记录 |
 | `docs/` | 本文、架构说明、后端接入、标注规范草稿、项目分析；`docs/history/` 是旧版本文档 |
 | `scripts/run_local_regressions.sh` | 用真实模型跑回归集和约束集的快捷脚本（输出文件名还是旧的 v0275 命名） |
 
@@ -304,7 +306,7 @@ python -m examples.evaluate --cases examples/v2_regression_11.json --mode dual -
 
 ## 10. 需要记住的坑
 
-1. **没有可信的泛化成绩**：120 条主集自 v0.2.6 后没完整跑过，也没有干净的盲测集（[project_analysis.md](project_analysis.md) 4.2 节）。
+1. **盲测集只能看汇总指标**：`validation_v030_blind_99.json` 不读样例、不据此调试，规则见 [eval_protocol](eval_protocol/README.md)。给 Codex 的任务说明里要写明不得读取这个文件。
 2. **direct_hardened 的 CASE-SPECIFIC 规则**：回归集上的成绩被高估（4.1 节）。
 3. **quote 和 paragraph 两种模式的判决规则不完全一样**（本文 5.2 节）。
 4. **评测报告里的 `accuracy` 不计转人工的样例**，看 `end_to_end_correct_rate` 更准确。

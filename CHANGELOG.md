@@ -22,9 +22,12 @@
 - 数值守卫："18周岁"不再被误读成 18 周。
 - direct_hardened 计入核验：不再要求原文字面出现开发样例的措辞（"main report limit"、"N页限制"）。现在只要两边被引用的规则指向同一个已识别的限额即可，例如写出数值、用原文绑定到该数值的范围名，或用"this limit / 该限制"；并能识别 is counted within、counts toward、does not count、不算入 等说法。指向其他限额（如 appendix limit）、一边有多个限额数值、counted separately 时仍然放弃判断。在全部 290 条数据集样例上逐一检验，没有任何 PASS 样例因此变成 FAIL。
 - direct_hardened：两个模型意见不一致、但没有可核对的原文风险时，程序生成的通用追问（Q_DISPUTED_CLAIM）无论模型怎么回答，结果都只能是 REVIEW_REQUIRED，现在直接跳过这次模型调用，判决不变。真实测试中，这次调用最多白白耗费约 3 分钟。
+- 数值守卫：否定词加严格比较词统一翻转成相反的包含边界（"不小于 / not fewer than / must not fall below"→≥，"不大于 / 不多于 / no longer than"→≤），不再逐个列举。之前"不小于""不大于""no less than"等常见写法会被解析成严格比较本身，被守卫一票否决成 FAIL。"不必超过 / need not exceed"不再被当成边界。在全部数据集上，有两条 PASS 样例（NEW-09、NUM-01）原本被原文数值守卫误报冲突，现已修复。
+- direct_hardened：两个模型都判 FAIL、追问结论也全部是"冲突"，但程序规则证明不了时，保留 FAIL，不再降为 REVIEW_REQUIRED。反方向（一致 PASS）仍然转人工。
 - 截断恢复：输出被截断时，唯一一次恢复请求改用 `LM_MAX_TOKENS` 作为上限，不再沿用提取（1536）或 direct_hardened 追问（1536）的较小预算。真实模型测试中，推理把 1536 个 token 全部用完后，用同样上限的恢复请求会在同一位置再次被截断。
 
 **数据集**
+- 新增泛化评测：`validation_v030_blind_99.json`（冻结的盲测集）和 `validation_v030_gen_dev_60.json`（同分布开发集），由看不到本仓库的独立实例从零编写，标签经独立复核；`validation_v030_challenge_claude_32.json` 是 Claude 编写的跨模型家族挑战集。协议和运行记录见 [docs/eval_protocol/](docs/eval_protocol/README.md)。
 - 新增 `examples/DATASETS.md`：每个数据集的用途、状态、子集关系和已知构造偏差；标明 v0.2.8 holdout 中的 H28-02/03/04/13 后来被用于调试。
 - 新增 `docs/labeling_guidelines.md`（草稿）：整理现有标注实际遵循的规则，并标出 should、描述句与规范句、充分与必要条件、近义词宽严四处待定问题。
 - 新增 `validation_v030_numeric_phrasing_22.json`：数值边界多种说法的 11 组最小差异对。
