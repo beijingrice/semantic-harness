@@ -95,6 +95,12 @@ def run(
         and all(x.get("host_conclusion") == "PASS" for x in result.verification_questions)
     ):
         outcome = "PASS"
+    elif _unanimous_conflict(first, second, result.verification_questions):
+        # Both judges said FAIL and every focused answer also found a conflict: the
+        # host rules could not prove it, but nothing contradicts the unanimous FAIL.
+        # (The mirror case, unanimous PASS, stays REVIEW_REQUIRED: a false PASS costs more.)
+        outcome = "FAIL"
+        result.diagnostics.append("direct_hardened: unanimous FAIL kept; every focused answer found a conflict")
     else:
         outcome = "REVIEW_REQUIRED"
     result.verdict = outcome
@@ -105,6 +111,15 @@ def run(
         + ", ".join(f"{x['task_id']}={x.get('host_conclusion', 'INVALID')}" for x in result.verification_questions)
     )
     return result
+
+
+def _unanimous_conflict(first: str, second: str | None, answers: list[dict]) -> bool:
+    """Both judges FAIL and every question was answered (not skipped/invalid) with CONFLICT."""
+    return (
+        first == second == "FAIL"
+        and bool(answers)
+        and all(a.get("finding") == "CONFLICT" and a.get("host_conclusion") != "PASS" for a in answers)
+    )
 
 
 def _answer_task(runner, result, task: Question, english, chinese, ens, zhs, allegations, first) -> str:

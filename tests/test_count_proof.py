@@ -165,3 +165,20 @@ def test_undetermined_dispute_skips_the_model_call():
             "outcome": "SKIPPED_NOT_SOURCE_CHECKABLE",
         }
     ]
+
+
+def test_unanimous_fail_with_conflict_findings_is_kept():
+    """Both judges FAIL and the focused answer found a conflict the host rules could not prove.
+
+    Seen live on GD-039 ("eight pages" has no digits, so count_proof abstained).
+    """
+    from app.pipelines.hardened import _unanimous_conflict
+
+    conflict = {"task_id": "Q_COUNTED_ENTITY", "finding": "CONFLICT", "host_conclusion": "REVIEW_REQUIRED"}
+    assert _unanimous_conflict("FAIL", "FAIL", [conflict])
+    # Not unanimous, a non-conflict finding, a skipped/invalid question, or no answers -> keep REVIEW.
+    assert not _unanimous_conflict("FAIL", "PASS", [conflict])
+    assert not _unanimous_conflict("PASS", "PASS", [{**conflict, "finding": "EQUIVALENT"}])
+    assert not _unanimous_conflict("FAIL", "FAIL", [conflict, {"task_id": "Q", "outcome": "INVALID"}])
+    assert not _unanimous_conflict("FAIL", "FAIL", [{**conflict, "finding": "UNCERTAIN"}])
+    assert not _unanimous_conflict("FAIL", "FAIL", [])
