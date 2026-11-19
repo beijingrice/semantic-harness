@@ -15,8 +15,13 @@ import json
 import sys
 import time
 from collections import Counter, defaultdict
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+from contextlib import ExitStack
 from dataclasses import replace
+from itertools import islice
 from pathlib import Path
+from queue import SimpleQueue
+from threading import Event, local
 from typing import Any
 
 from app.checker import Checker
@@ -107,6 +112,10 @@ def load_cases(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def _rate(count: int, total: int) -> float | None:
+    return round(count / total, 4) if total else None
+
+
 def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     """Execution ERROR and semantic REVIEW_REQUIRED are separate from PASS/FAIL."""
     evaluated = [r for r in results if r["predicted"] in VALID_LABELS]
@@ -115,17 +124,26 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     false_fail = sum(r["expected"] == "PASS" and r["predicted"] == "FAIL" for r in evaluated)
     expected_fail = sum(r["expected"] == "FAIL" for r in evaluated)
     expected_pass = sum(r["expected"] == "PASS" for r in evaluated)
+    total = len(results)
+    errors = sum(r["predicted"] == "ERROR" for r in results)
+    review_required = sum(r["predicted"] == "REVIEW_REQUIRED" for r in results)
+    accuracy = _rate(correct, len(evaluated))
     summary: dict[str, Any] = {
-        "total": len(results),
+        "total": total,
         "evaluated": len(evaluated),
-        "errors": sum(r["predicted"] == "ERROR" for r in results),
-        "review_required": sum(r["predicted"] == "REVIEW_REQUIRED" for r in results),
+        "errors": errors,
+        "review_required": review_required,
         "correct": correct,
-        "accuracy": round(correct / len(evaluated), 4) if evaluated else None,
+        "accuracy": accuracy,
         "false_pass": false_pass,
-        "false_pass_rate": round(false_pass / expected_fail, 4) if expected_fail else None,
+        "false_pass_rate": _rate(false_pass, expected_fail),
         "false_fail": false_fail,
-        "false_fail_rate": round(false_fail / expected_pass, 4) if expected_pass else None,
+        "false_fail_rate": _rate(false_fail, expected_pass),
+        "end_to_end_accuracy": _rate(correct, total),
+        "auto_decision_rate": _rate(len(evaluated), total),
+        "review_required_rate": _rate(review_required, total),
+        "error_rate": _rate(errors, total),
+        "accuracy_on_decided": accuracy,
     }
     categories: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for r in results:
@@ -135,14 +153,17 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
         checked = [r for r in group if r["predicted"] in VALID_LABELS]
         fail_population = sum(r["expected"] == "FAIL" for r in checked)
         fp = sum(r["expected"] == "FAIL" and r["predicted"] == "PASS" for r in checked)
+        category_correct = sum(r["correct"] for r in checked)
         summary["by_category"][category] = {
             "total": len(group),
             "evaluated": len(checked),
             "errors": sum(r["predicted"] == "ERROR" for r in group),
             "review_required": sum(r["predicted"] == "REVIEW_REQUIRED" for r in group),
-            "accuracy": round(sum(r["correct"] for r in checked) / len(checked), 4) if checked else None,
+            "accuracy": _rate(category_correct, len(checked)),
             "false_pass": fp,
-            "false_pass_rate": round(fp / fail_population, 4) if fail_population else None,
+            "false_pass_rate": _rate(fp, fail_population),
+            "end_to_end_accuracy": _rate(category_correct, len(group)),
+            "false_fail": sum(r["expected"] == "PASS" and r["predicted"] == "FAIL" for r in checked),
         }
     summary["errors_by_kind"] = dict(
         sorted(Counter(r.get("error_kind") or "unclassified" for r in results if r["predicted"] == "ERROR").items())
@@ -156,12 +177,133 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     return summary
 
 
+def _evaluate_case(
+    client: ChatClient, checker: Checker, row: dict[str, Any], primary: str, verifier: str, mode: str
+) -> dict[str, Any]:
+    start = time.monotonic()
+    if hasattr(client, "start_trace"):
+        client.start_trace()
+    result = {field: row.get(field) for field in ("id", "category", "difficulty", "en", "zh", "expected", "why")}
+    try:
+        check = checker.check(row["en"], row["zh"], primary, verifier, mode)
+        result.update(predicted=check.verdict, correct=check.verdict == row["expected"], detail=check.model_dump())
+    except LLMError as exc:
+        result.update(
+            predicted="ERROR",
+            correct=False,
+            error_stage=getattr(exc, "stage", "client_or_pipeline"),
+            error=str(exc),
+        )
+    result["elapsed_seconds"] = round(time.monotonic() - start, 2)
+    result["requests"] = client.trace_snapshot() if hasattr(client, "trace_snapshot") else []
+    if result["predicted"] == "ERROR":
+        last = result["requests"][-1] if result["requests"] else {}
+        result["error_kind"] = last.get("outcome", "client_or_pipeline_error")
+    result["evidence_audit"] = evidence_integrity(result.get("detail"))
+    return result
+
+
+def _print_progress(index: int, total: int, row: dict[str, Any], result: dict[str, Any]) -> None:
+    marker = (
+        "OK"
+        if result["correct"]
+        else {"ERROR": "ERROR", "REVIEW_REQUIRED": "REVIEW"}.get(result["predicted"], "MISMATCH")
+    )
+    print(
+        f"[{index:02d}/{total:02d}] {row['id']} "
+        f"{row.get('category', '')} expected={row['expected']} "
+        f"predicted={result['predicted']}  {marker}  {result['elapsed_seconds']:.1f}s",
+        flush=True,
+    )
+    if result["predicted"] == "REVIEW_REQUIRED":
+        print("    需要人工复核（非执行 ERROR；本例不计入自动裁决准确率）", flush=True)
+    if result["predicted"] == "ERROR":
+        print(
+            f"    Stage: {result.get('error_stage', 'unknown')}\n    Error: {result.get('error', 'unknown')}",
+            flush=True,
+        )
+
+
+def _run_cases(
+    rows: list[dict[str, Any]], client: ChatClient, primary: str, verifier: str, args: argparse.Namespace
+) -> list[dict[str, Any]]:
+    results: dict[int, dict[str, Any]] = {}
+    errors = 0
+    error_limit = args.stop_after_errors
+    limit_reached = Event()
+
+    def record(index: int, result: dict[str, Any]) -> None:
+        nonlocal errors
+        results[index] = result
+        reached_now = False
+        if result["predicted"] == "ERROR":
+            errors += 1
+            reached_now = errors == error_limit
+            if reached_now:
+                limit_reached.set()
+        _print_progress(index, len(rows), rows[index - 1], result)
+        if reached_now:
+            print(f"已达到 ERROR 停止阈值 ({error_limit})，停止后续模型调用。", flush=True)
+
+    cases = iter(enumerate(rows, 1))
+    worker_count = min(args.workers, len(rows))
+    if args.workers == 1:
+        checker = Checker(client, client.settings)
+        for index, row in cases:
+            record(index, _evaluate_case(client, checker, row, primary, verifier, args.mode))
+            if limit_reached.is_set():
+                break
+        return list(results.values())
+
+    worker = local()
+    available_clients: SimpleQueue[ChatClient] = SimpleQueue()
+    available_clients.put(client)
+
+    def initialize_worker() -> None:
+        worker.client = available_clients.get_nowait()
+        worker.checker = Checker(worker.client, worker.client.settings)
+
+    def run_case(row: dict[str, Any]) -> dict[str, Any] | None:
+        if limit_reached.is_set():
+            return None
+        return _evaluate_case(worker.client, worker.checker, row, primary, verifier, args.mode)
+
+    with ExitStack() as clients:
+        for _ in range(worker_count - 1):
+            worker_client = ChatClient(client.settings)
+            clients.callback(worker_client.close)
+            available_clients.put(worker_client)
+
+        with ThreadPoolExecutor(max_workers=worker_count, initializer=initialize_worker) as executor:
+            pending = {}
+            while True:
+                # Keep the queue bounded so an observed error can stop further submissions.
+                if not limit_reached.is_set():
+                    for index, row in islice(cases, worker_count - len(pending)):
+                        pending[executor.submit(run_case, row)] = index
+                if not pending:
+                    break
+                finished, _ = wait(pending, return_when=FIRST_COMPLETED)
+                for future in finished:
+                    index = pending.pop(future)
+                    result = future.result()
+                    if result is not None:
+                        record(index, result)
+
+    return [results[index] for index in sorted(results)]
+
+
+def _format_rate(rate: float | None) -> str:
+    return f"{rate:.4f}" if rate is not None else "N/A"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="评测双语关键词检测器（JSON/JSONL 数据集）")
     parser.add_argument("--cases", type=Path, default=Path(__file__).with_name("validation_60.jsonl"))
     parser.add_argument("--limit", type=int, default=0, help="只跑前 N 条，0 表示全部")
+    parser.add_argument("--workers", type=int, default=1, help="并行评测的样例数，默认为 1")
     parser.add_argument(
-        "--stop-after-errors", type=int, default=0, help="累计 N 个执行 ERROR 后立即停止，保留部分报告；0 表示不限制"
+        "--stop-after-errors", type=int, default=0, help="累计 N 个执行 ERROR 后停止启动新样例；0 表示不限制"
     )
     parser.add_argument("--model", help="主模型 ID（覆盖 LM_MODEL）")
     parser.add_argument("--verifier-model", help="独立复核模型 ID（覆盖 LM_VERIFIER_MODEL）")
@@ -199,6 +341,8 @@ def main() -> None:
         "--audit-csv", type=Path, default=None, help="可选：导出人工核查证据/链接理由的 CSV，人工填写质量判断"
     )
     args = parser.parse_args()
+    if args.workers < 1:
+        parser.error("--workers 必须为正整数")
     try:
         rows = load_cases(args.cases)
     except ValueError as exc:
@@ -223,9 +367,7 @@ def main() -> None:
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
             print(f"基线报告检查失败：{exc}", file=sys.stderr)
             sys.exit(2)
-    results: list[dict[str, Any]] = []
     configured_total = len(rows)
-    stopped_early = False
     config = Settings()
     config = replace(
         config,
@@ -276,69 +418,11 @@ def main() -> None:
         except LLMError as exc:
             print(f"模型预检失败：{exc}", file=sys.stderr)
             sys.exit(2)
-        checker = Checker(client, client.settings)
-        for index, row in enumerate(rows, 1):
-            start = time.monotonic()
-            if hasattr(client, "start_trace"):
-                client.start_trace()
-            base: dict[str, Any] = {
-                field: row.get(field) for field in ("id", "category", "difficulty", "en", "zh", "expected", "why")
-            }
-            try:
-                check = checker.check(row["en"], row["zh"], primary, verifier, args.mode)
-                result = {
-                    **base,
-                    "predicted": check.verdict,
-                    "correct": check.verdict == row["expected"],
-                    "detail": check.model_dump(),
-                }
-            except LLMError as exc:
-                result = {
-                    **base,
-                    "predicted": "ERROR",
-                    "correct": False,
-                    "error_stage": getattr(exc, "stage", "client_or_pipeline"),
-                    "error": str(exc),
-                }
-            result["elapsed_seconds"] = round(time.monotonic() - start, 2)
-            result["requests"] = client.trace_snapshot() if hasattr(client, "trace_snapshot") else []
-            if result["predicted"] == "ERROR":
-                last = result["requests"][-1] if result["requests"] else {}
-                result["error_kind"] = last.get("outcome", "client_or_pipeline_error")
-            result["evidence_audit"] = evidence_integrity(result.get("detail"))
-            results.append(result)
-            marker = (
-                "OK"
-                if result["correct"]
-                else "ERROR"
-                if result["predicted"] == "ERROR"
-                else "REVIEW"
-                if result["predicted"] == "REVIEW_REQUIRED"
-                else "MISMATCH"
-            )
-            print(
-                f"[{index:02d}/{len(rows):02d}] {row['id']} "
-                f"{row.get('category', '')} expected={row['expected']} "
-                f"predicted={result['predicted']}  {marker}  {result['elapsed_seconds']:.1f}s",
-                flush=True,
-            )
-            if result["predicted"] == "REVIEW_REQUIRED":
-                print("    需要人工复核（非执行 ERROR；本例不计入自动裁决准确率）", flush=True)
-            if result["predicted"] == "ERROR":
-                print(
-                    f"    Stage: {result.get('error_stage', 'unknown')}\n    Error: {result.get('error', 'unknown')}",
-                    flush=True,
-                )
-                if (
-                    args.stop_after_errors > 0
-                    and sum(r["predicted"] == "ERROR" for r in results) >= args.stop_after_errors
-                ):
-                    stopped_early = index < configured_total
-                    print(f"已达到 ERROR 停止阈值 ({args.stop_after_errors})，停止后续模型调用。", flush=True)
-                    break
+        results = _run_cases(rows, client, primary, verifier, args)
     finally:
         client.close()
 
+    stopped_early = len(results) < configured_total
     summary = summarize(results)
     summary["reliability"] = reliability_summary(results)
     if args.baseline_report:
@@ -445,6 +529,13 @@ def main() -> None:
         print("判决变化：" + json.dumps(paired["changed"], ensure_ascii=False))
     print("\n可靠性指标：" + json.dumps(summary["reliability"], ensure_ascii=False))
     print("\n总览：" + json.dumps({k: v for k, v in summary.items() if k != "by_category"}, ensure_ascii=False))
+    print(
+        f"端到端正确率 {_format_rate(summary['end_to_end_accuracy'])} ({summary['correct']}/{summary['total']})"
+        f" | 自动判决 {_format_rate(summary['auto_decision_rate'])}"
+        f" | 转人工 {_format_rate(summary['review_required_rate'])}"
+        f" | ERROR {_format_rate(summary['error_rate'])}"
+        f" | 误判PASS {summary['false_pass']} | 误判FAIL {summary['false_fail']}"
+    )
     print("\n按类别统计：")
     for category, stats in summary["by_category"].items():
         print(

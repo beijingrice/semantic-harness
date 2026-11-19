@@ -38,6 +38,9 @@
 
 **工程**
 - 加入 git 版本管理、ruff lint 配置和 GitHub Actions CI。
+- 评测新增主指标 `end_to_end_accuracy`、自动判决率、人工复核率、错误率及分类误判 FAIL 计数。
+- 评测支持 `--workers N` 并行执行样例，报告保留样例原始顺序。
+- 新增仅供评测使用的 Codex CLI 后端，支持用 `@effort` 后缀区分同一模型的主判和复核配置。
 
 ## v0.2.16 — 后端兼容
 OpenAI-compatible 后端隔离与自定义 Adapter；主模型和复核模型可以分别配置 API 地址和密钥；可配置的原生 JSON Schema 协商（`LM_SCHEMA_MODE`）；`/models` 发现可设为可选或关闭。见 [docs/backends.md](docs/backends.md)。

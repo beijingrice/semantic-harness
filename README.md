@@ -89,10 +89,12 @@ v0.2.8 用 `extraction` 在真实模型上跑过：历史回归 11/11，36 条 h
 
 ```bash
 python -m examples.evaluate --cases examples/v2_regression_11.json \
-  --mode dual --stop-after-errors 1 --out eval_regression_11.json
+  --mode dual --workers 4 --stop-after-errors 1 --out eval_regression_11.json
 ```
 
-评测会分别统计 PASS / FAIL / REVIEW_REQUIRED / ERROR、False PASS、False FAIL、端到端正确率、按类别的结果、耗时和 token 用量。加 `--pipeline direct_hardened` 可以评测另一种 Pipeline；加 `--audit-csv` 可以导出人工核查表。
+评测的主指标是端到端正确率 `end_to_end_accuracy`，以所有已运行的样例为分母，`REVIEW_REQUIRED` 和 `ERROR` 均计为未正确。报告也提供自动判决率、False PASS、False FAIL、分类统计、耗时和 token 用量。
+
+用 `--workers N` 并行评测 N 条样例，默认为 1，报告保留样例原始顺序。加 `--pipeline direct_hardened` 可以评测另一种 Pipeline，加 `--audit-csv` 可以导出人工核查表。
 
 `examples/` 中的主要数据集：
 

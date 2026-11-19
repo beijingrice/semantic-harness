@@ -133,6 +133,18 @@ class MyBackend:
 
 输入 `payload` 含 `model`, `messages`, `temperature`, `max_tokens`, `stream=False`，在 `on`/`auto` 下还可含 `response_format`；适配器应翻译并返回 `BackendResponse(content=..., finish_reason=..., token usage...)`。**切勿**在 Adapter 中做语义裁决、伪造 `PASS` 或跳过 `ChatClient.structured`。自定义 Adapter 由本地 Python 配置显式导入，**只允许导入可信代码**。
 
+## Codex CLI backend (evaluation only)
+
+本地安装 Codex CLI 并使用 ChatGPT 账号登录后，可以用此后端运行评测。主模型和复核模型的 ID 必须不同，`@effort` 后缀允许同一模型用不同推理强度参与评测。
+
+```bash
+LM_BACKEND=examples.codex_backend:CodexExecBackend LM_MODEL_DISCOVERY=off \
+LM_MODEL=gpt-6-luna@medium LM_VERIFIER_MODEL=gpt-6-luna@high LM_TIMEOUT_SECONDS=600 \
+python -m examples.evaluate --cases examples/v2_regression_11.json --workers 4 --out eval_x.json
+```
+
+`CODEX_BIN` 可指定 CLI 路径。推理强度可取 `low`、`medium`、`high` 或 `xhigh`。省略后缀时使用 `CODEX_REASONING_EFFORT`，默认 `medium`。此后端仅供评测使用。
+
 ## 失败/可靠性约定
 
 | 场景 | 输出行为 |
