@@ -161,3 +161,35 @@ def test_negated_comparators_flip_to_inclusive_bounds(text, comparator):
 )
 def test_lifted_requirements_are_not_bounds(text):
     assert parse_quantity(text) is None
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Applicants must list every institution at which they carried out research during the past two years.",
+        "申请人须列出过去两年内开展过研究的所有机构。",
+        "Report all incidents from the previous 3 days.",
+    ],
+)
+def test_lookback_windows_are_not_quantity_bounds(text):
+    # "during the past two years" (=) vs "过去两年内" (<=) is the same window, not a conflict.
+    assert parse_quantity(text) is None
+
+
+def test_deadlines_within_a_period_are_still_bounds():
+    assert parse_quantity("须在两年内提交报告").comparator == "<="
+    assert parse_quantity("The report must be submitted within two years").comparator == "<="
+
+
+def test_mixed_polarity_inclusion_claim_is_not_compared():
+    from app.models import KeyUnit, Link
+    from app.validators import clear_inclusion_conflicts
+
+    en = [
+        KeyUnit(id="en_1", kind="constraint", claim="The reference list does not count toward the limit.", evidence="x")
+    ]
+    link = [Link(en_ids=["en_1"], zh_ids=["zh_1"], relation="equivalent", reason="r")]
+    mixed = [KeyUnit(id="zh_1", kind="constraint", claim="图注计入总词数，参考文献列表不计入。", evidence="x")]
+    opposite = [KeyUnit(id="zh_1", kind="constraint", claim="参考文献列表计入总词数。", evidence="x")]
+    assert clear_inclusion_conflicts(en, mixed, link) == []
+    assert clear_inclusion_conflicts(en, opposite, link)

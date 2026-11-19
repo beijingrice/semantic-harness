@@ -195,6 +195,7 @@ _NOT_A_BOUND = re.compile(
     rf"don't\s+have\s+to)(?:\s+be)?\s+(?:{_EN_GT}|{_EN_LT}))\s*$",
     re.I,
 )
+_LOOKBACK = re.compile(r"(?:\b(?:the\s+)?(?:past|last|previous|preceding)\s*|(?:过去|最近|此前|以往)\s*)$", re.I)
 _EQ = re.compile(r"(?:\b(?:exactly|precisely|equal to)\s*|(?:恰好|正好|刚好|等于|固定为)\s*)$", re.I)
 _GE_SUFFIX = re.compile(r"^\s*(?:%\s*)?(?:或以上|及以上|以上|or\s+(?:higher|more)|and\s+above)", re.I)
 _LE_SUFFIX = re.compile(r"^\s*(?:%\s*)?(?:或以下|及以下|以下|or\s+(?:lower|less)|and\s+below)", re.I)
@@ -263,6 +264,11 @@ def parse_quantity(text: str) -> Quantity | None:
     ) or re.search(r"^\s*(?:weeks?|days?|周|天|日|页|pages?)\s*(?:左右|上下|余|or so)", suffix, re.I):
         return None
     if _NOT_A_BOUND.search(prefix):
+        return None
+    # "during the past two years / 过去两年内" is a look-back window for counting
+    # events, not a bound on a required quantity: "= 2 years" vs "<= 2 years"
+    # there is the same window, not a conflict.
+    if unit[0] in _TIME_DIMENSIONS and _LOOKBACK.search(prefix):
         return None
     # Longest / negated forms first to avoid "no more" -> "more".
     if _GE.search(prefix) or _GE_SUFFIX.search(suffix):
@@ -385,8 +391,10 @@ def clear_inclusion_conflicts(en: list[KeyUnit], zh: list[KeyUnit], links: list[
     """
     issues = []
     for a, b in _one_to_one_links(en, zh, links):
-        x, y = _inclusion_signs(a.claim, "en"), _inclusion_signs(b.claim, "zh")
-        if x and y and ((1 in x and all(sign == -1 for sign in y)) or (1 in y and all(sign == -1 for sign in x))):
+        x, y = set(_inclusion_signs(a.claim, "en")), set(_inclusion_signs(b.claim, "zh"))
+        # Each claim must have ONE polarity. "图注计入，参考文献不计入" names two
+        # components with opposite polarity and cannot be compared 1:1.
+        if len(x) == 1 and len(y) == 1 and x != y:
             issues.append(f"计入/排除关系疑似反转：{a.claim!r} ↔ {b.claim!r}")
     return issues
 
