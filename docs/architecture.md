@@ -223,10 +223,9 @@ sequenceDiagram
     participant M as 模型服务
 
     U->>A: 英文 + 中文 + 模式
-    A->>A: Settings() 读取配置（填错时报 ConfigError）
+    A->>A: Settings() 读取并校验配置（填错时报 ConfigError）
     A->>C: Checker(client, settings).check(...)
-    C->>C: 校验 LM_PIPELINE 等配置
-    C->>P: 分发到 extraction 或 direct_hardened
+    C->>P: pipelines.select 按配置选择 extraction 或 direct_hardened
     loop 每个需要模型的步骤
         P->>L: structured(模型, Prompt, Schema, 校验函数)
         L->>M: POST /chat/completions
