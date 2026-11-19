@@ -1,0 +1,542 @@
+[
+  {
+    "id": "GD-001",
+    "category": "numeric_units",
+    "difficulty": "medium",
+    "en": "The equipment-use training session must run for 2 hours. It must include a 15-minute supervised practice session within those 2 hours.",
+    "zh": "设备使用培训须安排15分钟在监督下进行的实操练习，计入培训的120分钟总时长。",
+    "expected": "PASS",
+    "why": "The required 15-minute supervised session counts toward the required two-hour total, expressed as 120 minutes in Chinese."
+  },
+  {
+    "id": "GD-002",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "The equipment room must issue a numbered key to each authorized borrower. Before taking any equipment, borrowers must sign the checkout register. They may borrow a tripod for up to 90 minutes per checkout.\n\nBorrowers must report damage to the equipment technician immediately. On return, borrowers must hand the key directly to the technician. The technician must record the return time.",
+    "zh": "设备室须向每名获准借用设备的人员发放一把带编号的钥匙。借用人须先在借用登记簿上签字，再取走设备。三脚架可借用，单次借用不得超过一个半小时。\n\n设备如有损坏，借用人须立即向设备技术员报告。归还设备时，借用人须将钥匙直接交给技术员。技术员须登记归还时间。",
+    "expected": "PASS",
+    "why": "Both require a numbered key for each authorized borrower and a signature before checkout, allow tripod loans up to 90 minutes (an hour and a half) per checkout, and require immediate damage reporting, direct return of the key to the technician, and a return-time record."
+  },
+  {
+    "id": "GD-003",
+    "category": "inclusion_counting",
+    "difficulty": "medium",
+    "en": "The conference paper may contain up to 4,000 words. Figure captions count toward this limit, but the reference list does not.",
+    "zh": "会议论文以四千词为上限。图注计入总词数，参考文献列表不计入。",
+    "expected": "PASS",
+    "why": "Both set an inclusive 4,000-word ceiling, count figure captions and exclude the reference list. See paired case GD-005."
+  },
+  {
+    "id": "GD-004",
+    "category": "modality",
+    "difficulty": "easy",
+    "en": "The student may use a bilingual dictionary during the placement interview.",
+    "zh": "分班面试时，学生可使用双语词典。",
+    "expected": "PASS",
+    "why": "Both permit the student to use a bilingual dictionary during the placement interview."
+  },
+  {
+    "id": "GD-005",
+    "category": "inclusion_counting",
+    "difficulty": "medium",
+    "en": "The conference paper may contain up to 4,000 words. Figure captions count toward this limit, but the reference list does not.",
+    "zh": "会议论文以四千词为上限。图注和参考文献列表均不计入总词数。",
+    "expected": "FAIL",
+    "why": "English counts figure captions toward the limit. Chinese excludes them. Both exclude the reference list and use the same ceiling. See paired case GD-003."
+  },
+  {
+    "id": "GD-006",
+    "category": "enumeration",
+    "difficulty": "medium",
+    "en": "The student exchange application must include a transcript, a study plan, and a copy of the student's passport. The study plan must be in English.",
+    "zh": "学生交流项目的申请材料须包括成绩单、护照复印件、推荐信和学习计划。学习计划须用英文撰写。",
+    "expected": "FAIL",
+    "why": "Chinese adds a required recommendation letter. The three original documents and the study plan's language requirement agree. See paired case GD-019."
+  },
+  {
+    "id": "GD-007",
+    "category": "terminology",
+    "difficulty": "medium",
+    "en": "Students must report the RMSE for the validation set.",
+    "zh": "学生须报告验证集的平均绝对误差。",
+    "expected": "FAIL",
+    "why": "English requires root mean square error (RMSE). Chinese requires mean absolute error. Both refer to the validation set. See paired case GD-058."
+  },
+  {
+    "id": "GD-008",
+    "category": "conditions_exceptions",
+    "difficulty": "medium",
+    "en": "Students using the ceramics studio must wear safety goggles. A student who is only collecting a finished piece is exempt.",
+    "zh": "使用陶艺工作室的学生须佩戴护目镜。仅领取成品的学生不受此限。",
+    "expected": "PASS",
+    "why": "Both require goggles for studio use and exempt students whose sole activity is collecting a finished piece. See paired case GD-036."
+  },
+  {
+    "id": "GD-009",
+    "category": "terminology",
+    "difficulty": "medium",
+    "en": "The clinical study statistician must report sensitivity for the screening test. The value must be reported to one decimal place.",
+    "zh": "临床研究的统计人员须报告筛查试验的特异度。数值须保留一位小数。",
+    "expected": "FAIL",
+    "why": "English requires sensitivity. Chinese requires specificity. The responsible statistician, screening test and one-decimal reporting precision agree."
+  },
+  {
+    "id": "GD-010",
+    "category": "quantifier_scope",
+    "difficulty": "hard",
+    "en": "Each student enrolled in the programming course must submit one code review for each of the other members of their assigned team. The reviews must identify the code version examined. Students must submit the reviews through the teaching platform.\n\nThe instructor must forward each review to the student whose work it reviews. Recipients may reply through the platform.",
+    "zh": "编程课学生须对同组的其他成员逐人提交一份代码审查意见。每份意见须注明所审查的代码版本。学生须通过教学平台提交审查意见。\n\n任课教师须将每份意见转交给对应的被审查学生。收到意见的学生可在教学平台上回复。",
+    "expected": "PASS",
+    "why": "Both require each enrolled student to review every teammate other than themselves, identify the version in each review and submit through the platform. The instructor routes each review to its recipient, who may reply on the platform."
+  },
+  {
+    "id": "GD-011",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "en": "The take-home exam answer file must be smaller than 12 MB. Students must submit it as a PDF.",
+    "zh": "带回作答的考试须以PDF格式提交答卷。答卷文件大小不得超过12 MB。",
+    "expected": "FAIL",
+    "why": "English requires a file strictly smaller than 12 MB, while Chinese permits a 12 MB file. Both require PDF submission."
+  },
+  {
+    "id": "GD-012",
+    "category": "enumeration",
+    "difficulty": "medium",
+    "en": "The assessment portfolio must contain the final poster and both peer reviews. Students must submit the portfolio through the course website.",
+    "zh": "考核作品集须包括最终版海报和一份同伴评阅意见。学生须通过课程网站提交作品集。",
+    "expected": "FAIL",
+    "why": "English requires both peer reviews, while Chinese requires one. The final poster and submission channel agree."
+  },
+  {
+    "id": "GD-013",
+    "category": "conditions_exceptions",
+    "difficulty": "medium",
+    "en": "If a student misses the laboratory quiz because of a documented medical appointment, the student may take a makeup quiz. The student must submit proof of the appointment within three calendar days of the missed quiz ends.",
+    "zh": "学生因按预约就医而缺席实验课测验，且有就医预约证明的，可参加补测。预约证明须在该次测验结束后三个自然日内提交。",
+    "expected": "PASS",
+    "why": "Both allow a makeup quiz for absence due to a documented medical appointment and require proof within three calendar days after the missed quiz."
+  },
+  {
+    "id": "GD-014",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "The study nurse must confirm that the participant has signed the informed consent form before conducting the baseline interview. Participants may leave any income question unanswered. If a participant withdraws before the follow-up visit, the nurse must cancel that visit.\n\nThe data manager must keep the consent forms separate from the interview records. The consent forms must be retained for five years after the study closes. The principal investigator must sign the retention log at study close.\n\nOnly the principal investigator and the data manager may access the retention log. The log must be reviewed every year.",
+    "zh": "研究护士须先确认受试者已签署知情同意书，再开展基线访谈。受试者可不回答任何有关收入的问题。受试者在随访前退出研究的，研究护士须取消该次随访。\n\n数据管理员须将知情同意书与访谈记录分开存放。知情同意书须在研究结束后保存三年。项目负责人须在研究结束时签署保存登记簿。\n\n仅项目负责人、数据管理员和研究护士可查阅保存登记簿。保存登记簿须每年审查一次。",
+    "expected": "FAIL",
+    "why": "Chinese shortens post-close retention of consent forms from five years to three and adds the study nurse to the people allowed to access the retention log. The consent, interviewing, withdrawal, storage separation, signature and annual review rules agree."
+  },
+  {
+    "id": "GD-015",
+    "category": "order_timing",
+    "difficulty": "medium",
+    "en": "Students must run the unit tests before tagging the release. After tagging the release, they must upload the test log.",
+    "zh": "学生须先运行单元测试，再为发布版本打标签。完成上述两步后须上传测试日志。",
+    "expected": "PASS",
+    "why": "Both require the same sequence. Students run unit tests, tag the release, then upload the test log. See paired case GD-050."
+  },
+  {
+    "id": "GD-016",
+    "category": "numeric_bounds",
+    "difficulty": "hard",
+    "en": "To qualify for an oral presentation, an abstract must receive a mean reviewer score greater than 80. The mean must be calculated from all assigned reviewers' scores. Reviewers must use the published scoring rubric.\n\nThe program chair must notify authors by email. Authors offered an oral slot must confirm it within seven calendar days of receiving the notice.",
+    "zh": "审稿人须按公布的评分标准打分。摘要的平均分须根据所有指定审稿人的评分计算。摘要平均分须超过80分，方可获得口头报告资格。\n\n会议程序委员会主席须通过电子邮件通知作者。获得口头报告名额的作者须在收到通知后七个自然日内确认。",
+    "expected": "PASS",
+    "why": "The texts agree on the strict score threshold, whose scores enter the mean, the rubric, email notification by the chair, and the seven-calendar-day confirmation window after receipt."
+  },
+  {
+    "id": "GD-017",
+    "category": "roles_direction",
+    "difficulty": "medium",
+    "en": "The examiner must hand the sealed answer envelopes to the chief invigilator. The chief invigilator must take the envelopes to the examinations office.",
+    "zh": "密封的答卷袋须由考官交给主监考员，再由主监考员送交考试办公室。",
+    "expected": "PASS",
+    "why": "Both require the examiner to hand the sealed envelopes to the chief invigilator, who then takes them to the examinations office."
+  },
+  {
+    "id": "GD-018",
+    "category": "numeric_bounds",
+    "difficulty": "easy",
+    "en": "The printed internship report must contain at least 30 pages of main text.",
+    "zh": "纸质实习报告的正文须超过三十页。",
+    "expected": "FAIL",
+    "why": "English allows exactly 30 pages of main text. Chinese requires more than 30. See paired case GD-027."
+  },
+  {
+    "id": "GD-019",
+    "category": "enumeration",
+    "difficulty": "medium",
+    "en": "The student exchange application must include a transcript, a study plan, and a copy of the student's passport. The study plan must be in English.",
+    "zh": "学生交流项目的申请材料须包括成绩单、护照复印件和学习计划。学习计划须用英文撰写。",
+    "expected": "PASS",
+    "why": "The same three documents are required, and both specify English for the study plan. See paired case GD-006."
+  },
+  {
+    "id": "GD-020",
+    "category": "terminology",
+    "difficulty": "hard",
+    "en": "The data repository must publish the sample manifest as a comma-separated values file. The file must use UTF-8 encoding. It must contain a header row.\n\nThe repository's data manager must enter the collection date for each sample. If a date is unknown, the data manager must leave the corresponding field blank.",
+    "zh": "数据存储库须以CSV格式发布样本清单。文件须采用UTF-8编码。文件须设一行表头。\n\n数据管理员须填写每份样本的采集日期。日期不详的，相应字段须留空。",
+    "expected": "PASS",
+    "why": "CSV is the comma-separated values format. Both require publishing the manifest in that format with UTF-8 encoding, a header row and a collection date for every sample. Both require leaving the date field blank when the date is unknown."
+  },
+  {
+    "id": "GD-021",
+    "category": "numeric_units",
+    "difficulty": "easy",
+    "en": "The clay sample submitted for the materials course must weigh exactly 0.25 kg.",
+    "zh": "材料课提交的黏土样品须重250克。",
+    "expected": "PASS",
+    "why": "Both require a sample weight of exactly 250 g, equivalent to 0.25 kg."
+  },
+  {
+    "id": "GD-022",
+    "category": "enumeration",
+    "difficulty": "easy",
+    "en": "Applicants for the recording booth must provide their name, department, and preferred booking date.",
+    "zh": "申请使用录音室的人员须提供姓名、所在院系及拟预约日期，并注明联系电话。",
+    "expected": "FAIL",
+    "why": "Chinese adds a required contact phone number to the three items required in English."
+  },
+  {
+    "id": "GD-023",
+    "category": "conditions_exceptions",
+    "difficulty": "easy",
+    "en": "A thesis defense may be held remotely only if every committee member consents in writing.",
+    "zh": "全体答辩委员会委员书面同意后，方可举行线上学位论文答辩。",
+    "expected": "PASS",
+    "why": "Both make written consent from every committee member a necessary condition for holding the defense remotely."
+  },
+  {
+    "id": "GD-024",
+    "category": "order_timing",
+    "difficulty": "easy",
+    "en": "Readers must renew a reserved study carrel at least 24 hours before the booking expires.",
+    "zh": "读者须在预约到期前的24小时内办理研读座续用手续。",
+    "expected": "FAIL",
+    "why": "English requires renewal 24 hours or more before expiry. Chinese requires it during the final 24 hours before expiry."
+  },
+  {
+    "id": "GD-025",
+    "category": "modality",
+    "difficulty": "medium",
+    "en": "The data steward must send the access agreement to each researcher approved for data access. Researchers may request a printed copy.",
+    "zh": "数据管理员须向每位获准访问数据的研究人员发送访问协议。研究人员可申请纸质副本。",
+    "expected": "PASS",
+    "why": "Both require the steward to send the agreement to every approved researcher and allow researchers to request a paper copy."
+  },
+  {
+    "id": "GD-026",
+    "category": "modality",
+    "difficulty": "easy",
+    "en": "Students may attach a glossary at the end of the policy brief.",
+    "zh": "学生可在政策简报后附术语表。",
+    "expected": "PASS",
+    "why": "Both permit students to attach a glossary to the policy brief. See paired case GD-042."
+  },
+  {
+    "id": "GD-027",
+    "category": "numeric_bounds",
+    "difficulty": "easy",
+    "en": "The printed internship report must contain at least 30 pages of main text.",
+    "zh": "纸质实习报告的正文须为三十页以上。",
+    "expected": "PASS",
+    "why": "Both set an inclusive minimum of 30 pages for the main text of the printed internship report. See paired case GD-018."
+  },
+  {
+    "id": "GD-028",
+    "category": "quantifier_scope",
+    "difficulty": "hard",
+    "en": "Each participating department must nominate two students for the library advisory panel. The nominees must be enrolled full time. The department administrator must verify that the nominees are enrolled full time.\n\nEvery nominee must provide written consent before the nomination is submitted. The administrator must submit nominations through the library portal.",
+    "zh": "参与院系须共同为图书馆咨询小组提名两名学生。被提名者须为全日制在读学生。院系行政人员须核实被提名者是否为全日制在读学生。\n\n每名被提名者均须在提名提交前书面同意。提名须由院系行政人员通过图书馆平台提交。",
+    "expected": "FAIL",
+    "why": "English requires two nominees from each participating department. Chinese requires only two nominees across the participating departments collectively. The eligibility, verification, consent and submission rules agree."
+  },
+  {
+    "id": "GD-029",
+    "category": "negation",
+    "difficulty": "easy",
+    "en": "First-year students applying for borrowing privileges are not required to provide a guarantor's signature.",
+    "zh": "一年级学生申请借阅权限时，无须提供担保人签字。",
+    "expected": "PASS",
+    "why": "Both waive the guarantor-signature requirement for first-year applicants for borrowing privileges. See paired case GD-051."
+  },
+  {
+    "id": "GD-030",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "A recipient may redistribute an unmodified copy of the teaching dataset only if the recipient includes the original license file and the required attribution with the copy. The attribution must name the dataset and its creators. The recipient may provide the attribution in a README file.\n\nRecipients must not distribute the companion answer key. If a recipient discovers that the dataset includes contact details, the recipient must notify the data steward within two working days of discovery. The recipient must identify the affected records in that notice.",
+    "zh": "接收方接收方只有在副本随附原始许可证文件和规定的署名信息时，才可再分发未经修改的教学数据集副本。署名信息须列明数据集名称及其创建者。署名信息可写在README文件中。\n\n接收方不得分发配套参考答案。如发现数据集含有联系方式，须在发现后两个工作日内通知数据管理员，并在通知中指出涉及的记录。",
+    "expected": "PASS",
+    "why": "Both apply the same conditions to redistribution, require the dataset and creator names, permit a README for credit, prohibit distributing the answer key, and require a notice identifying affected records within two working days of discovery."
+  },
+  {
+    "id": "GD-031",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "en": "Applicants may request travel funding if the return fare exceeds RMB 800. The request must include a dated fare quote.",
+    "zh": "往返票价达到800元的，申请人可以申请差旅资助。申请材料须附注明日期的票价报价单。",
+    "expected": "FAIL",
+    "why": "The English threshold is strictly above RMB 800. Chinese allows a fare of exactly RMB 800. Both require a dated fare quote."
+  },
+  {
+    "id": "GD-032",
+    "category": "numeric_units",
+    "difficulty": "easy",
+    "en": "The thesis spine label must be 1.5 cm wide.",
+    "zh": "论文书脊标签的宽度须为15毫米。",
+    "expected": "PASS",
+    "why": "The required label width is the same after converting 1.5 cm to 15 mm. See paired case GD-052."
+  },
+  {
+    "id": "GD-033",
+    "category": "inclusion_counting",
+    "difficulty": "easy",
+    "en": "For the photography portfolio, the cover sheet counts toward the ten-page limit.",
+    "zh": "摄影作品集不得超过十页，封面计入页数。",
+    "expected": "PASS",
+    "why": "Both set a ten-page limit for the portfolio and count the cover sheet toward it."
+  },
+  {
+    "id": "GD-034",
+    "category": "quantifier_scope",
+    "difficulty": "hard",
+    "en": "Applicants to the summer research program must list every institution at which they carried out research during the past two years. For each institution listed, they must provide the name of one supervisor. They must give an email address for every supervisor named.\n\nApplicants who have carried out no research in that period must state this on the form. All applicants must sign the form.",
+    "zh": "暑期科研项目申请人须列出过去两年内开展过研究的所有机构。每家所列机构须填写一名指导人员的姓名。所填写的每名指导人员均须附电子邮箱地址。\n\n这两年内未开展过研究的，须在表中注明。所有申请人均须在表上签字。",
+    "expected": "PASS",
+    "why": "Both cover every research institution in the past two years, require one named supervisor per institution and an email for each named supervisor, and require a no-research declaration when applicable and a signature from everyone."
+  },
+  {
+    "id": "GD-035",
+    "category": "negation",
+    "difficulty": "medium",
+    "en": "Staff must not erase any entry from the equipment maintenance log. If an entry contains an error, staff must add a signed correction.",
+    "zh": "工作人员无须删除设备维护日志中的任何条目。条目有误时，须另行添加有签名的更正记录。",
+    "expected": "FAIL",
+    "why": "English prohibits erasing log entries. Chinese says erasure is unnecessary and states no prohibition. Both require a separate signed correction for an erroneous entry."
+  },
+  {
+    "id": "GD-036",
+    "category": "conditions_exceptions",
+    "difficulty": "medium",
+    "en": "Students using the ceramics studio must wear safety goggles. A student who is only collecting a finished piece is exempt.",
+    "zh": "使用陶艺工作室的学生须佩戴护目镜。领取成品的学生不受此限。",
+    "expected": "FAIL",
+    "why": "Chinese drops the restriction that collecting a finished piece must be the student's sole activity. Its exception also covers students who do studio work and collect a piece. See paired case GD-008."
+  },
+  {
+    "id": "GD-037",
+    "category": "roles_direction",
+    "difficulty": "medium",
+    "en": "For a joint submission, the corresponding author's contribution score must be higher than the submitting author's score.",
+    "zh": "联合投稿中，投稿作者的贡献评分须低于通讯作者的贡献评分。",
+    "expected": "PASS",
+    "why": "Both require the corresponding author's score to exceed the submitting author's score. Chinese states the equivalent comparison from the submitting author's perspective."
+  },
+  {
+    "id": "GD-038",
+    "category": "roles_direction",
+    "difficulty": "easy",
+    "en": "The course coordinator must send the revised grading rubric to the examiners.",
+    "zh": "修订后的评分细则须由各位考官发给课程协调员。",
+    "expected": "FAIL",
+    "why": "Chinese reverses the sender and recipient. The examiners send the rubric to the course coordinator. See paired case GD-059."
+  },
+  {
+    "id": "GD-039",
+    "category": "inclusion_counting",
+    "difficulty": "hard",
+    "en": "The equipment purchase proposal must not exceed eight pages. The main text and the appendix count toward the limit. The vendor quotes do not count toward the limit.\n\nApplicants must attach at least two vendor quotes. Every quote must state a delivery date. Applicants must submit the proposal and quotes together in one PDF.",
+    "zh": "设备购置申请书不得超过八页。正文计入页数，附录和供应商报价单不计入。\n\n申请人须附至少两份供应商报价单。每份报价单均须注明交货日期。申请书与报价单须合并为一个PDF文件提交。",
+    "expected": "FAIL",
+    "why": "English counts the appendix toward the eight-page limit. Chinese excludes it. Both count the main text, exclude the quotes, require at least two quotes with a delivery date on each, and require one combined PDF."
+  },
+  {
+    "id": "GD-040",
+    "category": "quantifier_scope",
+    "difficulty": "medium",
+    "en": "Each lab pair must submit one troubleshooting report. Both students' names must appear on the report.",
+    "zh": "实验课的两人小组中，每名学生须提交一份故障排查报告。报告须注明两名组员的姓名。",
+    "expected": "FAIL",
+    "why": "English requires one report per pair. Chinese requires a separate submission from each student. Both require the two names on a report."
+  },
+  {
+    "id": "GD-041",
+    "category": "negation",
+    "difficulty": "hard",
+    "en": "For the community survey, interviewers must give each participant a copy of the consent form. Interviewers must not write a participant's telephone number on the form. Participants are not required to give an email address.\n\nThe research coordinator must lock signed forms in a cabinet after each interview day. Interviewers must submit a count of completed interviews by Friday at 17:00.",
+    "zh": "访员须向每位受访者提供一份知情同意书。访员不得在同意书上填写受访者的电话号码。受访者无须提供电子邮箱地址。\n\n每天访谈结束后，研究协调员须将已签署的同意书锁入柜中。访员须最迟于周五17时提交已完成的访谈数量。",
+    "expected": "PASS",
+    "why": "Both require a form copy for every participant, prohibit recording phone numbers on the form, make email disclosure optional, and require daily locked storage and the Friday 17:00 count deadline."
+  },
+  {
+    "id": "GD-042",
+    "category": "modality",
+    "difficulty": "easy",
+    "en": "Students may attach a glossary at the end of the policy brief.",
+    "zh": "学生须在政策简报后附术语表。",
+    "expected": "FAIL",
+    "why": "The glossary is optional in English and mandatory in Chinese. See paired case GD-026."
+  },
+  {
+    "id": "GD-043",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "The doctoral dissertation deposit must include a PDF of the dissertation and a signed deposit form. The PDF file must be no larger than 40 MB. The candidate must remove embedded comments before uploading it.\n\nThe candidate may request a six-month embargo. To request one, the candidate must submit a separate form signed by the supervisor.\n\nThe graduate office must confirm receipt by email within three working days of submission. The candidate must retain the confirmation until the degree is awarded.",
+    "zh": "博士学位论文归档材料须包括论文PDF文件和经签署的归档表。PDF文件不得超过40 MB。申请人须在上传前删除PDF中的批注。\n\n申请人可申请六个月的延迟公开。申请延迟公开时，须另交一份由导师签字的申请表。\n\n研究生办公室须在材料提交后三个自然日内以电子邮件确认收件。申请人须将确认邮件保留至学位授予。",
+    "expected": "FAIL",
+    "why": "The graduate office has three working days to confirm receipt in English and three calendar days in Chinese. The deposit contents, file limit, comment removal, embargo and confirmation retention requirements all agree."
+  },
+  {
+    "id": "GD-044",
+    "category": "order_timing",
+    "difficulty": "hard",
+    "en": "Applicants must complete the budget form before submitting the grant preproposal. The grants office must acknowledge receipt within two working days of submission. Applicants may revise the budget within five working days of receiving that acknowledgment.\n\nThe revised budget must use the original application number. Applicants must submit it through the same portal as the preproposal.",
+    "zh": "申请人须先填妥预算表，再提交资助项目预申请。项目资助办公室须在预申请提交后两个工作日内确认收件。申请人收到确认后，可在五个工作日内修订预算。\n\n修订后的预算须沿用原申请编号。申请人须通过提交预申请的同一平台提交修订后的预算。",
+    "expected": "PASS",
+    "why": "Both set the same order for the form and preproposal, the same windows from submission and acknowledgment, and the same application number and portal for any revised budget."
+  },
+  {
+    "id": "GD-045",
+    "category": "negation",
+    "difficulty": "medium",
+    "en": "The grader must not deduct marks for citations omitted from the one-page draft. In the final report, students must cite every published source they use.",
+    "zh": "一页初稿如有漏引，评分教师须扣分。定稿须列明学生使用的所有已发表资料的出处。",
+    "expected": "FAIL",
+    "why": "English forbids deductions for missing citations in the draft. Chinese requires deductions for the same omissions. Both require citation of all published sources used in the final report."
+  },
+  {
+    "id": "GD-046",
+    "category": "numeric_units",
+    "difficulty": "medium",
+    "en": "For the fieldwork grant, the maximum reimbursement for transport within the city is RMB 0.08 per kilometre. Applicants must submit a mileage log with the claim.\n\nThe log must state the date and route of each trip. The principal investigator must sign the log. Unused transport funds may be spent on printing.",
+    "zh": "田野调查资助的市内交通报销上限为每公里0.8元。申请人须在报销时附上里程记录。\n\n记录须注明每次出行的日期和路线。里程记录须由项目负责人签字。交通费结余可用于打印。",
+    "expected": "FAIL",
+    "why": "The reimbursement cap is RMB 0.08 per kilometre in English and RMB 0.8 per kilometre in Chinese. The submission, record contents, signature and permissible use of remaining funds agree."
+  },
+  {
+    "id": "GD-047",
+    "category": "conditions_exceptions",
+    "difficulty": "hard",
+    "en": "A research team may export records from the secure analysis room only if the data protection officer has approved the export in writing. Approval for an earlier export must not be reused. The team must log the destination of each export.\n\nEvery exported file must be encrypted. The team must send the decryption password through a separate channel.",
+    "zh": "研究团队可以从安全分析室导出记录。此前的导出审批不得重复使用。团队须登记每次导出的去向。\n\n导出的文件均须加密。解密密码须由团队通过另一渠道发送。",
+    "expected": "FAIL",
+    "why": "Chinese permits exports without stating the English requirement for prior written authorization from the data protection officer. The ban on reusing prior approval and the logging, encryption and password rules agree."
+  },
+  {
+    "id": "GD-048",
+    "category": "enumeration",
+    "difficulty": "hard",
+    "en": "Each seed grant application must include a project summary, a line-item budget, and a letter from the department head. The summary must be in Chinese. The budget must show the unit price and quantity for each purchase.\n\nThe department head must sign the letter. Applicants must submit all documents together as one PDF.",
+    "zh": "种子基金申请须附项目摘要、分项预算和院系负责人出具的函件。摘要须用中文撰写。预算须逐项列明拟购项目的单价和数量。\n\n函件须由院系负责人签字。申请人须将全部材料合并为一个PDF文件提交。",
+    "expected": "PASS",
+    "why": "Both list the same application materials, require a Chinese summary, specify the same two fields per purchase, require the head's signature, and call for one combined PDF."
+  },
+  {
+    "id": "GD-049",
+    "category": "inclusion_counting",
+    "difficulty": "medium",
+    "en": "Students must write 600 to 800 words for the English-language reflection. The title is excluded from the word count, and footnotes are included.",
+    "zh": "英文反思报告须写六百至八百词。计算词数时，计入脚注，标题不计。",
+    "expected": "PASS",
+    "why": "Both require the same word range and use the same counting rules for the title and footnotes."
+  },
+  {
+    "id": "GD-050",
+    "category": "order_timing",
+    "difficulty": "medium",
+    "en": "Students must run the unit tests before tagging the release. After tagging the release, they must upload the test log.",
+    "zh": "学生须先为发布版本打标签，再运行单元测试。完成上述两步后须上传测试日志。",
+    "expected": "FAIL",
+    "why": "English orders the steps as testing, tagging, then uploading. Chinese orders them as tagging, testing, then uploading. Only the relative order of testing and tagging changes. See paired case GD-015."
+  },
+  {
+    "id": "GD-051",
+    "category": "negation",
+    "difficulty": "easy",
+    "en": "First-year students applying for borrowing privileges are not required to provide a guarantor's signature.",
+    "zh": "一年级学生申请借阅权限时，不得提供担保人签字。",
+    "expected": "FAIL",
+    "why": "English waives the guarantor's signature requirement. Chinese prohibits applicants from providing the signature. See paired case GD-029."
+  },
+  {
+    "id": "GD-052",
+    "category": "numeric_units",
+    "difficulty": "easy",
+    "en": "The thesis spine label must be 1.5 cm wide.",
+    "zh": "论文书脊标签的宽度须为15厘米。",
+    "expected": "FAIL",
+    "why": "The Chinese requires a width of 15 cm, ten times the English width of 1.5 cm. See paired case GD-032."
+  },
+  {
+    "id": "GD-053",
+    "category": "modality",
+    "difficulty": "medium",
+    "en": "Volunteers must wear closed-toe shoes in the specimen room. They may wear a disposable apron over their laboratory coat. Gloves must be removed before leaving the room.\n\nVolunteers must report any spill to the laboratory supervisor immediately. The supervisor must record the time of the report.",
+    "zh": "志愿者在标本室内须穿包头鞋。志愿者须在实验服外穿一次性围裙。离开标本室前须脱下手套。\n\n发生洒漏时，志愿者须立即向实验室主管报告。主管须记录接报时间。",
+    "expected": "FAIL",
+    "why": "The apron over the laboratory coat is optional in English and mandatory in Chinese. The footwear, glove removal, spill reporting and record of report time agree."
+  },
+  {
+    "id": "GD-054",
+    "category": "order_timing",
+    "difficulty": "medium",
+    "en": "Participants must complete the first follow-up questionnaire within seven calendar days after the baseline visit. They may complete it online.",
+    "zh": "参加者须在基线访视结束后七个工作日内完成首次随访问卷。问卷可在线填写。",
+    "expected": "FAIL",
+    "why": "English gives seven calendar days after the baseline visit. Chinese gives seven working days. Both allow online completion."
+  },
+  {
+    "id": "GD-055",
+    "category": "terminology",
+    "difficulty": "easy",
+    "en": "The microscopy facility must calibrate the stage micrometer before the practical examination.",
+    "zh": "显微成像中心须在实操考试前校准目镜测微尺。",
+    "expected": "FAIL",
+    "why": "English specifies the stage micrometer. Chinese specifies the eyepiece micrometer. The responsible facility and timing agree."
+  },
+  {
+    "id": "GD-056",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "During the closed-book examination, candidates must display their student card on the desk. They may use a simple calculator with no memory function. Candidates must not leave the room in the first 30 minutes.\n\nIf a candidate needs more answer paper, an invigilator must issue a numbered sheet. Each additional sheet must be handed in with the answer booklet. The chief invigilator must count all submitted booklets before releasing the candidates.",
+    "zh": "闭卷考试期间，考生须将学生证放在桌面上备查。考生可使用无存储功能的简易计算器。开考后的二十分钟内，考生不得离开考场。\n\n考生需要加领答题纸时，监考员须发放一张有编号的答题纸。加领的答题纸均须随答题册一并交回。主监考员须清点所有已交的答题册，方可放行。",
+    "expected": "FAIL",
+    "why": "English bars candidates from leaving during the first 30 minutes, while Chinese bars them during the first 20. The ID, calculator, extra paper and booklet-count rules agree."
+  },
+  {
+    "id": "GD-057",
+    "category": "roles_direction",
+    "difficulty": "hard",
+    "en": "The internship site supervisor must sign the attendance sheet. The student must upload the signed sheet to the internship portal. The faculty adviser must review it within five working days after upload.\n\nIf the sheet is incomplete, the adviser must return it to the student with a list of missing entries. The student must resubmit the corrected sheet through the same portal.",
+    "zh": "考勤表须由校内指导教师签字。学生须将签字后的考勤表上传至实习系统。校内指导教师须在上传后五个工作日内审核。\n\n考勤表如有缺项，指导教师须将表退回学生，并列明缺项。学生须通过同一系统重新提交更正后的考勤表。",
+    "expected": "FAIL",
+    "why": "English assigns the signature to the internship site supervisor. Chinese assigns it to the faculty adviser. The upload, review, return and resubmission rules agree."
+  },
+  {
+    "id": "GD-058",
+    "category": "terminology",
+    "difficulty": "medium",
+    "en": "Students must report the RMSE for the validation set.",
+    "zh": "学生须报告验证集的均方根误差。",
+    "expected": "PASS",
+    "why": "RMSE stands for root mean square error, the same metric as 均方根误差, and both apply it to the validation set. See paired case GD-007."
+  },
+  {
+    "id": "GD-059",
+    "category": "roles_direction",
+    "difficulty": "easy",
+    "en": "The course coordinator must send the revised grading rubric to the examiners.",
+    "zh": "修订后的评分细则须由课程协调员发给各位考官。",
+    "expected": "PASS",
+    "why": "Both make the course coordinator the sender, the examiners the recipients, and the revised grading rubric the material sent. See paired case GD-038."
+  },
+  {
+    "id": "GD-060",
+    "category": "quantifier_scope",
+    "difficulty": "medium",
+    "en": "Every member of a project group must complete an individual conflict-of-interest declaration.",
+    "zh": "项目组成员须每人填写一份利益冲突声明。",
+    "expected": "PASS",
+    "why": "Both require one personal declaration per group member."
+  }
+]
