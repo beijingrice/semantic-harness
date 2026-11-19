@@ -109,7 +109,7 @@ class ChatClient:
 
     def _native_enabled(self, model: str) -> bool:
         mode = self.settings.schema_mode
-        if mode == "off":
+        if mode in ("off", "json_object"):
             return False
         if mode == "legacy":
             return self.settings.json_schema
@@ -129,7 +129,7 @@ class ChatClient:
             "attempt": attempt,
             "recovery": recovery,
             "backend_role": self._role_for(model),
-            "schema_mode": "json_schema" if "response_format" in payload else "prompt_only",
+            "schema_mode": payload["response_format"]["type"] if "response_format" in payload else "prompt_only",
             "max_tokens": payload.get("max_tokens"),
         }
         self.request_trace.append(record)
@@ -290,6 +290,12 @@ class ChatClient:
             {"role": "user", "content": user},
         ]
         expected_schema = schema_model.model_json_schema()
+        if self.settings.schema_mode == "json_object":
+            # JSON mode guarantees syntax only; the shape comes from the prompt and is
+            # still validated below.
+            messages.append(
+                {"role": "user", "content": _JSON_OBJECT_INSTRUCTION + json.dumps(expected_schema, ensure_ascii=False)}
+            )
         payload = self._payload(model, messages, max_tokens, schema_name, expected_schema)
 
         for attempt in range(1, max_attempts + 1):
@@ -343,6 +349,8 @@ class ChatClient:
                 "type": "json_schema",
                 "json_schema": {"name": schema_name, "strict": True, "schema": expected_schema},
             }
+        elif self.settings.schema_mode == "json_object":
+            payload["response_format"] = {"type": "json_object"}
         return payload
 
     def _downgrade_native_schema(
@@ -406,6 +414,8 @@ class ChatClient:
             validate_result(validated)
         return validated
 
+
+_JSON_OBJECT_INSTRUCTION = "Return only one JSON object (no prose, no code fences) that satisfies this JSON Schema: "
 
 _RECOVERY_INSTRUCTION = (
     "The previous generation ended without a complete final JSON answer. "

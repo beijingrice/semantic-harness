@@ -8,7 +8,7 @@ import pytest
 from app.backends import BackendError, _schema_rejected
 from app.config import Settings
 from app.llm import ChatClient, LLMError
-from app.models import ParagraphExtractedDraft, ParagraphReviewDraft
+from app.models import ParagraphExtractedDraft, ParagraphReviewDraft, ReviewDraft
 
 
 def mock(handler):
@@ -256,4 +256,27 @@ def test_bad_native_schema_request_not_automatically_silenced():
         ChatClient(Settings(schema_mode="auto"), transport).structured(
             "p", "", "", ParagraphExtractedDraft, "paragraph_extraction"
         )
+    transport.close()
+
+
+def test_json_object_mode_sends_json_mode_and_schema_in_prompt():
+    """LM_SCHEMA_MODE=json_object: for providers with JSON mode but no JSON Schema."""
+    seen = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        seen.append(body)
+        reply = {"verdict": "PASS", "reason": "same", "issues": []}
+        return httpx.Response(
+            200, json={"choices": [{"message": {"content": json.dumps(reply)}, "finish_reason": "stop"}]}
+        )
+
+    transport = httpx.Client(transport=httpx.MockTransport(handler))
+    cli = ChatClient(Settings(schema_mode="json_object", model_discovery="off"), transport)
+    answer = cli.structured("m", "system text", "user text", ReviewDraft, "independent_review")
+    assert answer.verdict == "PASS"
+    assert seen[0]["response_format"] == {"type": "json_object"}
+    assert "JSON Schema" in seen[0]["messages"][-1]["content"]
+    assert '"verdict"' in seen[0]["messages"][-1]["content"]
+    assert cli.trace_snapshot()[0]["schema_mode"] == "json_object"
     transport.close()

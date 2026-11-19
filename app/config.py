@@ -73,7 +73,7 @@ CHOICES = {
     "pipeline": ("extraction", "direct_hardened"),
     "evidence_mode": ("paragraph", "quote"),
     "extraction_prompt": ("coarse", "proposition", "legacy"),
-    "schema_mode": ("legacy", "on", "off", "auto"),
+    "schema_mode": ("legacy", "on", "off", "auto", "json_object"),
     "model_discovery": ("required", "optional", "off"),
 }
 ENV_NAMES = {
@@ -100,7 +100,9 @@ class Settings:
     verifier_base_url: str = _str("LM_VERIFIER_BASE_URL", rstrip_slash=True)
     verifier_api_key: str = _raw("LM_VERIFIER_API_KEY")
     # legacy: follow LM_JSON_SCHEMA; on: always native JSON Schema; off: prompt-only;
-    # auto: try native, fall back once only when the provider explicitly rejects it.
+    # auto: try native, fall back once only when the provider explicitly rejects it;
+    # json_object: response_format={"type":"json_object"} plus the schema in the prompt
+    # (providers with JSON mode but no JSON Schema, e.g. many OpenAI-compatible APIs).
     schema_mode: str = _str("LM_SCHEMA_MODE", "legacy", lower=True)
     # required: the model list must be readable; optional: check it when available;
     # off: never call /models (managed APIs).

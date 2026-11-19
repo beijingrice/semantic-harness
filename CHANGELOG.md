@@ -43,6 +43,7 @@
 - 验证方法：用脚本化假模型在 296 条数据集样例 × 7 种配置上运行（10,952 次），重构前后的判决、调用顺序、提示词与诊断信息逐字节一致。
 
 **工程**
+- 新增 `LM_SCHEMA_MODE=json_object`：请求里带 `response_format: {"type": "json_object"}`，并把 schema 写进提示词，适用于支持 JSON 模式、但不支持 JSON Schema 的服务商（如很多 OpenAI 兼容 API）。`docs/backends.md` 新增"场景 E"，说明 DeepSeek 等第三方 API 的接法和接入验收步骤。
 - 加入 git 版本管理、ruff lint 配置和 GitHub Actions CI。
 - 评测新增主指标 `end_to_end_accuracy`、自动判决率、人工复核率、错误率及分类误判 FAIL 计数。
 - 评测支持 `--workers N` 并行执行样例，报告保留样例原始顺序。

@@ -133,6 +133,45 @@ class MyBackend:
 
 输入 `payload` 含 `model`, `messages`, `temperature`, `max_tokens`, `stream=False`，在 `on`/`auto` 下还可含 `response_format`；适配器应翻译并返回 `BackendResponse(content=..., finish_reason=..., token usage...)`。**切勿**在 Adapter 中做语义裁决、伪造 `PASS` 或跳过 `ChatClient.structured`。自定义 Adapter 由本地 Python 配置显式导入，**只允许导入可信代码**。
 
+## 场景 E：DeepSeek 等第三方 OpenAI-compatible API（推荐的生产接法）
+
+这是项目最终面向的部署方式。这类服务一般支持 `/chat/completions` 和 JSON 模式（`response_format: {"type": "json_object"}`），不一定支持完整的 JSON Schema。
+
+```bash
+LM_BACKEND=openai
+LM_BASE_URL=https://<服务商的 OpenAI 兼容地址>/v1
+LM_API_KEY=<主模型的 key>
+LM_MODEL=<主模型 ID>
+LM_VERIFIER_MODEL=<复核模型 ID，必须与主模型不同>
+# 复核模型在另一家服务商时再设置：
+# LM_VERIFIER_BASE_URL=...  LM_VERIFIER_API_KEY=...
+LM_SCHEMA_MODE=json_object     # 服务商支持 JSON 模式时；不支持就用 off
+LM_MODEL_DISCOVERY=optional    # /models 不可用时不报错
+LM_TIMEOUT_SECONDS=180
+LM_MAX_TOKENS=4096             # 推理模型思考较长时适当调大
+LM_MAX_CONCURRENT_CHECKS=4     # 按服务商的并发限额设置
+```
+
+要点：
+
+- **模型 ID、是否支持 JSON 模式、并发限额，以服务商的最新文档为准**，这里不写死。
+- **`dual` 模式要求主模型和复核模型的 ID 不同。** 可以用同一家的两个模型（如一个对话模型加一个推理模型），也可以把复核放在另一家服务商（`LM_VERIFIER_*`），后者独立性更好。
+- **三种结构化输出模式**：`on` 要求服务商支持 JSON Schema；`json_object` 只保证输出是合法 JSON，结构写在提示词里；`off` 只靠提示词。三种模式下，结果都要经过 Pydantic 和原文 ID 校验，不合格会带着错误信息重试，最多 3 次。服务商拒绝 `json_object` 时，改用 `off`。
+- **推理模型**：思考内容放在 `reasoning_content` 里的，客户端只读取正式的 `content`。截断时会用 `LM_MAX_TOKENS` 做一次恢复。
+- **每次检查的调用次数**：`dual` 模式下，正常 2～4 次，有分歧时再加 1～2 次（见 [architecture.md](architecture.md) 5.12 节）。
+
+### 接入验收
+
+换用新服务商后，按顺序跑下面三步。每一步都没有误判、没有 ERROR，再进行下一步：
+
+```bash
+python -m examples.evaluate --cases examples/v2_regression_11.json --limit 3 --out eval_smoke.json
+python -m examples.evaluate --cases examples/validation_v030_gen_dev_60.json --workers 4 --out eval_dev60.json
+python -m examples.evaluate --cases examples/validation_v030_blind_99.json --workers 4 --out eval_blind99.json
+```
+
+最后一步是盲测集，只看汇总指标，并把结果记入 [docs/eval_protocol/README.md](eval_protocol/README.md) 的运行记录。参考基线：gpt-6-luna 在盲测集上 99/99，开发集上 60/60。
+
 ## Codex CLI backend (evaluation only)
 
 本地安装 Codex CLI 并使用 ChatGPT 账号登录后，可以用此后端运行评测。主模型和复核模型的 ID 必须不同，`@effort` 后缀允许同一模型用不同推理强度参与评测。
