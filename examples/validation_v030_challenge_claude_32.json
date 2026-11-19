@@ -1,0 +1,290 @@
+[
+  {
+    "id": "CH-01",
+    "category": "numeric_units",
+    "difficulty": "hard",
+    "en": "Interview recordings must be transcribed no later than 72 hours after the interview. The audio file must be deleted 30 days after transcription.",
+    "zh": "访谈结束后，录音须在三天（72小时）内转写完毕；转写完成满30天后，须删除音频文件。",
+    "expected": "PASS",
+    "why": "72 hours = 三天（72小时）; deletion 30 days after transcription on both sides."
+  },
+  {
+    "id": "CH-02",
+    "category": "roles_direction",
+    "difficulty": "hard",
+    "en": "The control group's dropout rate must not be higher than the treatment group's.",
+    "zh": "实验组的脱落率不得低于对照组。",
+    "expected": "PASS",
+    "why": "control <= treatment is equivalent to treatment >= control (stated from the other group's side). Pair: CH-19."
+  },
+  {
+    "id": "CH-03",
+    "category": "negation",
+    "difficulty": "hard",
+    "en": "No submission will be accepted without a signed declaration.",
+    "zh": "提交材料须附签字声明，否则不予受理。",
+    "expected": "PASS",
+    "why": "Double negation in English = a signed declaration is required for acceptance. Pair: CH-32."
+  },
+  {
+    "id": "CH-04",
+    "category": "conditions_exceptions",
+    "difficulty": "hard",
+    "en": "Late submissions receive a penalty of 5 percentage points per day, except where an extension was approved in writing before the deadline.",
+    "zh": "在截止日期前以书面形式获批延期的，逾期提交不扣分；其余逾期提交每天扣5个百分点。",
+    "expected": "PASS",
+    "why": "Same penalty and the same exception (written extension approved before the deadline), clause order reversed."
+  },
+  {
+    "id": "CH-05",
+    "category": "quantifier_scope",
+    "difficulty": "hard",
+    "en": "At least one member of each team must attend the safety briefing.",
+    "zh": "每个团队须至少派一名成员参加安全培训会。",
+    "expected": "PASS",
+    "why": "At least one member per team on both sides. Pair: CH-17."
+  },
+  {
+    "id": "CH-06",
+    "category": "enumeration",
+    "difficulty": "medium",
+    "en": "The appendix must contain the consent form template, the interview guide and the data management plan.",
+    "zh": "附录须收录数据管理计划、访谈提纲以及知情同意书模板。",
+    "expected": "PASS",
+    "why": "Same three items, order changed."
+  },
+  {
+    "id": "CH-07",
+    "category": "order_timing",
+    "difficulty": "medium",
+    "en": "Participants must complete the baseline questionnaire before they are randomised.",
+    "zh": "参与者须先完成基线问卷，然后才进行随机分组。",
+    "expected": "PASS",
+    "why": "Questionnaire first, randomisation second on both sides. Pair: CH-20."
+  },
+  {
+    "id": "CH-08",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "Poster presenters must print their poster in A0 portrait format. Text on the poster must be at least 24 pt.\n\nPosters must be mounted by 9:00 on the day of the session and removed by 18:00 the same day. Presenters must stand by their poster for the full 90-minute session.\n\nThe organisers will provide pins; presenters may not use tape.",
+    "zh": "海报须按A0竖版打印，字号不小于24磅。\n\n展示当天，海报最迟须于9点张贴完毕，并最迟于当天18点撤下。展示环节共一个半小时，作者须全程在海报旁值守。\n\n会务组提供图钉，作者不得使用胶带。",
+    "expected": "PASS",
+    "why": "A0 portrait, >=24 pt, mount by 9:00, remove by 18:00 the same day, attend the whole 90-minute (一个半小时) session, pins provided, tape prohibited. Pair: CH-24."
+  },
+  {
+    "id": "CH-09",
+    "category": "terminology",
+    "difficulty": "medium",
+    "en": "Report the 95% confidence interval for the AUC.",
+    "zh": "须报告ROC曲线下面积的95%置信区间。",
+    "expected": "PASS",
+    "why": "AUC = area under the ROC curve; same 95% confidence interval. Pair: CH-28."
+  },
+  {
+    "id": "CH-10",
+    "category": "numeric_bounds",
+    "difficulty": "medium",
+    "en": "The sample must include no fewer than 30 and no more than 50 participants.",
+    "zh": "样本量须在30至50人之间（含30人和50人）。",
+    "expected": "PASS",
+    "why": "Inclusive 30-50 on both sides."
+  },
+  {
+    "id": "CH-11",
+    "category": "inclusion_counting",
+    "difficulty": "hard",
+    "en": "Tables and figures are not counted in the 6,000-word limit; footnotes are.",
+    "zh": "6000字的字数限制不包括图表，但包括脚注。",
+    "expected": "PASS",
+    "why": "Tables/figures excluded, footnotes included on both sides. Pair: CH-26."
+  },
+  {
+    "id": "CH-12",
+    "category": "modality",
+    "difficulty": "hard",
+    "en": "Students are not required to submit a draft, but those who do will receive written feedback.",
+    "zh": "学生无需提交初稿；提交了初稿的学生将获得书面反馈。",
+    "expected": "PASS",
+    "why": "Draft optional; feedback given to those who submit. Pair: CH-25."
+  },
+  {
+    "id": "CH-13",
+    "category": "roles_direction",
+    "difficulty": "hard",
+    "en": "Group A must submit by 10 May. Group B must submit by 17 May.\n\nThe group with the later deadline must also upload a peer-review form.",
+    "zh": "A组最迟须于5月10日提交，B组最迟须于5月17日提交。\n\n截止日期较晚的B组还须上传同行评议表。",
+    "expected": "PASS",
+    "why": "The group with the later deadline is B (17 May); Chinese names B explicitly. Pair: CH-31."
+  },
+  {
+    "id": "CH-14",
+    "category": "numeric_units",
+    "difficulty": "medium",
+    "en": "The written exam lasts 1.5 hours; no one may leave during the first 30 minutes.",
+    "zh": "笔试时长90分钟，开考后半小时内任何人不得离场。",
+    "expected": "PASS",
+    "why": "1.5 h = 90分钟; first 30 minutes = 开考后半小时内. Pair: CH-27."
+  },
+  {
+    "id": "CH-15",
+    "category": "negation",
+    "difficulty": "hard",
+    "en": "Not all chapters need to be submitted at the first review; the introduction, however, must be.",
+    "zh": "首次评审时不必提交全部章节，但引言必须提交。",
+    "expected": "PASS",
+    "why": "Partial submission allowed, introduction required. Pair: CH-18."
+  },
+  {
+    "id": "CH-16",
+    "category": "quantifier_scope",
+    "difficulty": "medium",
+    "en": "Each of the three reviewers must score every criterion.",
+    "zh": "三位评审人均须对每一项标准打分。",
+    "expected": "PASS",
+    "why": "Every reviewer scores every criterion."
+  },
+  {
+    "id": "CH-17",
+    "category": "quantifier_scope",
+    "difficulty": "hard",
+    "en": "At least one member of each team must attend the safety briefing.",
+    "zh": "每个团队的所有成员都须参加安全培训会。",
+    "expected": "FAIL",
+    "why": "English requires at least one member per team; Chinese requires all members. Pair: CH-05."
+  },
+  {
+    "id": "CH-18",
+    "category": "negation",
+    "difficulty": "hard",
+    "en": "Not all chapters need to be submitted at the first review; the introduction, however, must be.",
+    "zh": "首次评审时各章节均可暂不提交，引言也不例外。",
+    "expected": "FAIL",
+    "why": "English requires the introduction; Chinese makes every chapter, including the introduction, optional. Pair: CH-15."
+  },
+  {
+    "id": "CH-19",
+    "category": "roles_direction",
+    "difficulty": "hard",
+    "en": "The control group's dropout rate must not be higher than the treatment group's.",
+    "zh": "对照组的脱落率不得低于实验组。",
+    "expected": "FAIL",
+    "why": "English: control <= treatment. Chinese: control >= treatment. Pair: CH-02."
+  },
+  {
+    "id": "CH-20",
+    "category": "order_timing",
+    "difficulty": "medium",
+    "en": "Participants must complete the baseline questionnaire before they are randomised.",
+    "zh": "参与者须在随机分组之后完成基线问卷。",
+    "expected": "FAIL",
+    "why": "Order reversed: English questionnaire before randomisation, Chinese after. Pair: CH-07."
+  },
+  {
+    "id": "CH-21",
+    "category": "numeric_bounds",
+    "difficulty": "hard",
+    "en": "Applications must be received before 1 March.",
+    "zh": "申请最迟须于3月1日送达。",
+    "expected": "FAIL",
+    "why": "English excludes 1 March (must arrive by 28/29 February); Chinese allows arrival on 1 March."
+  },
+  {
+    "id": "CH-22",
+    "category": "order_timing",
+    "difficulty": "hard",
+    "en": "The committee must reply within 10 working days.",
+    "zh": "委员会须在10个自然日内答复。",
+    "expected": "FAIL",
+    "why": "Working days vs calendar days."
+  },
+  {
+    "id": "CH-23",
+    "category": "conditions_exceptions",
+    "difficulty": "hard",
+    "en": "Students must submit both the report and the slides by Friday; students presenting in week 1 may submit their slides on Monday.",
+    "zh": "学生最迟须于周五提交报告和幻灯片；第一周汇报的学生可延至周一提交报告。",
+    "expected": "FAIL",
+    "why": "The week-1 extension applies to the slides in English but to the report in Chinese."
+  },
+  {
+    "id": "CH-24",
+    "category": "long_mixed",
+    "difficulty": "hard",
+    "en": "Poster presenters must print their poster in A0 portrait format. Text on the poster must be at least 24 pt.\n\nPosters must be mounted by 9:00 on the day of the session and removed by 18:00 the same day. Presenters must stand by their poster for the full 90-minute session.\n\nThe organisers will provide pins; presenters may not use tape.",
+    "zh": "海报须按A0尺寸打印，字号不小于24磅。\n\n展示当天，海报最迟须于9点张贴完毕，并最迟于当天18点撤下。展示环节共一个半小时，作者须全程在海报旁值守。\n\n会务组提供图钉，作者不得使用胶带。",
+    "expected": "FAIL",
+    "why": "Chinese drops the portrait orientation requirement; everything else matches. Pair: CH-08."
+  },
+  {
+    "id": "CH-25",
+    "category": "modality",
+    "difficulty": "hard",
+    "en": "Students are not required to submit a draft, but those who do will receive written feedback.",
+    "zh": "学生无需提交初稿；提交了初稿的学生可申请书面反馈。",
+    "expected": "FAIL",
+    "why": "English: feedback is given to everyone who submits a draft. Chinese: feedback only on request. Pair: CH-12."
+  },
+  {
+    "id": "CH-26",
+    "category": "inclusion_counting",
+    "difficulty": "hard",
+    "en": "Tables and figures are not counted in the 6,000-word limit; footnotes are.",
+    "zh": "6000字的字数限制不包括图表和脚注。",
+    "expected": "FAIL",
+    "why": "Footnotes are counted in English but excluded in Chinese. Pair: CH-11."
+  },
+  {
+    "id": "CH-27",
+    "category": "numeric_units",
+    "difficulty": "medium",
+    "en": "The written exam lasts 1.5 hours; no one may leave during the first 30 minutes.",
+    "zh": "笔试时长90分钟，开考后15分钟内任何人不得离场。",
+    "expected": "FAIL",
+    "why": "No-leave period: 30 minutes in English, 15 minutes in Chinese. Pair: CH-14."
+  },
+  {
+    "id": "CH-28",
+    "category": "terminology",
+    "difficulty": "hard",
+    "en": "Report the 95% confidence interval for the AUC.",
+    "zh": "须报告ROC曲线下面积的95%预测区间。",
+    "expected": "FAIL",
+    "why": "Confidence interval vs prediction interval. Pair: CH-09."
+  },
+  {
+    "id": "CH-29",
+    "category": "enumeration",
+    "difficulty": "medium",
+    "en": "Applicants must provide either a recommendation letter or a writing sample.",
+    "zh": "申请人须同时提供推荐信和写作样本。",
+    "expected": "FAIL",
+    "why": "English: one of the two. Chinese: both."
+  },
+  {
+    "id": "CH-30",
+    "category": "quantifier_scope",
+    "difficulty": "hard",
+    "en": "Each lab may book the cluster for up to 20 GPU-hours per week.",
+    "zh": "每位用户每周最多可预约20个GPU小时的计算集群。",
+    "expected": "FAIL",
+    "why": "Quota per lab in English, per user in Chinese."
+  },
+  {
+    "id": "CH-31",
+    "category": "roles_direction",
+    "difficulty": "hard",
+    "en": "Group A must submit by 10 May. Group B must submit by 17 May.\n\nThe group with the later deadline must also upload a peer-review form.",
+    "zh": "A组最迟须于5月10日提交，B组最迟须于5月17日提交。\n\nA组还须上传同行评议表。",
+    "expected": "FAIL",
+    "why": "The group with the later deadline (B) must upload the form in English; Chinese assigns it to group A. Pair: CH-13."
+  },
+  {
+    "id": "CH-32",
+    "category": "negation",
+    "difficulty": "hard",
+    "en": "No submission will be accepted without a signed declaration.",
+    "zh": "未附签字声明的材料也可提交，但须在一周内补交声明。",
+    "expected": "FAIL",
+    "why": "English: no acceptance without the declaration. Chinese: accepted without it, declaration due within a week. Pair: CH-03."
+  }
+]
