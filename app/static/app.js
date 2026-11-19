@@ -123,6 +123,17 @@ function render(result) {
   el("result").hidden = false;
 }
 
+async function requestJson(url, options) {
+  const response = await fetch(url, options);
+  const data = await response.json();
+  if (!response.ok) {
+    const detail = data.detail;
+    const message = typeof detail === "string" ? detail : JSON.stringify(detail, null, 2);
+    throw new Error(message || `HTTP ${response.status}`);
+  }
+  return data;
+}
+
 el("refresh").addEventListener("click", refreshModels);
 el("run").addEventListener("click", async () => {
   el("error").hidden = true;
@@ -133,10 +144,12 @@ el("run").addEventListener("click", async () => {
     el("error").hidden = false;
     return;
   }
-  el("run").disabled = true;
-  el("run").textContent = "模型正在分析，请查看推理服务…";
+  const run = el("run");
+  const progress = el("job-progress");
+  run.disabled = true;
+  progress.textContent = "正在提交…";
   try {
-    const response = await fetch("/api/check", {
+    const { job_id } = await requestJson("/api/jobs", {
       method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         english: el("en").value, chinese: el("zh").value,
@@ -144,20 +157,30 @@ el("run").addEventListener("click", async () => {
         verifier_model: el("verifier-model").value || null, mode,
       }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-      const detail = data.detail;
-      const message = typeof detail === "string" ? detail : JSON.stringify(detail, null, 2);
-      throw new Error(message || `HTTP ${response.status}`);
+    const url = `/api/jobs/${encodeURIComponent(job_id)}`;
+    progress.textContent = "排队中…";
+    while (true) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const job = await requestJson(url);
+      if (job.status === "done") {
+        lastResult = job.result;
+        render(lastResult);
+        break;
+      }
+      if (job.status === "error") throw new Error(job.error.message);
+      if (job.status === "queued") {
+        progress.textContent = `排队中（前面还有 ${job.position} 个）`;
+      } else if (job.status === "running") {
+        const elapsed = Math.max(0, Math.floor(Date.now() / 1000 - job.started_at));
+        progress.textContent = `检查中… 已用时 ${elapsed}s`;
+      }
     }
-    lastResult = data;
-    render(data);
   } catch (err) {
     el("error-text").textContent = "检查未完成（不是 FAIL）：" + err.message;
     el("error").hidden = false;
   } finally {
-    el("run").disabled = false;
-    el("run").textContent = "开始检测";
+    progress.textContent = "";
+    run.disabled = false;
   }
 });
 

@@ -125,6 +125,9 @@ class Settings:
     coverage_audit: bool = _bool("LM_COVERAGE_AUDIT", False)
     atomic_refinement: bool = _bool("LM_ATOMIC_REFINEMENT", False)
 
+    # --- Web / API job queue
+    max_concurrent_checks: int = _int("LM_MAX_CONCURRENT_CHECKS", "2")
+
     def __post_init__(self):
         for name, allowed in CHOICES.items():
             value = getattr(self, name)

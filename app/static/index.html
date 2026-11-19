@@ -73,7 +73,10 @@
         <div><label for="zh">中文文本 Chinese</label><textarea id="zh" placeholder="在这里粘贴中文文本…">摘要须包含研究目的、研究方法和研究结果。</textarea></div>
       </div>
       <div style="display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px">
-        <span class="muted">仅初判通常 3 次调用；双模型通常 4 次。争议仲裁及证据/空提取恢复可能增加请求。</span>
+        <div class="muted">
+          <div>仅初判通常 3 次调用；双模型通常 4 次。争议仲裁及证据/空提取恢复可能增加请求。</div>
+          <div id="job-progress" role="status"></div>
+        </div>
         <button id="run">开始检测</button>
       </div>
     </section>

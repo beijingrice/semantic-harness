@@ -43,6 +43,8 @@ curl -s http://127.0.0.1:1234/v1/models | python3 -m json.tool
 uvicorn app.api:app --host 127.0.0.1 --port 8005
 ```
 
+网页通过 `POST /api/jobs` 提交检查，再轮询 `GET /api/jobs/{job_id}` 显示排队位置、检查用时和结果。集成方也可使用这两个接口，已有的同步 `POST /api/check` 仍返回原有格式。所有 Web 和 API 检查共用每进程的并发上限 `LM_MAX_CONCURRENT_CHECKS`（默认 `2`），排队与运行中的任务合计达到 50 个时，新的提交会收到 HTTP 429。
+
 命令行：
 
 ```bash
@@ -77,6 +79,7 @@ v0.2.8 用 `extraction` 在真实模型上跑过：历史回归 11/11，36 条 h
 | `LM_MODEL_DISCOVERY` | `required` | `required` / `optional` / `off`：是否调用 `GET /models` |
 | `LM_MAX_TOKENS` | `3072` | 单次生成上限 |
 | `LM_TIMEOUT_SECONDS` | `180` | 单次请求超时 |
+| `LM_MAX_CONCURRENT_CHECKS` | `2` | 每个 Web 服务进程同时运行的检查数，须为正整数 |
 | `LM_VERIFIER_BASE_URL` 等 | 空 | 复核模型接另一个 API 时填写，见 [后端接入](docs/backends.md) |
 
 配置在每次创建 `Settings()` 时从环境变量读取，填错（比如 `LM_MAX_TOKENS=abc`）会给出指明变量名的配置错误，而不是让服务直接崩溃。

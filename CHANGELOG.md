@@ -4,6 +4,9 @@
 
 ## v0.3.0
 
+**新增**
+- 网页通过任务 API 在后台检查并显示排队位置和运行用时，任务 API 与同步检查接口共用 `LM_MAX_CONCURRENT_CHECKS` 并发上限。
+
 **移除与精简**
 - `LM_PIPELINE` 只保留 `extraction`（默认）和 `direct_hardened`。删除 `direct`、`direct_grounded`、`direct_verified`、`direct_questions`、`direct_relations` 五种早期实验模式，以及对应的模块、测试和参考报告。
 - `direct_hardened` 始终启用 hardened 检查；`source_spans` 和 `source_quantitative_issue_only` 移到 `app/source_risks.py`。

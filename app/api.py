@@ -1,13 +1,14 @@
 """FastAPI 应用：网页界面以及可直接集成的 JSON API。"""
 
+import asyncio
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from app import jobs
 from app.backends import BackendError
-from app.checker import Checker
 from app.config import ConfigError, Settings
 from app.llm import ChatClient, LLMError
 from app.models import CheckRequest, CheckResult
@@ -62,21 +63,39 @@ def status():
         client.close()
 
 
-@app.post("/api/check", response_model=CheckResult)
-def check(request: CheckRequest):
+def _submit_job(request: CheckRequest):
     try:
-        client = ChatClient(Settings())
-    except (ConfigError, BackendError) as exc:
-        raise HTTPException(status_code=500, detail=f"配置错误：{exc}") from exc
-    try:
-        return Checker(client, client.settings).check(
-            request.english, request.chinese, request.model, request.verifier_model, request.mode
-        )
+        return jobs.get_manager(Settings()).submit_with_future(request)
     except ConfigError as exc:
-        # 服务端配置问题，不是模型故障，也不是业务 FAIL。
         raise HTTPException(status_code=500, detail=f"配置错误：{exc}") from exc
-    except LLMError as exc:
-        # 失败不是 FAIL：HTTP 502 表示基础模型不可用/无效；不伪造业务判定。
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
-    finally:
-        client.close()
+    except jobs.QueueFull as exc:
+        raise HTTPException(status_code=429, detail=str(exc)) from exc
+
+
+@app.post("/api/jobs", status_code=202)
+async def submit_job(request: CheckRequest) -> dict[str, str]:
+    job_id, _ = _submit_job(request)
+    return {"job_id": job_id, "status": "queued"}
+
+
+@app.get("/api/jobs/{job_id}", response_model=jobs.JobRecord)
+def get_job(job_id: str, response: Response):
+    try:
+        job = jobs.get_manager().get(job_id)
+    except ConfigError:
+        # A manager that could not be initialized has no submitted jobs.
+        job = None
+    if job is None:
+        raise HTTPException(status_code=404, detail="检查任务不存在或已过期。")
+    response.headers["Cache-Control"] = "no-store"
+    return job
+
+
+@app.post("/api/check", response_model=CheckResult)
+async def check(request: CheckRequest):
+    _, future = _submit_job(request)
+    # Cancelling the HTTP waiter must leave the queued job available to the executor.
+    outcome = await asyncio.shield(asyncio.wrap_future(future))
+    if isinstance(outcome, jobs.JobError):
+        raise HTTPException(status_code=502 if outcome.kind == "model" else 500, detail=outcome.message)
+    return outcome

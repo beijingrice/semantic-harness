@@ -204,7 +204,7 @@ def test_full_paragraph_dual_pipeline_recovers_qwen_json_from_reasoning(monkeypa
     """
     from fastapi.testclient import TestClient
 
-    from app import api
+    from app import api, jobs
 
     calls = []
     outputs = [
@@ -231,7 +231,7 @@ def test_full_paragraph_dual_pipeline_recovers_qwen_json_from_reasoning(monkeypa
     cfg = Settings(
         extraction_fast_path=False, model="qwen", verifier_model="reviewer", json_schema=True, evidence_mode="paragraph"
     )
-    monkeypatch.setattr(api, "ChatClient", lambda settings: ChatClient(cfg, transport))
+    monkeypatch.setattr(jobs, "ChatClient", lambda settings: ChatClient(cfg, transport))
     result = TestClient(api.app).post(
         "/api/check",
         json={

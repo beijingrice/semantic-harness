@@ -5,7 +5,7 @@ import json
 import httpx
 from fastapi.testclient import TestClient
 
-from app import api
+from app import api, jobs
 from app.config import Settings
 from app.llm import ChatClient
 
@@ -60,7 +60,7 @@ def test_v027_http_api_paragraph_mode(monkeypatch):
         json_schema=True,
         extraction_prompt="coarse",
     )
-    monkeypatch.setattr(api, "ChatClient", lambda settings: ChatClient(cfg, http))
+    monkeypatch.setattr(jobs, "ChatClient", lambda settings: ChatClient(cfg, http))
     response = TestClient(api.app).post(
         "/api/check",
         json={"english": "The respondent’s file is confidential.", "chinese": "受访者文件保密。", "mode": "dual"},
@@ -154,7 +154,7 @@ def test_v0274_http_real_schema_disagreement_recheck_and_reasoning_recovery(monk
         evidence_mode="paragraph",
         json_schema=True,
     )
-    monkeypatch.setattr(api, "ChatClient", lambda _: ChatClient(cfg, transport))
+    monkeypatch.setattr(jobs, "ChatClient", lambda _: ChatClient(cfg, transport))
     response = TestClient(api.app).post("/api/check", json={"english": en, "chinese": zh, "mode": "dual"})
     assert response.status_code == 200, response.text
     body = response.json()
@@ -235,7 +235,7 @@ def test_v0274_http_manual_review_is_200_not_fake_semantic_fail_or_502(monkeypat
         evidence_mode="paragraph",
         json_schema=True,
     )
-    monkeypatch.setattr(api, "ChatClient", lambda _: ChatClient(cfg, transport))
+    monkeypatch.setattr(jobs, "ChatClient", lambda _: ChatClient(cfg, transport))
     response = TestClient(api.app).post("/api/check", json={"english": en, "chinese": zh, "mode": "dual"})
     assert response.status_code == 200, response.text
     assert response.json()["verdict"] == "REVIEW_REQUIRED"

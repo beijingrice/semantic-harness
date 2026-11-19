@@ -5,7 +5,7 @@ import json
 import httpx
 from fastapi.testclient import TestClient
 
-from app import api
+from app import api, jobs
 from app.config import Settings
 from app.llm import ChatClient
 
@@ -47,7 +47,7 @@ def test_two_model_disagreement_calls_adjudicator(monkeypatch):
 
     http = httpx.Client(transport=httpx.MockTransport(handler))
     monkeypatch.setattr(
-        api,
+        jobs,
         "ChatClient",
         lambda cfg: ChatClient(
             Settings(
@@ -87,7 +87,7 @@ def test_primary_api_uses_only_three_requests(monkeypatch):
 
     http = httpx.Client(transport=httpx.MockTransport(handler))
     monkeypatch.setattr(
-        api,
+        jobs,
         "ChatClient",
         lambda cfg: ChatClient(
             Settings(

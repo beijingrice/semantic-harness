@@ -98,19 +98,24 @@ bilingual-check --en-file en.txt --zh-file zh.txt
 **JSON API**：适合集成到其他系统。接口文档在 `http://127.0.0.1:8005/docs`。
 
 ```bash
-curl -s http://127.0.0.1:8005/api/check \
+curl -s http://127.0.0.1:8005/api/jobs \
   -H 'Content-Type: application/json' \
   -d '{"english": "The survey ran for six weeks.", "chinese": "调查持续 42 天。", "mode": "dual"}'
 ```
 
-请求字段：`english`、`chinese`（必填，各自最长 6000 字符），`model`、`verifier_model`（可选，覆盖 `.env`），`mode`（`dual` 或 `primary`，默认 `dual`）。
+两个 POST 接口均接收 `english`、`chinese`（必填，各自最长 6000 字符），`model`、`verifier_model`（可选，覆盖 `.env`），以及 `mode`（`dual` 或 `primary`，默认 `dual`）。
 
-| HTTP 状态 | 含义 |
+| 接口 | 行为 |
 |---|---|
-| 200 | 正常返回判决：PASS / FAIL / REVIEW_REQUIRED |
-| 422 | 输入不合法，比如文本为空 |
-| 500 | 服务端配置错误，`detail` 会写明是哪个配置项 |
-| 502 | 模型调用失败或模型输出始终不合格，即 ERROR，**不是**业务判定 |
+| `POST /api/jobs` | 提交后台检查，返回 HTTP 202 和 `{"job_id": "…", "status": "queued"}` |
+| `GET /api/jobs/{job_id}` | 返回任务记录，任务不存在或已过期时返回 HTTP 404 |
+| `POST /api/check` | 等待检查完成，成功时返回 HTTP 200 和原有的 `CheckResult` |
+
+任务记录包括 `id`、`status`、`created_at`、`started_at`、`finished_at`、`position`、`result` 和 `error`。时间字段为 Unix 时间戳（秒），尚未发生时为 `null`。`queued` 状态的 `position` 表示前面还有多少个排队任务，其他状态下为 `null`。`done` 状态的 `result` 是 `CheckResult`，`error` 状态的 `error` 包含 `kind`（`config`、`model` 或 `internal`）和 `message`。网页每 1.5 秒轮询一次。
+
+两个 POST 接口共用 `LM_MAX_CONCURRENT_CHECKS`（默认 `2`）的并发上限。排队与运行中的任务合计达到 50 个时，新提交返回 HTTP 429。输入无效时返回 HTTP 422，提交时发现配置无效则返回 HTTP 500。同步接口还会将任务的配置错误和内部错误映射为 HTTP 500，将模型错误映射为 HTTP 502。
+
+任务和并发上限都属于当前进程。任务完成一小时后会在下次提交或查询时清除，重启服务也会清除任务。提交和查询同一任务需要访问同一个进程。
 
 ### 2.4 两种模式
 
@@ -160,6 +165,7 @@ flowchart TB
     subgraph 入口层
         WEB["Web UI<br/>static/index.html + app.js"]
         API["JSON API<br/>api.py"]
+        JOBS["检查队列<br/>jobs.py"]
         CLI["命令行<br/>cli.py"]
         EVAL["批量评测<br/>examples/evaluate.py"]
     end
@@ -188,7 +194,7 @@ flowchart TB
     MODEL[("大模型服务<br/>LM Studio / 云 API")]
 
     WEB --> API
-    API --> CHK
+    API --> JOBS --> CHK
     CLI --> CHK
     EVAL --> CHK
     CFG -.-> CHK
@@ -213,10 +219,12 @@ flowchart TB
 
 ### 3.2 一次请求的生命周期
 
+任务开始执行后，Web API 由 `jobs.py` 调用 `Checker`，命令行由 `cli.py` 直接调用。
+
 ```mermaid
 sequenceDiagram
-    participant U as 用户
-    participant A as api.py / cli.py
+    participant U as API / 命令行调用方
+    participant A as jobs.py / cli.py
     participant C as Checker
     participant P as Pipeline
     participant L as ChatClient
@@ -235,7 +243,7 @@ sequenceDiagram
     end
     P->>P: 程序校验 + 合成判决
     P-->>A: CheckResult
-    A-->>U: 200 + 结果；或 502 / 500 / 422
+    A-->>U: 检查结果或执行错误
 ```
 
 ### 3.3 三类错误，三种去向
@@ -688,7 +696,8 @@ class LLMBackend(Protocol):
 
 ```
 app/
-├── api.py                  FastAPI：/、/api/status、/api/check；错误到 HTTP 状态码的映射
+├── api.py                  FastAPI 路由，包含 /api/status、/api/check 和 /api/jobs
+├── jobs.py                 检查队列、并发限制和任务状态
 ├── cli.py                  命令行入口 bilingual-check；判决到退出码的映射
 ├── config.py               Settings：每次创建时读取环境变量；ConfigError
 ├── checker.py              Checker：按配置选择 Pipeline 并运行（对外入口）
@@ -778,4 +787,4 @@ CI 在 Python 3.10 和 3.14 上运行这两项。涉及判决逻辑的改动，�
 - **离线测试不代表准确率。** 测试只保证结构、协议和分支逻辑正确。真实效果必须用真实模型在评测集上测。
 - **评测集有过拟合风险。** 11 条回归集和 60 条旧开发集都被反复用于调试；v0.2.8 的 36 条 holdout 中也有 4 条（H28-02/03/04/13）后来被用于调试。目前没有完全干净的盲测集，判断泛化能力需要新建一个从未用于调试的留出集。详见 [examples/DATASETS.md](../examples/DATASETS.md)。
 - **REVIEW_REQUIRED 需要人来处理。** 它是系统在拿不准时的诚实回答，不是失败。上线前需要规划好人工复核的流程。
-- **API 是同步长请求。** 一次 dual 检查要串行调用多次模型，每次超时上限默认 180 秒。对外提供服务时，需要考虑任务队列、超时设置、鉴权和限流。
+- **同步接口仍需等待整个检查。** 一次 dual 检查要串行调用多次模型，每次超时上限默认 180 秒。后台接口可通过短请求提交和查询任务。
