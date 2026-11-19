@@ -162,25 +162,39 @@ _UNIT_PATTERNS: tuple[tuple[re.Pattern, str, Decimal], ...] = tuple(
     )
 )
 
-# Word boundary expressions must end at the number, so the prefix attached to
-# "more than 10%" is parsed, whereas an unrelated "more" elsewhere is ignored.
+# Comparator grammar. Every pattern must end at the number, so the bound attached
+# to "more than 10%" is parsed while an unrelated "more" elsewhere is ignored.
+# A negation before a strict comparator flips it into the opposite inclusive
+# bound: "不小于 / no less than / must not fall below" -> >=, "不超过 / no more
+# than / may not exceed" -> <=. Listing negated forms one by one missed many of
+# them ("不小于" was parsed as "<", a false FAIL vetoed by the guard).
+_EN_GT = r"(?:(?:more|greater|longer|larger|higher)\s+than|over|exceed(?:s|ed|ing)?|in\s+excess\s+of|above)"
+_EN_LT = r"(?:(?:less|fewer|shorter|smaller|lower)\s+than|under|below)"
+_EN_NEG = r"(?:\bno|\bnot|\bnever|\bcannot|n't)(?:\s+(?:be|fall|go|drop|rise|run|last|get)(?:s|ing)?)?\s+(?:to\s+)?"
+_ZH_GT = r"(?:超过|超出|高于|大于|多于|长于)"
+_ZH_LT = r"(?:少于|低于|小于|短于)"
+# Not 不必/无需 ("不必超过" is not a bound).
+_ZH_NEG = r"不(?:得|应|能|可|会|准|要)?"
+
 _GE = re.compile(
-    r"(?:\b(?:no fewer than|not less than|at least|greater than or equal to|"
-    r"more than or equal to|minimum of|(?:must\s+)?not\s+(?:be\s+)?below|no lower than|must not fall below)\s*|(?:至少|不少于|不低于|不得低于|不得少于|大于等于|高于或等于)\s*)$",
+    rf"(?:\b(?:at least|greater than or equal to|more than or equal to|minimum of)\s*|{_EN_NEG}{_EN_LT}\s*|"
+    rf"(?:至少|大于等于|大于或等于|高于或等于|{_ZH_NEG}{_ZH_LT})\s*)$",
     re.I,
 )
-_GT = re.compile(
-    r"(?:\b(?:more than|greater than|over|exceed(?:s|ing)?|in excess of|above)\s*|"
-    r"(?:超过|高于|大于|多于)\s*)$",
-    re.I,
-)
+_GT = re.compile(rf"(?:\b{_EN_GT}\s*|{_ZH_GT}\s*)$", re.I)
 _LE = re.compile(
-    r"(?:\b(?:no more than|not more than|at most|up to|(?:not|never|cannot)\s+(?:to\s+)?exceed(?:s|ing)?|\w+n't\s+exceed|"
-    r"maximum of|limited to|less than or equal to|(?:must\s+)?not\s+(?:be\s+)?above|no higher than|no greater than)\s*|(?:最多|至多|不超过|不得超过|"
-    r"不高于|不得高于|上限为|小于等于)\s*)$",
+    rf"(?:\b(?:at most|up to|maximum of|limited to|less than or equal to)\s*|{_EN_NEG}{_EN_GT}\s*|"
+    rf"(?:最多|至多|上限为|小于等于|小于或等于|低于或等于|{_ZH_NEG}{_ZH_GT})\s*)$",
     re.I,
 )
-_LT = re.compile(r"(?:\b(?:less than|fewer than|under|below)\s*|(?:少于|低于|小于|不到)\s*)$", re.I)
+_LT = re.compile(rf"(?:\b{_EN_LT}\s*|(?:{_ZH_LT}|不到|不足)\s*)$", re.I)
+# "不必超过 / need not exceed" lifts a requirement; it states no bound at all.
+_NOT_A_BOUND = re.compile(
+    rf"(?:(?:不必|无需|无须|不需要|不用){_ZH_GT}|(?:不必|无需|无须|不需要|不用){_ZH_LT}|"
+    rf"\b(?:need\s+not|needn't|does\s+not\s+have\s+to|do\s+not\s+have\s+to|doesn't\s+have\s+to|"
+    rf"don't\s+have\s+to)(?:\s+be)?\s+(?:{_EN_GT}|{_EN_LT}))\s*$",
+    re.I,
+)
 _EQ = re.compile(r"(?:\b(?:exactly|precisely|equal to)\s*|(?:恰好|正好|刚好|等于|固定为)\s*)$", re.I)
 _GE_SUFFIX = re.compile(r"^\s*(?:%\s*)?(?:或以上|及以上|以上|or\s+(?:higher|more)|and\s+above)", re.I)
 _LE_SUFFIX = re.compile(r"^\s*(?:%\s*)?(?:或以下|及以下|以下|or\s+(?:lower|less)|and\s+below)", re.I)
@@ -197,11 +211,12 @@ _LE_TIME_AFTER_UNIT = re.compile(r"^\s*(?:以内|之内|内(?![容部]))")
 # Chinese may place a verb between the quantifier and number: "至少保留五天".
 # Stay within the same punctuation-delimited clause; do not use arbitrary far
 # upstream words. If multiple different operators appear, abstain.
+_NOT_NEGATED = "(?<!不)(?<!不得)(?<!不应)(?<!不能)(?<!不可)(?<!不会)(?<!不准)(?<!不要)"
 _REMOTE_CN = (
-    (">=", re.compile(r"(?:至少|不少于|不低于|不得低于|不得少于)[^，。；,;]{0,10}$")),
-    ("<=", re.compile(r"(?:最多|至多|不超过|不得超过|不高于)[^，。；,;]{0,10}$")),
-    (">", re.compile(r"(?:超过|高于|大于|多于)[^，。；,;]{0,10}$")),
-    ("<", re.compile(r"(?:少于|低于|小于|不到)[^，。；,;]{0,10}$")),
+    (">=", re.compile(rf"(?:至少|{_ZH_NEG}{_ZH_LT})[^，。；,;]{{0,10}}$")),
+    ("<=", re.compile(rf"(?:最多|至多|{_ZH_NEG}{_ZH_GT})[^，。；,;]{{0,10}}$")),
+    (">", re.compile(rf"{_NOT_NEGATED}{_ZH_GT}[^，。；,;]{{0,10}}$")),
+    ("<", re.compile(rf"(?:{_NOT_NEGATED}{_ZH_LT}|不到|不足)[^，。；,;]{{0,10}}$")),
 )
 
 
@@ -246,6 +261,8 @@ def parse_quantity(text: str) -> Quantity | None:
         prefix,
         re.I,
     ) or re.search(r"^\s*(?:weeks?|days?|周|天|日|页|pages?)\s*(?:左右|上下|余|or so)", suffix, re.I):
+        return None
+    if _NOT_A_BOUND.search(prefix):
         return None
     # Longest / negated forms first to avoid "no more" -> "more".
     if _GE.search(prefix) or _GE_SUFFIX.search(suffix):

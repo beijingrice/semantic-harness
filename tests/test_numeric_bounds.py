@@ -121,3 +121,43 @@ def test_equivalent_pairs_no_longer_vetoed(en, zh):
 )
 def test_real_differences_still_caught(en, zh):
     assert _guard(en, zh)
+
+
+# A negation before a strict comparator flips it into the opposite inclusive bound.
+# Before this was a general rule, 不小于 / 不大于 / no less than / not fewer than were
+# parsed as the strict comparator itself, and the guard vetoed correct PASS verdicts.
+@pytest.mark.parametrize(
+    "text,comparator",
+    [
+        ("字号不小于24磅", ">="),
+        ("字号不得小于24磅", ">="),
+        ("字号不应少于24磅", ">="),
+        ("时长不短于2小时", ">="),
+        ("字号不大于24磅", "<="),
+        ("报告不得多于二十页", "<="),
+        ("时长不长于2小时", "<="),
+        ("no less than 24 pt", ">="),
+        ("not fewer than 30 participants", ">="),
+        ("must not fall below 24 pt", ">="),
+        ("must be no longer than 12 pages", "<="),
+        ("must not be more than 30 pages", "<="),
+        ("样本不足30人", "<"),
+        ("字号小于24磅", "<"),
+        ("时长超过2小时", ">"),
+    ],
+)
+def test_negated_comparators_flip_to_inclusive_bounds(text, comparator):
+    assert parse_quantity(text).comparator == comparator
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "时长不必超过2小时",
+        "页数无需少于10页",
+        "it need not exceed 30 pages",
+        "it does not have to be longer than 2 hours",
+    ],
+)
+def test_lifted_requirements_are_not_bounds(text):
+    assert parse_quantity(text) is None
